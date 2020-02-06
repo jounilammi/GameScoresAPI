@@ -21,6 +21,7 @@ class Person (db.Model):
 
     match = db.relationship("Match", back_populates="Person")
 
+
 class Match (db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -34,7 +35,8 @@ class Match (db.Model):
     comment = db.Column(db.String(256), nullable=False)
 
     game = db.relationship("Game", back_populates="Match")
-    person = db.relationship("Person", back_populates="Match") #For foreign key
+    person1 = db.relationship("Person", foreign_keys=[player1_id], back_populates="Match") #For foreign key
+    person2 = db.relationship("Person", foreign_keys=[player2_id], back_populates="Match") #For foreign key
 
 
 class Game (db.Model):
