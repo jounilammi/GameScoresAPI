@@ -12,6 +12,8 @@ db = SQLAlchemy(app)
 
 
 class Person (db.Model):
+    
+    __tablename__ = 'person'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), nullable=False)
     first_name = db.Column(db.String(64), nullable=False)
@@ -24,6 +26,7 @@ class Person (db.Model):
 
 class Match (db.Model):
 
+    __tablename__ = 'match'
     id = db.Column(db.Integer, primary_key=True)
     game = db.Column(db.String(64), db.ForeignKey("game.id"))
     place = db.Column(db.String(64), nullable=True)
@@ -34,9 +37,9 @@ class Match (db.Model):
     player2_score = db.Column(db.Float, nullable=False)
     comment = db.Column(db.String(256), nullable=False)
 
-    game = db.relationship("Game", back_populates="Match")
-    person1 = db.relationship("Person", foreign_keys=[player1_id], back_populates="Match") #For foreign key
-    person2 = db.relationship("Person", foreign_keys=[player2_id], back_populates="Match") #For foreign key
+    #game = db.relationship("Game", back_populates="Match")
+    person1 = db.relationship("Person", foreign_keys=[Match.player1_id]) #For foreign key , back_populates="Match"
+    person2 = db.relationship("Person", foreign_keys=[Match.player2_id]) #For foreign key
 
 
 class Game (db.Model):
