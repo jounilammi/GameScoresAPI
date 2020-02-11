@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.engine import Engine
-from sqlalchemy import event
+# from sqlalchemy.exc import IntegrityError
+# from sqlalchemy.engine import Engine
+# from sqlalchemy import event
 
 
 app = Flask(__name__)
@@ -12,6 +12,8 @@ db = SQLAlchemy(app)
 
 
 class Person (db.Model):
+    # __tablename__ = "person"
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), nullable=False)
     first_name = db.Column(db.String(64), nullable=False)
@@ -19,40 +21,42 @@ class Person (db.Model):
     birthdate = db.Column(db.String(64), nullable=True)
     description = db.Column(db.String(256), nullable=True)
 
-    match = db.relationship("Match", back_populates="Person")
+    matchasd = db.relationship("Match", back_populates="person1")
 
 
 class Match (db.Model):
-
+    # __tablename__ = "match"
     id = db.Column(db.Integer, primary_key=True)
     game = db.Column(db.String(64), db.ForeignKey("game.id"))
     place = db.Column(db.String(64), nullable=True)
     time = db.Column(db.String(32), nullable=True)
     player1_id = db.Column(db.Integer, db.ForeignKey("person.id"))
-    player2_id = db.Column(db.Integer, db.ForeignKey("person.id"))
+    # player2_id = db.Column(db.Integer, db.ForeignKey("person.id"))
     player1_score = db.Column(db.Float, nullable=False)
-    player2_score = db.Column(db.Float, nullable=False)
+    # player2_score = db.Column(db.Float, nullable=False)
     comment = db.Column(db.String(256), nullable=False)
 
-    game = db.relationship("Game", back_populates="Match")
-    person1 = db.relationship("Person", foreign_keys=[player1_id], back_populates="Match") #For foreign key
-    person2 = db.relationship("Person", foreign_keys=[player2_id], back_populates="Match") #For foreign key
+    games = db.relationship("Game", back_populates="matches")
+    person1 = db.relationship("Person", back_populates="matchasd") #For foreign key
+    # person2 = db.relationship("Person", foreign_keys="Match.player2_id", back_populates="match") #For foreign key
 
 
 class Game (db.Model):
+    # __tablename__ = "game"
+
     id = db.Column(db.Integer, primary_key=True)  # integer PRIMARY KEY AUTOINCREMENT
     name = db.Column(db.String, nullable=True)
     score_type = db.Column(db.Integer, nullable=False)
 
-    match = db.relationship("Match", back_populates="Game")
+    matches = db.relationship("Match", back_populates="games")
 
 
 
 
-players = db.Table("players",
-    db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
-    db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
-)
+# player = db.Table("player",
+#     db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
+#     db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
+# )
 
 
 # class Player(db.Model):
