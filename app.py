@@ -67,3 +67,21 @@ class Game (db.Model):
 #     game = db.relationship("Game", back_populates="Player") #For foreign key
 
 
+#from app import Person, Match, Game
+#from app db
+#db.create_all()
+#joo = Person(id=1, username="joa", first_name="jjj", last_name="fjfj")
+#db.session.add(joo)
+#db.session.commit()
+#laji = Game(id=1, name="golf", score_type=1)
+#db.session.add(laji)
+#db.session.commit()
+#ottelu = Match(id=1, game="golf", player1_id=1, player1_score = 23, comment = "fjdsf")
+#db.session.add(ottelu)
+#db.session.commit()
+#Match.query.all()
+#Person.query.first().matchasd
+#jne
+#
+#
+
