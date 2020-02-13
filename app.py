@@ -1,7 +1,5 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import sys
-sys.dont_write_bytecode=True
 # from sqlalchemy.exc import IntegrityError
 # from sqlalchemy.engine import Engine
 # from sqlalchemy import event
