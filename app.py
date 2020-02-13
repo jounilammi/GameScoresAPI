@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import sys
+sys.dont_write_bytecode=True
 # from sqlalchemy.exc import IntegrityError
 # from sqlalchemy.engine import Engine
 # from sqlalchemy import event
@@ -21,7 +23,7 @@ class Person (db.Model):
     birthdate = db.Column(db.String(64), nullable=True)
     description = db.Column(db.String(256), nullable=True)
 
-    match1 = db.relationship("Match", back_populates="person")
+    # match1 = db.relationship("Match", backref="person")
     # match2 = db.relationship("Match", back_populates="person2")
 
 
@@ -40,15 +42,17 @@ class Match (db.Model):
     games = db.relationship("Game", back_populates="matches")
     person = db.relationship(
         "Person",
-        foreign_keys=["Match.player1_id", "Match.player2_id"],
-        back_populates="match1"
+        foreign_keys="Match.player1_id",
+        # back_populates="Person.match1"
+        # back_populates="Person.match1"
+
     )
 
-    # person2 = db.relationship(
-    #     "Person",
-    #     foreign_keys="Match.player2_id",
-    #     back_populates="match2"
-    # )
+    person2 = db.relationship(
+        "Person",
+        foreign_keys="Match.player2_id",
+        # back_populates="match2"
+    )
 # pee = Person(username="jN",first_name="Janne",last_name="Neuvo")
 
 
