@@ -68,7 +68,7 @@ class Game (db.Model):
 
 
 #from app import Person, Match, Game
-#from app db
+#from app import db
 #db.create_all()
 #joo = Person(id=1, username="joa", first_name="jjj", last_name="fjfj")
 #db.session.add(joo)
