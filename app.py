@@ -84,4 +84,21 @@ class Game (db.Model):
 #jne
 #
 #
+#>>> Match.query.first().player1_score
+#23.0
+#>>> Match.query.first().games                ei printtaa mitään?
+#>>>
+#>>> Match.query.first().person1
+#<Person 1>
 
+
+#>>> Person.query.first().matchasd
+#[<Match 1>]
+
+#>>> Match.query.first().games        
+#>>>
+#>>> Match.query.first().person1
+#<Person 1>
+
+#>>> Game.query.first().matches       miksi tyhjä lista?
+#[]
