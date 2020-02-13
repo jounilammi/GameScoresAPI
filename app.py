@@ -21,7 +21,8 @@ class Person (db.Model):
     birthdate = db.Column(db.String(64), nullable=True)
     description = db.Column(db.String(256), nullable=True)
 
-    matchasd = db.relationship("Match", back_populates="person1")
+    match1 = db.relationship("Match", back_populates="person")
+    # match2 = db.relationship("Match", back_populates="person2")
 
 
 class Match (db.Model):
@@ -31,14 +32,24 @@ class Match (db.Model):
     place = db.Column(db.String(64), nullable=True)
     time = db.Column(db.String(32), nullable=True)
     player1_id = db.Column(db.Integer, db.ForeignKey("person.id"))
-    # player2_id = db.Column(db.Integer, db.ForeignKey("person.id"))
+    player2_id = db.Column(db.Integer, db.ForeignKey("person.id"))
     player1_score = db.Column(db.Float, nullable=False)
-    # player2_score = db.Column(db.Float, nullable=False)
-    comment = db.Column(db.String(256), nullable=False)
+    player2_score = db.Column(db.Float, nullable=False)
+    comment = db.Column(db.String(256), nullable=True)
 
     games = db.relationship("Game", back_populates="matches")
-    person1 = db.relationship("Person", back_populates="matchasd") #For foreign key
-    # person2 = db.relationship("Person", foreign_keys="Match.player2_id", back_populates="match") #For foreign key
+    person = db.relationship(
+        "Person",
+        foreign_keys=["Match.player1_id", "Match.player2_id"],
+        back_populates="match1"
+    )
+
+    # person2 = db.relationship(
+    #     "Person",
+    #     foreign_keys="Match.player2_id",
+    #     back_populates="match2"
+    # )
+# pee = Person(username="jN",first_name="Janne",last_name="Neuvo")
 
 
 class Game (db.Model):
@@ -51,12 +62,10 @@ class Game (db.Model):
     matches = db.relationship("Match", back_populates="games")
 
 
-
-
-# player = db.Table("player",
-#     db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
-#     db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
-# )
+player = db.Table("player",
+    db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
+    db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
+)
 
 
 # class Player(db.Model):
@@ -80,7 +89,7 @@ class Game (db.Model):
 #db.session.add(ottelu)
 #db.session.commit()
 #Match.query.all()
-#Person.query.first().matchasd
+#Person.query.first().match1
 #jne
 #
 #
@@ -92,10 +101,10 @@ class Game (db.Model):
 #<Person 1>
 
 
-#>>> Person.query.first().matchasd
+#>>> Person.query.first().match1
 #[<Match 1>]
 
-#>>> Match.query.first().games        
+#>>> Match.query.first().games
 #>>>
 #>>> Match.query.first().person1
 #<Person 1>
