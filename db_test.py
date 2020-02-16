@@ -76,6 +76,8 @@ def test_unique(db_handle):
 
 def test_update(db_handle):
     #Testing updating information of player with id 1
+    person = _get_person()
+    db_handle.session.add(person)
     Person.query.filter_by(id=1).first().update({"username":"petteri"})
     db_handle.session.commit()
 
