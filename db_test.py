@@ -4,6 +4,7 @@ import tempfile
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
+from app import db, Person, Match, Game
 
 import app
 
@@ -29,15 +30,18 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 
 def _get_person():
-    person = Person(username="NickName", first_name="Testy", last_name="Tester"))
+    person = Person(username="NickName", first_name="Testy", last_name="Tester")
+    return(person)
 
-def _get_match():
-    match = Match(game="golf", player1_id=1, player1_score = 23, comment = "well played")
+# def _get_match():
+#     match = Match(game="golf", player1_id=1, player1_score = 23, comment = "well played")
+#     return(match)
 
 def _get_game():
-    Game(name="golf", score_type=1)
+    game = Game(name="golf", score_type=1)
+    return(game)
 
-def test_create_everytging(db_handle):
+def test_create_everything(db_handle):
     #create everything
     person = _get_person()
     game = _get_game()
@@ -51,8 +55,8 @@ def test_create_everytging(db_handle):
     assert Game.query.count() == 1
     assert Match.query.count() == 1
     db_person = Person.query.first()
-    db_person = Game.query.first()
-    db_person = Match.query.first()
+    db_game = Game.query.first()
+    db_match = Match.query.first()
     #check relationships
     assert Match.query.filter(id=1).first().person1_id == Person.query.filter(id=1).first().id
     assert Match.query.filter(id=1).first().game_id == Game.query.filter(id=1).first().id
@@ -76,9 +80,36 @@ def test_unique(db_handle):
 
 def test_update(db_handle):
     #Testing updating information of player with id 1
-    person.query.filter(id=1).update(Person.username = petteri)
+    Person.query.filter(id=1).first().update(Person.username = "petteri")
     db_handle.session.commit()
 
 def test_remove(db_handle):
     person.query.filter(id=1).delete()
     db_handle.session.commit()
+
+
+def test_foreign_key_relationship_match_to_game(db_handle):
+    """
+    Tests that we can't assign match in a game that doesn't exist. 
+    """	
+    person1 = _get_person()
+    person2 = Person(username="NickNamesss", first_name="Testsssy", last_name="Testssser")
+    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23,player2_score = 33)
+    db_handle.session.add(person1)
+    db_handle.session.add(person2)
+    db_handle.session.add(match)   
+    with pytest.raises(IntegrityError):
+        db_handle.session.commit()
+
+def test_foreign_key_relationship_player1_to_game(db_handle):
+    """
+    Tests that we can't assign match in a game if player 2 is missing. 
+    """	
+    game = _get_game()
+    person1 = _get_person()
+    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23, player2_score = 33 )
+    db_handle.session.add(person1)
+    db_handle.session.add(person2)
+    db_handle.session.add(match)   
+    with pytest.raises(IntegrityError):
+        db_handle.session.commit()
