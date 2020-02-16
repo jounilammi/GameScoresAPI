@@ -37,7 +37,7 @@ def _get_match():
 def _get_game():
     Game(name="golf", score_type=1)
 
-def test_create_everytging(db_handle):
+def test_create_everything(db_handle):
     #create everything
     person = _get_person()
     game = _get_game()
