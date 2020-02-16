@@ -30,8 +30,8 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 
 def _get_person():
-    person = Person(username="NickName", first_name="Testy", last_name="Tester")
-    return(person)
+    # person = Person(username="NickName", first_name="Testy", last_name="Tester")
+    return(Person(username="NickName", first_name="Testy", last_name="Tester"))
 
 # def _get_match():
 #     match = Match(game="golf", player1_id=1, player1_score = 23, comment = "well played")
@@ -82,7 +82,7 @@ def test_update(db_handle):
     db_handle.session.commit()
 
 def test_remove(db_handle):
-    person.query.filter(id=1).delete()
+    Person.query.filter_by(id=1).delete()
     db_handle.session.commit()
 
 
@@ -107,7 +107,6 @@ def test_foreign_key_relationship_player1_to_game(db_handle):
     person1 = _get_person()
     match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23, player2_score = 33 )
     db_handle.session.add(person1)
-    db_handle.session.add(person2)
     db_handle.session.add(match)   
     with pytest.raises(IntegrityError):
         db_handle.session.commit()
