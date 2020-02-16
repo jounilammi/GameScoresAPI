@@ -4,6 +4,7 @@ import tempfile
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
+from app import db, Person, Match, Game
 
 import app
 
@@ -29,7 +30,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.close()
 
 def _get_person():
-    person = Person(username="NickName", first_name="Testy", last_name="Tester"))
+    person = Person(username="NickName", first_name="Testy", last_name="Tester")
     return(person)
 
 # def _get_match():
@@ -79,7 +80,7 @@ def test_unique(db_handle):
 
 def test_update(db_handle):
     #Testing updating information of player with id 1
-    person.query.filter(id=1).update(Person.username = petteri)
+    Person.query.filter(id=1).first().update(Person.username = "petteri")
     db_handle.session.commit()
 
 def test_remove(db_handle):
@@ -93,7 +94,7 @@ def test_foreign_key_relationship_match_to_game(db_handle):
     """	
     person1 = _get_person()
     person2 = Person(username="NickNamesss", first_name="Testsssy", last_name="Testssser")
-    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23,player2_score = 33 comment = "well played")
+    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23,player2_score = 33)
     db_handle.session.add(person1)
     db_handle.session.add(person2)
     db_handle.session.add(match)   
@@ -106,7 +107,7 @@ def test_foreign_key_relationship_player1_to_game(db_handle):
     """	
     game = _get_game()
     person1 = _get_person()
-    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23,player2_score = 33 comment = "well played")
+    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23, player2_score = 33 )
     db_handle.session.add(person1)
     db_handle.session.add(person2)
     db_handle.session.add(match)   
