@@ -43,6 +43,36 @@ After a successful install you now have a working virtualenv to run this API. Yo
 
 ## Database
 The API uses a SQLite database that it runs with Flask-SQLAlchemy==2.3.2. You
+### How to populate the database
+Open a Python3 prompt. Enter the following commands:
+
+```python
+from app import Person, Game, Match, db
+db.create_all()
+
+person1 = Person(username="Mattipee", first_name="Matti", last_name="Pulkkinen")
+person2 = Person(username="Janiee", first_name="Jani", last_name="Eerola")
+
+db.session.add(person1)
+db.session.add(person2)
+db.session.commit()
+
+game1 = Game(id=1, name="Cottage darts", score_type=1)
+db.session.add(laji)
+db.session.commit()
+
+match1 = Match(
+        game=1,
+        player1_id=1,
+        player2_id=2,
+        player1_score=50,
+        player2_score=32
+    )
+db.session.add(ottelu)
+db.session.commit()
+```
+
+You have now a populated database with one match.
 
 __Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client__
 
