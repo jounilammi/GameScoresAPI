@@ -30,12 +30,15 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 def _get_person():
     person = Person(username="NickName", first_name="Testy", last_name="Tester"))
+    return(person)
 
 def _get_match():
     match = Match(game="golf", player1_id=1, player1_score = 23, comment = "well played")
+    return(match)
 
 def _get_game():
-    Game(name="golf", score_type=1)
+    game = Game(name="golf", score_type=1)
+    return(game)
 
 def test_create_everything(db_handle):
     #create everything
