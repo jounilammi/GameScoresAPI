@@ -12,8 +12,8 @@ db = SQLAlchemy(app)
 
 
 player = db.Table("player",
-    db.Column("person_id", db.Integer, db.ForeignKey("person.id"),primary_key=True),
-    db.Column("game_id", db.Integer, db.ForeignKey("game.id"),primary_key=True)
+    db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
+    db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
 )
 
 class Person (db.Model):
@@ -35,11 +35,11 @@ class Person (db.Model):
 class Match (db.Model):
     # __tablename__ = "match"
     id = db.Column(db.Integer, primary_key=True)
-    game = db.Column(db.String(64), db.ForeignKey("game.id"))
+    game = db.Column(db.String(64), db.ForeignKey("game.id", ondelete="SET NULL"))
     place = db.Column(db.String(64), nullable=True)
     time = db.Column(db.String(32), nullable=True)
-    player1_id = db.Column(db.Integer, db.ForeignKey("person.id"))
-    player2_id = db.Column(db.Integer, db.ForeignKey("person.id"))
+    player1_id = db.Column(db.Integer, db.ForeignKey("person.id", ondelete="SET NULL"))
+    player2_id = db.Column(db.Integer, db.ForeignKey("person.id", ondelete="SET NULL"))
     player1_score = db.Column(db.Float, nullable=False)
     player2_score = db.Column(db.Float, nullable=False)
     comment = db.Column(db.String(256), nullable=True)
