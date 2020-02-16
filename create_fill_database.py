@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app import Person, Game, Match, db, app
+from app import Person, Game, Match, db, app, player
 # from sqlalchemy.exc import IntegrityError
 # from sqlalchemy.engine import Engine
 # from sqlalchemy import event

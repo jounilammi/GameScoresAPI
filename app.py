@@ -11,6 +11,11 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
+player = db.Table("player",
+    db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
+    db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
+)
+
 class Person (db.Model):
     # __tablename__ = "person"
 
@@ -21,6 +26,8 @@ class Person (db.Model):
     birthdate = db.Column(db.String(64), nullable=True)
     description = db.Column(db.String(256), nullable=True)
 
+    game = db.relationship("Game", secondary=player, back_populates="hobbyisters")
+
     # match1 = db.relationship("Match", backref="person")
     # match2 = db.relationship("Match", back_populates="person2")
 
@@ -28,11 +35,11 @@ class Person (db.Model):
 class Match (db.Model):
     # __tablename__ = "match"
     id = db.Column(db.Integer, primary_key=True)
-    game = db.Column(db.String(64), db.ForeignKey("game.id"))
+    game = db.Column(db.String(64), db.ForeignKey("game.id", ondelete="SET NULL"))
     place = db.Column(db.String(64), nullable=True)
     time = db.Column(db.String(32), nullable=True)
-    player1_id = db.Column(db.Integer, db.ForeignKey("person.id"))
-    player2_id = db.Column(db.Integer, db.ForeignKey("person.id"))
+    player1_id = db.Column(db.Integer, db.ForeignKey("person.id", ondelete="SET NULL"))
+    player2_id = db.Column(db.Integer, db.ForeignKey("person.id", ondelete="SET NULL"))
     player1_score = db.Column(db.Float, nullable=False)
     player2_score = db.Column(db.Float, nullable=False)
     comment = db.Column(db.String(256), nullable=True)
@@ -43,7 +50,6 @@ class Match (db.Model):
         foreign_keys="Match.player1_id",
         # back_populates="Person.match1"
         # back_populates="Person.match1"
-
     )
 
     person2 = db.relationship(
@@ -62,12 +68,11 @@ class Game (db.Model):
     score_type = db.Column(db.Integer, nullable=False)
 
     matches = db.relationship("Match", back_populates="games")
+    hobbyisters = db.relationship("Person", secondary=player, back_populates="game")
 
 
-player = db.Table("player",
-    db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
-    db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
-)
+
+
 
 
 # class Player(db.Model):
@@ -78,20 +83,20 @@ player = db.Table("player",
 #     game = db.relationship("Game", back_populates="Player") #For foreign key
 
 
-#from app import Person, Match, Game
-#from app import db
-#db.create_all()
-#joo = Person(id=1, username="joa", first_name="jjj", last_name="fjfj")
-#db.session.add(joo)
-#db.session.commit()
-#laji = Game(id=1, name="golf", score_type=1)
-#db.session.add(laji)
-#db.session.commit()
-#ottelu = Match(id=1, game="golf", player1_id=1, player1_score = 23, comment = "fjdsf")
-#db.session.add(ottelu)
-#db.session.commit()
-#Match.query.all()
-#Person.query.first().match1
+# from app import Person, Match, Game
+# from app import db
+# db.create_all()
+# joo = Person(id=1, username="joa", first_name="jjj", last_name="fjfj")
+# db.session.add(joo)
+# db.session.commit()
+# laji = Game(id=1, name="golf", score_type=1)
+# db.session.add(laji)
+# db.session.commit()
+# ottelu = Match(id=1, game="golf", player1_id=1, player1_score = 23, comment = "fjdsf")
+# db.session.add(ottelu)
+# db.session.commit()
+# Match.query.all()
+# Person.query.first().match1
 #jne
 #
 #
