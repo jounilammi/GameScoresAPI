@@ -15,7 +15,7 @@ class Person (db.Model):
     # __tablename__ = "person"
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), nullable=False)
+    username = db.Column(db.String(64), nullable=False, unique=True)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
     birthdate = db.Column(db.String(64), nullable=True)
@@ -58,7 +58,7 @@ class Game (db.Model):
     # __tablename__ = "game"
 
     id = db.Column(db.Integer, primary_key=True)  # integer PRIMARY KEY AUTOINCREMENT
-    name = db.Column(db.String, nullable=True)
+    name = db.Column(db.String, nullable=True, unique=True)
     score_type = db.Column(db.Integer, nullable=False)
 
     matches = db.relationship("Match", back_populates="games")
