@@ -33,14 +33,14 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 def _get_person(word="a"):
     # person = Person(username="NickName", first_name="Testy", last_name="Tester")
-    return(Person(username=f"NickName-{word}", first_name="Testy", last_name="Tester"))
+    return(Person(username=word, first_name="Testy", last_name="Tester"))
 
 
-def _get_match(game_number=1):
+def _get_match(p1_id, p2_id, game_id):
     match = Match(
-        game=game_number,
-        player1_id=1,
-        player2_id=2,
+        game=game_id,
+        player1_id=p1_id,
+        player2_id=p2_id,
         player1_score=23,
         player2_score=30,
         comment="well played"
@@ -48,26 +48,54 @@ def _get_match(game_number=1):
     return(match)
 
 
-def _get_game(word="a"):
-    game = Game(name=f"{word}-golf", score_type=1)
+def _get_game(gamename="a"):
+    game = Game(name=gamename, score_type=1)
     return(game)
 
 
 def test_create_everything(db_handle):
-    #create everything
-    person = _get_person()
-    game = _get_game()
-    db_handle.session.add(person)
+    '''create everything and test correctness'''
+
+    # create everything
+    person1 = _get_person("aaaa")
+    person2 = _get_person("bbbb")
+    game = _get_game("tennis")
+    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+
+    db_handle.session.add(person1)
+    db_handle.session.add(person2)
     db_handle.session.add(game)
+    db_handle.session.add(match)
+
     db_handle.session.commit()
+
     #make sure they exist
-    assert Person.query.count() == 1
+    assert game.name == "tennis"
+    assert game.id == 1
+
+    assert Person.query.count() == 2
     assert Game.query.count() == 1
-    db_person = Person.query.first()
-    db_game = Game.query.first()
-    #check relationships
-    # assert Match.query.filter(id=1).first().person1_id == Person.query.filter(id=1).first().id
-    # assert Match.query.filter(id=1).first().game_id == Game.query.filter(id=1).first().id
+    assert Match.query.count() == 1
+
+
+def test_check_relationships(db_handle):
+    ''' test foreign keys '''
+    person1 = _get_person("aaaa")
+    person2 = _get_person("bbbb")
+    game = _get_game("tennis")
+    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+
+    db_handle.session.add(person1)
+    db_handle.session.add(person2)
+    db_handle.session.add(game)
+    db_handle.session.add(match)
+
+    db_handle.session.commit()
+
+    assert Match.query.filter_by(id=1).first().player1_id == Person.query.filter_by(id=1).first().id
+    assert Match.query.filter_by(id=1).first().id == Game.query.filter_by(id=1).first().id
+    assert Match.query.filter_by(id=1).first().player2_id == Person.query.filter_by(id=2).first().id
+
 
 
 def test_unique(db_handle):
@@ -86,19 +114,26 @@ def test_unique(db_handle):
     db_handle.session.add(game_2)
     with pytest.raises(IntegrityError):
         db_handle.session.commit()
+    db.session.rollback()
 
 
 def test_update(db_handle):
-    #Testing updating information of player with id 1
+    '''Testing updating information of player with id 1'''
     person = _get_person()
     db_handle.session.add(person)
-    Person.query.filter_by(id=1).update({"username":"petteri"})
     db_handle.session.commit()
+
+    Person.query.filter_by(id=1).update({"username":"petteri"})
+    db_handle.session.add(person)
+    db_handle.session.commit()
+    assert Person.query.filter_by(id=1).first().username == "petteri"
 
 
 def test_remove(db_handle):
     Person.query.filter_by(id=1).delete()
     db_handle.session.commit()
+    with pytest.raises(AttributeError):
+        assert Person.query.filter_by(id=1).first().id == 1
 
 
 def test_foreign_key_relationship_match_to_game(db_handle):
@@ -113,6 +148,7 @@ def test_foreign_key_relationship_match_to_game(db_handle):
     db_handle.session.add(match)
     with pytest.raises(IntegrityError):
         db_handle.session.commit()
+    db.session.rollback()
 
 
 def test_foreign_key_relationship_player1_to_game(db_handle):
@@ -126,3 +162,4 @@ def test_foreign_key_relationship_player1_to_game(db_handle):
     db_handle.session.add(match)
     with pytest.raises(IntegrityError):
         db_handle.session.commit()
+    db.session.rollback()

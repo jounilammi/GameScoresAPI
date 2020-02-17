@@ -6,7 +6,8 @@
 * Jouni Lammi Jouni.Lammi@student.oulu.fi
 
 ## How install the dependencies
-The API is written in Python3. It has been tested to work with Python 3.7.2, which you can doenload from here: https://www.python.org/downloads/release/python-372/
+The API is written in Python3. It has been tested to work with Python 3.7.2, which you can download from here: https://www.python.org/downloads/release/python-372/
+Remember to select the option "Add python 3.7 to PATH".
 
 The dependencies can be found from the requirements.txt file in the main folder. After you have installed Python3, please install the virtualenv library with
 ```
@@ -68,11 +69,15 @@ match1 = Match(
         player1_score=50,
         player2_score=32
     )
-db.session.add(ottelu)
+db.session.add(match1)
 db.session.commit()
 ```
 
 You have now a populated database with one match.
+
+## Testing
+
+GameScoresAPI is tested with Python3's ```pytest``` library. When you have the ```virtualenv``` activated, navigate into the main folder of the GameScoresAPI and give the command ```pytest```. The tests run automatically.
 
 __Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client__
 
