@@ -96,9 +96,12 @@ def test_check_relationships(db_handle):
 
     db_handle.session.commit()
 
-    assert Match.query.filter_by(id=1).first().player1_id == Person.query.filter_by(id=1).first().id
-    assert Match.query.filter_by(id=1).first().id == Game.query.filter_by(id=1).first().id
-    assert Match.query.filter_by(id=1).first().player2_id == Person.query.filter_by(id=2).first().id
+    assert Match.query.filter_by(id=1).first().player1_id == \
+        Person.query.filter_by(id=1).first().id
+    assert Match.query.filter_by(id=1).first().id == \
+        Game.query.filter_by(id=1).first().id
+    assert Match.query.filter_by(id=1).first().player2_id == \
+        Person.query.filter_by(id=2).first().id
 
 
 def test_unique(db_handle):
@@ -183,8 +186,18 @@ def test_foreign_key_relationship_match_to_game(db_handle):
     Tests that we can't assign match in a game that doesn't exist.
     """
     person1 = _get_person()
-    person2 = Person(username="NickNamesss", first_name="Testsssy", last_name="Testssser")
-    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23,player2_score = 33)
+    person2 = Person(
+        username="NickNamesss",
+        first_name="Testsssy",
+        last_name="Testssser"
+    )
+    match = Match(
+        game=1,
+        player1_id=1,
+        player2_id=2,
+        player1_score=23,
+        player2_score = 33
+    )
     db_handle.session.add(person1)
     db_handle.session.add(person2)
     db_handle.session.add(match)
@@ -199,7 +212,13 @@ def test_foreign_key_relationship_player1_to_game(db_handle):
     """
     game = _get_game()
     person1 = _get_person()
-    match = Match(game=1, player1_id=1, player2_id=2,player1_score = 23, player2_score = 33 )
+    match = Match(
+        game=1,
+        player1_id=1,
+        player2_id=2,
+        player1_score=23,
+        player2_score = 33
+    )
     db_handle.session.add(person1)
     db_handle.session.add(match)
     with pytest.raises(IntegrityError):
