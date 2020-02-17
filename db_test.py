@@ -64,7 +64,7 @@ def test_create_everything(db_handle):
     person1 = _get_person("aaaa")
     person2 = _get_person("bbbb")
     game = _get_game("tennis")
-    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+    match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
     db_handle.session.add(person1)
     db_handle.session.add(person2)
@@ -73,7 +73,7 @@ def test_create_everything(db_handle):
 
     db_handle.session.commit()
 
-    #make sure they exist
+    # make sure they exist
     assert game.name == "tennis"
     assert game.id == 1
 
@@ -87,7 +87,7 @@ def test_check_relationships(db_handle):
     person1 = _get_person("aaaa")
     person2 = _get_person("bbbb")
     game = _get_game("tennis")
-    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+    match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
     db_handle.session.add(person1)
     db_handle.session.add(person2)
@@ -132,7 +132,7 @@ def test_update(db_handle):
     db_handle.session.add(person)
     db_handle.session.commit()
 
-    Person.query.filter_by(id=1).update({"username":"petteri"})
+    Person.query.filter_by(id=1).update({"username": "petteri"})
     db_handle.session.add(person)
     db_handle.session.commit()
     assert Person.query.filter_by(id=1).first().username == "petteri"
@@ -143,7 +143,7 @@ def test_remove(db_handle):
     person1 = _get_person("aaaa")
     person2 = _get_person("bbbb")
     game = _get_game("tennis")
-    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+    match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
     db_handle.session.add(person1)
     db_handle.session.add(person2)
@@ -164,7 +164,7 @@ def test_set_null_on_delete(db_handle):
     person1 = _get_person("aaaa")
     person2 = _get_person("bbbb")
     game = _get_game("tennis")
-    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+    match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
     db_handle.session.add(person1)
     db_handle.session.add(person2)
@@ -178,7 +178,7 @@ def test_set_null_on_delete(db_handle):
 
     with pytest.raises(AssertionError):
         assert Match.query.filter_by(id=1).first().player1_id == 1
-    assert Match.query.filter_by(id=1).first().player1_id == None
+    assert Match.query.filter_by(id=1).first().player1_id is None
 
 
 def test_foreign_key_relationship_match_to_game(db_handle):
@@ -196,7 +196,7 @@ def test_foreign_key_relationship_match_to_game(db_handle):
         player1_id=1,
         player2_id=2,
         player1_score=23,
-        player2_score = 33
+        player2_score=33
     )
     db_handle.session.add(person1)
     db_handle.session.add(person2)
@@ -212,14 +212,16 @@ def test_foreign_key_relationship_player1_to_game(db_handle):
     """
     game = _get_game()
     person1 = _get_person()
+    db_handle.session.add(person1)
+    db_handle.session.add(game)
+
     match = Match(
         game=1,
         player1_id=1,
         player2_id=2,
         player1_score=23,
-        player2_score = 33
+        player2_score=33
     )
-    db_handle.session.add(person1)
     db_handle.session.add(match)
     with pytest.raises(IntegrityError):
         db_handle.session.commit()

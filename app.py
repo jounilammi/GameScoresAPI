@@ -11,10 +11,16 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
-player = db.Table("player",
-    db.Column("person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True),
-    db.Column("game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True)
+player = db.Table(
+    "player",
+    db.Column(
+        "person_id", db.Integer, db.ForeignKey("person.id"), primary_key=True
+    ),
+    db.Column(
+        "game_id", db.Integer, db.ForeignKey("game.id"), primary_key=True
+    )
 )
+
 
 class Person (db.Model):
     # __tablename__ = "person"
@@ -64,9 +70,11 @@ class Match (db.Model):
 class Game (db.Model):
     # __tablename__ = "game"
 
-    id = db.Column(db.Integer, primary_key=True)  # integer PRIMARY KEY AUTOINCREMENT
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=True, unique=True)
     score_type = db.Column(db.Integer, nullable=False)
 
     matches = db.relationship("Match", back_populates="games")
-    hobbyist = db.relationship("Person", secondary=player, back_populates="game")
+    hobbyist = db.relationship(
+        "Person", secondary=player, back_populates="game"
+    )
