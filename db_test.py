@@ -8,10 +8,11 @@ from app import db, Person, Match, Game
 
 import app
 
+
 @pytest.fixture
 def db_handle():
     db_fd, db_fname = tempfile.mkstemp()
-    app.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" +db_fname
+    app.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_fname
     app.app.config["TESTING"] = True
 
     with app.app.app_context():
@@ -32,7 +33,10 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 
 def _get_person(word="a"):
-    # person = Person(username="NickName", first_name="Testy", last_name="Tester")
+    '''
+    person = Person(username="NickName",
+    first_name="Testy", last_name="Tester")
+    '''
     return(Person(username=word, first_name="Testy", last_name="Tester"))
 
 
@@ -97,9 +101,11 @@ def test_check_relationships(db_handle):
     assert Match.query.filter_by(id=1).first().player2_id == Person.query.filter_by(id=2).first().id
 
 
-
 def test_unique(db_handle):
-    #Testing uniqueness' of values that are supposed to be unique i.e. can't create two identical instances
+    '''
+    Testing uniqueness' of values that are supposed to be unique i.e. can't
+    create two identical instances
+    '''
     person_1 = _get_person()
     person_2 = _get_person()
     # match_1 = _get_match()
@@ -130,10 +136,46 @@ def test_update(db_handle):
 
 
 def test_remove(db_handle):
+    ''' test removing person from DB'''
+    person1 = _get_person("aaaa")
+    person2 = _get_person("bbbb")
+    game = _get_game("tennis")
+    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+
+    db_handle.session.add(person1)
+    db_handle.session.add(person2)
+    db_handle.session.add(game)
+    db_handle.session.add(match)
+
+    db_handle.session.commit()
+
     Person.query.filter_by(id=1).delete()
     db_handle.session.commit()
+
     with pytest.raises(AttributeError):
         assert Person.query.filter_by(id=1).first().id == 1
+
+
+def test_set_null_on_delete(db_handle):
+    ''' test that foreign key is set null when the source is deleted'''
+    person1 = _get_person("aaaa")
+    person2 = _get_person("bbbb")
+    game = _get_game("tennis")
+    match = _get_match(p1_id=1,p2_id=2,game_id=1)
+
+    db_handle.session.add(person1)
+    db_handle.session.add(person2)
+    db_handle.session.add(game)
+    db_handle.session.add(match)
+
+    db_handle.session.commit()
+
+    Person.query.filter_by(id=1).delete()
+    db_handle.session.commit()
+
+    with pytest.raises(AssertionError):
+        assert Match.query.filter_by(id=1).first().player1_id == 1
+    assert Match.query.filter_by(id=1).first().player1_id == None
 
 
 def test_foreign_key_relationship_match_to_game(db_handle):
