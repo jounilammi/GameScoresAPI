@@ -3,22 +3,26 @@ HOST: http://localhost:5000/
 
 # GameScoresAPI
 
-This API is a simple music metadata service for artists, albums (and other releases) and tracks. The API serves JSON data extended by the [Mason hypermedia format](https://github.com/JornWildt/Mason). Custom link relations and resource profiles have been included in this API document - they are not resources.
+GameScores API is a web API that stores game score data. The API serves JSON data extended by the [Mason hypermedia format](https://github.com/JornWildt/Mason). Custom link relations and resource profiles have been included in this API document - they are not resources.
 
 # Group Link Relations
 
 This section described custom link relations defined in this API. These are not resources. The API also uses 
 [IANA link relations](http://www.iana.org/assignments/link-relations/link-relations.xhtml) where applicable. Custom link relations are CURIEs that use the mumeta prefix. 
 
-## add-album
+## add-player
 
 This is a control that is used to add an album to the associated collection resource. The control includes a JSON schema and must be accessed with POST. 
 
-## add-track
+## add-match
 
 This is a control that is used to add a track to an album resource. The control includes a JSON schema and must be accessed with POST.
 
-## albums-all
+## add-game
+
+This is a control
+
+## matches-all
 
 Leads to the root level albums collection which is a list of all albums known to the API regardless of artist. This collection can be sorted using query parameters as described in the resource documentation.
 
@@ -67,14 +71,38 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
  
 ### Semantic Descriptors
 
-#### Data Type Album
+#### Data Type Game
 
- * `title`: The albums title as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
- * `release`: Album's release date in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
- * `artist`: The album's artist's name (null for VA albums), including capitalization and pucntuation.
- * `discs`: Number of discs the album contains. Default is 1.
- * `genre`: The albums musical genre as a string. Optional.
+ * `name`: The albums title as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
+ * `score_type`: Album's release date in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
+ * `matches`: The album's artist's name (null for VA albums), including capitalization and pucntuation.
+ * `hobbyist`: Number of discs the album contains. Default is 1.
+ 
 
+
+#### Data Type Match
+
+ * `game`: The albums title as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
+ * `place`: Album's release date in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
+ * `time`: The album's artist's name (null for VA albums), including capitalization and pucntuation.
+ * `player1_id`: Number of discs the album contains. Default is 1.
+ * `player2_id`: Number of discs the album contains. Default is 1.
+ * `player1_score`: Number of discs the album contains. Default is 1.
+ * `player2_score`: Number of discs the album contains. Default is 1.
+ * `comment`: The albums musical genre as a string. Opti
+ * `games`: The albums musical genre as a string. Opti
+ * `person`: The albums musical genre as a string. Opti
+ * `person2`: The albums musical genre as a string. Opti
+ 
+#### Data Person
+
+ * `username`: The albums title as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
+ * `first_name`: Album's release date in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
+ * `last_name`: The album's artist's name (null for VA albums), including capitalization and pucntuation.
+ * `birthdate`: Number of discs the album contains. Default is 1.
+ * `description`: The albums musical genre as a string. Opti
+ * `game`: The albums musical genre as a string. Opti
+ 
 ## Error Profile
 
 Profile definition for all errors returned by the API. See [Mason error control](https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
