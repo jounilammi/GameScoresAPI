@@ -1,4 +1,5 @@
 # GameScoresAPI
+## View the api documentation in Apiary: https://gamescoresapi1.docs.apiary.io/#
 ## PWP SPRING 2020
 ## Group information
 * Aleksi Sierilä Aleksi.Sierila@student.oulu.fi
