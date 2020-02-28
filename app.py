@@ -71,7 +71,7 @@ class Game (db.Model):
     # __tablename__ = "game"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=True, unique=True)
+    name = db.Column(db.String, unique=True)
     score_type = db.Column(db.Integer, nullable=False)
 
     matches = db.relationship("Match", back_populates="games")
