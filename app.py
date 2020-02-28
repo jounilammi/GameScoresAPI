@@ -1,9 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-# from sqlalchemy.exc import IntegrityError
-# from sqlalchemy.engine import Engine
-# from sqlalchemy import event
+from sqlalchemy.engine import Engine
+from sqlalchemy import event
 
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///GameScoresApiDB.db"
@@ -28,7 +33,7 @@ class Person (db.Model):
     username = db.Column(db.String(64), nullable=False, unique=True)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
-    birthdate = db.Column(db.String(64), nullable=True)
+    birthdate = db.Column(db.DateTime, nullable=True)
     description = db.Column(db.String(256), nullable=True)
 
     game = db.relationship("Game", secondary=player, back_populates="hobbyist")
@@ -39,17 +44,20 @@ class Match (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     game = db.Column(
         db.String(64),
-        db.ForeignKey("game.id", ondelete="SET NULL")
+        db.ForeignKey("game.id", ondelete="SET NULL"),
+        nullable=True
     )
     place = db.Column(db.String(64), nullable=True)
-    time = db.Column(db.String(32), nullable=True)
+    time = db.Column(db.DateTime, nullable=True)
     player1_id = db.Column(
         db.Integer,
-        db.ForeignKey("person.id", ondelete="SET NULL")
+        db.ForeignKey("person.id", ondelete="SET NULL"),
+        nullable=True
     )
     player2_id = db.Column(
         db.Integer,
-        db.ForeignKey("person.id", ondelete="SET NULL")
+        db.ForeignKey("person.id", ondelete="SET NULL"),
+        nullable=True
     )
     player1_score = db.Column(db.Float, nullable=False)
     player2_score = db.Column(db.Float, nullable=False)

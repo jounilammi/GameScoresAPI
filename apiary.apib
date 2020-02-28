@@ -7,12 +7,12 @@ GameScores API is a web API that stores game score data. The API serves JSON dat
 
 # Group Link Relations
 
-This section described custom link relations defined in this API. These are not resources. The API also uses 
-[IANA link relations](http://www.iana.org/assignments/link-relations/link-relations.xhtml) where applicable. Custom link relations are CURIEs that use the mumeta prefix. 
+This section described custom link relations defined in this API. These are not resources. The API also uses
+[IANA link relations](http://www.iana.org/assignments/link-relations/link-relations.xhtml) where applicable. Custom link relations are CURIEs that use the mumeta prefix.
 
-## add-player
+## add-person
 
-This is a control that is used to add a player to the associated collection resource. The control includes a JSON schema and must be accessed with POST. 
+This is a control that is used to add a person to the associated collection resource. The control includes a JSON schema and must be accessed with POST.
 
 ## add-match
 
@@ -30,9 +30,25 @@ Leads to the root level matches collection which is a list of all matches known 
 
 Leads to the root level games collection which is a list of all games known to the API. This collection can be sorted using query parameters as described in the resource documentation.
 
-## players-all
+## persons-all
 
 Leads to the root level players collection which is a list of all players known to the API. This collection can be sorted using query parameters as described in the resource documentation.
+
+## item
+
+Leads to a item from the collection from which its called.
+
+## game
+
+Leads to game item from match or player item
+
+## participant
+
+Leads to person item from match item
+
+## match
+
+Leads to match item from person or game item
 
 ## delete
 
@@ -48,15 +64,12 @@ Profile definition for all games related resources.
 
 ### Link Relations
 
-This section lists all possible link relations associated with albums; not all of them are necessarily present on each resource type. The following link relations from the mumeta namespace are used:
+This section lists all possible link relations associated with games; not all of them are necessarily present on each resource type. The following link relations from the mumeta namespace are used:
 
  * [add-game](reference/link-relations/add-game)
- * [add-track](reference/link-relations/add-track)
- * [albums-all](reference/link-relations/albums-all)
- * [albums-va](reference/link-relations/albums-va)
- * [artists-all](reference/link-relations/artists-all)
- * [delete](reference/link-relations/delete)
- 
+ * [matches-all](reference/link-relations/matches-all)
+
+
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * author
@@ -64,49 +77,51 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
  * edit
  * profile
  * self
- 
+
 ### Semantic Descriptors
 
 #### Data Type Game
 
- * `name`: The albums title as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
- * `score_type`: Album's release date in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
- * `matches`: The album's artist's name (null for VA albums), including capitalization and pucntuation.
- * `hobbyist`: Number of discs the album contains. Default is 1.
- 
+ * `id`: The game id is primary key. Mandatory.
+ * `name`: The game name as it is written, including capitalization and punctuation. Data type is string. Game name is unique, and it is mandatory.
+ * `score_type`: Score type of the game. It tells how the game is won. Type is integer. Mandatory.
+ * `matches`: matches connects Game class to Match class.
+ * `hobbyist`: hobbyist connects Game class to Person class.
+
 
 
 #### Data Type Match
 
- * `game`: The albums title as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
- * `place`: Album's release date in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
- * `time`: The album's artist's name (null for VA albums), including capitalization and pucntuation.
- * `player1_id`: Number of discs the album contains. Default is 1.
- * `player2_id`: Number of discs the album contains. Default is 1.
- * `player1_score`: Number of discs the album contains. Default is 1.
- * `player2_score`: Number of discs the album contains. Default is 1.
- * `comment`: The albums musical genre as a string. Opti
+ * `id`: The unique match id. integer, primary key. Mandatory
+ * `game`: The games name as it is written on the release, including capitalization and punctuation. Data type is string and it is used as a foreign key to game.
+ * `place`: Location where the game is/was played. Optional.
+ * `time`: The time that the game was played, including capitalization and pucntuation. Time is in form of [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
+ * `player1_id`: id of one of the players in a match. foreign key, integer, mandatory
+ * `player2_id`: id of another player in a match. foreign key, integer, mandatory
+ * `player1_score`: score of the first player. integer, mandatory
+ * `player2_score`: score of the second player. integer, mandatory
+ * `comment`: Custom comment for the game. string
  * `games`: The albums musical genre as a string. Opti
  * `person`: The albums musical genre as a string. Opti
  * `person2`: The albums musical genre as a string. Opti
- 
+
 #### Data Person
 
- * `username`: The albums title as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
- * `first_name`: Album's release date in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
- * `last_name`: The album's artist's name (null for VA albums), including capitalization and pucntuation.
- * `birthdate`: Number of discs the album contains. Default is 1.
- * `description`: The albums musical genre as a string. Opti
- * `game`: The albums musical genre as a string. Opti
- 
+ * `username`: The persons username as it is written on the release, including capitalization and punctuation. Titles are unique per artist, and are used to address album resources. Mandatory.
+ * `first_name`: The persons first name, string. Mandatory.
+ * `last_name`: The persons last name, string. Mandatory
+ * `birthdate`: The persons date of birth.  Time is in form of [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known.
+ * `description`: Custom description for the person, string. Optional
+ * `game`: relationship to the game collection.
+
 ## Error Profile
 
 Profile definition for all errors returned by the API. See [Mason error control](https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
 
 + Attributes
 
-    + resource_url (string, required) - URI of the resource the error was generated from. 
- 
+    + resource_url (string, required) - URI of the resource the error was generated from.
+
 ## Track Profile
 
 Profile definition for all track related resources.
@@ -117,7 +132,7 @@ This section lists all possible link relations associated with tracks; not all o
 
  * [albums-by](reference/link-relations/albums-by)
  * [delete](reference/link-relations/delete)
- 
+
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * author
@@ -134,8 +149,8 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
  * `artist`: The track artist's name which is either the album artist, or the track's artist on VA albums.
  * `length`: Track length as a time in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (hh:mm:ss). Mandatory.
  * `disc_number`: Number of the disc of the album this track is on. Default is 1. Unique together with track number per album.
- * `track_number`: Number of the track on the disc it's on. Mandatory. Unique together with disc number per album. 
- 
+ * `track_number`: Number of the track on the disc it's on. Mandatory. Unique together with disc number per album.
+
 # Group Entry
 
 This group contains the entry point of the API
@@ -149,13 +164,13 @@ Get the API entry point
 + Request
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
-            
+
 + Response 200 (application/vnd.mason+json)
 
     + Body
-    
+
             {
                 "@namespaces": {
                     "mumeta": {
@@ -172,7 +187,7 @@ Get the API entry point
                 }
             }
 
- 
+
 # Group Albums
 
 All of these resources use the [Album Profile](reference/profiles/album-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
@@ -184,10 +199,10 @@ A list of all albums known to the API. This collection can be sorted using the s
 + Parameters
 
     + field (string, optional) - Field to use for sorting
-    
+
         + Default: `title`
         + Members
-        
+
             + `artist`
             + `title`
             + `genre`
@@ -201,11 +216,11 @@ Get a list of all albums known to the API.
 + Request
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
 
 + Response 200 (application/vnd.mason+json)
-    
+
     + Body
 
             {
@@ -234,12 +249,12 @@ Get a list of all albums known to the API.
                         "@controls": {
                             "self": {
                                 "href": "/api/artists/scandal/Hello World/"
-                            }, 
+                            },
                             "profile": {
                                 "href": "/profiles/album/"
                             }
                         },
-                    }, 
+                    },
                     {
                         "title": "Thorns vs Emperor",
                         "artist": "VA",
@@ -254,7 +269,7 @@ Get a list of all albums known to the API.
                     }
                 ]
             }
-        
+
 ## Albums by Artist [/api/artists/{artist}/albums/]
 
 This is an album collection by given artist using the artist's unique name. For each album only artist and title is included, more information can be found by following the `self` relation of each album. Albums released by this artist can be added to this collection.
@@ -271,19 +286,19 @@ Get a list of albums by an artist.
 + Request
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
-    
+
 + Response 200 (application/vnd.mason+json)
 
     + Body
-    
+
             {
                 "@namespaces": {
                     "mumeta": {
                         "name": "/musicmeta/link-relations#"
                     }
-                }, 
+                },
                 "@controls": {
                     "self": {
                         "href": "/api/artists/scandal/albums/"
@@ -291,7 +306,7 @@ Get a list of albums by an artist.
                     "mumeta:artists-all": {
                         "href": "/api/artists/",
                         "title": "All artists"
-                    },                    
+                    },
                     "mumeta:albums-all": {
                         "href": "/api/albums/?{sortby}",
                         "title": "All albums",
@@ -308,7 +323,7 @@ Get a list of albums by an artist.
                             },
                             "required": []
                         }
-                    },                    
+                    },
                     "author": {
                         "href": "/api/artists/scandal/"
                     },
@@ -364,8 +379,8 @@ Get a list of albums by an artist.
     The client is trying to retrieve list of albums for an artist that doesn't exist.
 
     + Body
-    
-            
+
+
             {
                 "resource_url": "/api/artists/hemuli/albums/",
                 "@error": {
@@ -389,9 +404,9 @@ Adds a new album for the artist. The album representation must be valid against 
     + Headers
 
             Accept: application/vnd.mason+json
-        
+
     + Body
-    
+
             {
                 "title": "Best Scandal",
                 "release": "2009-10-21",
@@ -402,7 +417,7 @@ Adds a new album for the artist. The album representation must be valid against 
 + Response 201
 
     + Headers
-    
+
             Location: /api/artists/scandal/albums/Best Scandal/
 
 + Response 400 (application/vnd.mason+json)
@@ -410,14 +425,14 @@ Adds a new album for the artist. The album representation must be valid against 
     The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/",
                 "@error": {
                     "@message": "Invalid JSON document",
-                    "@messages": [                    
+                    "@messages": [
                         "'release' is a required property
-                        
+
                         Failed validating 'required' in schema:
                         {'properties': {'discs': {'default': 1,
                         'description': 'Number of discs',
@@ -431,7 +446,7 @@ Adds a new album for the artist. The album representation must be valid against 
                         'type': 'string'}},
                         'required': ['title', 'release'],
                         'type': 'object'}
-                        
+
                         On instance:
                         {'title': 'Best Scandal'}"
                     ]
@@ -448,7 +463,7 @@ Adds a new album for the artist. The album representation must be valid against 
     The client is trying to add an album for an artist that doesn't exist.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/hemuli/albums/",
                 "@error": {
@@ -467,7 +482,7 @@ Adds a new album for the artist. The album representation must be valid against 
     The client is trying to add an album with a title that's already used by another album for the same artist.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/",
                 "@error": {
@@ -482,14 +497,14 @@ Adds a new album for the artist. The album representation must be valid against 
                     }
                 }
             }
-            
+
 
 + Response 415 (application/vnd.mason+json)
 
     The client did not use the proper content type, or the request body was not valid JSON.
 
     + Body
-        
+
             {
                 "resource_url": "/api/artists/scandal/albums/",
                 "@error": {
@@ -504,7 +519,7 @@ Adds a new album for the artist. The album representation must be valid against 
                     }
                 }
             }
-        
+
 ## Albums by Various Artists [/api/artists/VA/albums/]
 
 This is an album collection of collaborative releases aka various artists (VA) albums. For each album only artist and title is included, and artist is listed as "VA". More information can be found by following the `self` relation of each album. VA albums can be added to this collection.
@@ -517,13 +532,13 @@ Gets the list of VA albums known to the API.
 + Request
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
-        
+
 + Response 200 (application/vnd.mason+json)
 
     + Body
-    
+
             {
                 "@namespaces": {
                     "mumeta": {
@@ -554,7 +569,7 @@ Gets the list of VA albums known to the API.
                             },
                             "required": []
                         }
-                    },                    
+                    },
                     "mumeta:add-album": {
                         "href": "/api/artists/VA/albums/",
                         "title": "Add a new VA album",
@@ -612,9 +627,9 @@ Adds a new VA album. The album representation must be valid against the album sc
     + Headers
 
             Accept: application/vnd.mason+json
-        
+
     + Body
-    
+
             {
                 "title": "Transcendental",
                 "release": "2015-10-23",
@@ -625,7 +640,7 @@ Adds a new VA album. The album representation must be valid against the album sc
 + Response 201
 
     + Headers
-    
+
             Location: /api/artists/VA/albums/Transcendental/
 
 + Response 400 (application/vnd.mason+json)
@@ -633,7 +648,7 @@ Adds a new VA album. The album representation must be valid against the album sc
     The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/",
                 "@error": {
@@ -654,7 +669,7 @@ Adds a new VA album. The album representation must be valid against the album sc
     The client is trying to add an album with a title that already exists.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/",
                 "@error": {
@@ -669,13 +684,13 @@ Adds a new VA album. The album representation must be valid against the album sc
                     }
                 }
             }
-            
+
 + Response 415 (application/vnd.mason+json)
 
     The client sent a request with the wrong content type or the request body was not valid JSON.
 
     + Body
-        
+
             {
                 "resource_url": "/api/artists/scandal/albums/",
                 "@error": {
@@ -709,13 +724,13 @@ Get the album representation.
 + Request
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
-        
+
 + Response 200 (application/vnd.mason+json)
 
     + Body
-    
+
             {
                 "@namespaces": {
                     "mumeta": {
@@ -836,7 +851,7 @@ Get the album representation.
     The client is trying to access an album that doesn't exist (either due to non-existent artist or album).
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Yellow/",
                 "@error": {
@@ -849,7 +864,7 @@ Get the album representation.
                     }
                 }
             }
-            
+
 ### Add track to album [POST]
 
 Adds a new track to the album. The track representation must be valid against the track schema. Also its position on the album (combination of disc number and track number) must be unoccupied.
@@ -858,11 +873,11 @@ Adds a new track to the album. The track representation must be valid against th
 + Request (application/json)
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
-        
+
     + Body
-    
+
             {
                 "title": "Your Song",
                 "disc_number": 1,
@@ -873,13 +888,13 @@ Adds a new track to the album. The track representation must be valid against th
 + Response 201
 
     + Headers
-    
+
             Location: /api/artists/scandal/albums/Hello World/1/2/
-            
+
     + Body
-    
+
             {}
-            
+
 
 
 + Response 400 (application/vnd.mason+json)
@@ -887,19 +902,19 @@ Adds a new track to the album. The track representation must be valid against th
     The client is trying to send a JSON document that doesn't validate against the schema.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Hello World/",
                 "@error": {
                     "@message": "Invalid JSON document",
                     "@messages": [
                         "'3:43' does not match '^[0-9]{2}:[0-5][0-9]:[0-5][0-9]$'
-                        
+
                         Failed validating 'pattern' in schema['properties']['length']:
                         {'description': 'Track length',
                         'pattern': '^[0-9]{2}:[0-5][0-9]:[0-5][0-9]$',
                         'type': 'string'}
-                        
+
                         On instance
                         ['length']: '3:43'"
                     ]
@@ -916,7 +931,7 @@ Adds a new track to the album. The track representation must be valid against th
     The client is trying to add a track to an album that doesn't exist (due to non-existent artist or album).
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Yellow/",
                 "@error": {
@@ -935,7 +950,7 @@ Adds a new track to the album. The track representation must be valid against th
     The client is trying to add a track with a combination of disc and track numbers that is already occupied.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Hello World/",
                 "@error": {
@@ -951,13 +966,13 @@ Adds a new track to the album. The track representation must be valid against th
                 }
             }
 
-            
+
 + Response 415 (application/vnd.mason+json)
 
     The client sent a request with the wrong content type or the request body was not valid JSON.
 
     + Body
-        
+
             {
                 "resource_url": "/api/artists/scandal/albums/Hello World/",
                 "@error": {
@@ -975,24 +990,24 @@ Adds a new track to the album. The track representation must be valid against th
 
 ### Edit album information [PUT]
 
-Replace the album's representation with a new one. Missing optinal fields will be set to null. Must validate against the album schema. 
+Replace the album's representation with a new one. Missing optinal fields will be set to null. Must validate against the album schema.
 
 + Relation: edit
 + Request (application/json)
 
     + Headers
-        
+
             Accept: application/vnd.mason+json
-        
+
     + Body
-    
+
             {
                 "title": "Hello World",
                 "release": "2014-12-03",
                 "genre": "Pop Rock, Power Pop",
                 "discs": 1
             }
-        
+
 + Response 204
 
 
@@ -1001,7 +1016,7 @@ Replace the album's representation with a new one. Missing optinal fields will b
     The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Hello World/",
                 "@error": {
@@ -1019,10 +1034,10 @@ Replace the album's representation with a new one. Missing optinal fields will b
 
 + Response 404 (application/vnd.mason+json)
 
-    The client is trying to edit an album that doesn't exist (due to non-existent artist or album). 
+    The client is trying to edit an album that doesn't exist (due to non-existent artist or album).
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Yellow/",
                 "@error": {
@@ -1035,13 +1050,13 @@ Replace the album's representation with a new one. Missing optinal fields will b
                     }
                 }
             }
-            
+
 + Response 409 (application/vnd.mason+json)
 
     The client is trying to change the album's title to a one that is already in use for the artist.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Honey/",
                 "@error": {
@@ -1056,13 +1071,13 @@ Replace the album's representation with a new one. Missing optinal fields will b
                     }
                 }
             }
-        
+
 + Response 415 (application/vnd.mason+json)
 
     The client sent a request with the wrong content type or the request body was not valid JSON.
 
     + Body
-        
+
             {
                 "resource_url": "/api/artists/scandal/albums/Hello World/",
                 "@error": {
@@ -1086,17 +1101,17 @@ Deletes the album, and all associated tracks.
 + Request
 
     + Headers
-        
+
             Accept: application/vnd.mason+json
-        
+
 + Response 204
 
 + Response 404 (application/vnd.mason+json)
 
-    The client is trying to delete an album that doesn't exist (due to non-existent artist or album). 
+    The client is trying to delete an album that doesn't exist (due to non-existent artist or album).
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/scandal/albums/Yellow/",
                 "@error": {
@@ -1127,13 +1142,13 @@ Get the album's representation.
 + Request
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
-        
+
 + Response 200 (application/vnd.mason+json)
- 
+
     + Body
-    
+
             {
                 "@namespaces": {
                     "mumeta": {
@@ -1272,7 +1287,7 @@ Get the album's representation.
     The client is trying to get an album that doesn't exist.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Transcendental/",
                 "@error": {
@@ -1286,7 +1301,7 @@ Get the album's representation.
                 }
             }
 
-            
+
 ### Add track to album [POST]
 
 Adds a new track to the album. The track representation must be valid against the track schema. Also its position on the album (combination of disc number and track number) must be unoccupied. Note that VA tracks have the additional required field `va_artist` which indicates the track's author.
@@ -1295,11 +1310,11 @@ Adds a new track to the album. The track representation must be valid against th
 + Request (application/json)
 
     + Headers
-    
+
             Accept: application/vnd.mason+json
-        
+
     + Body
-    
+
             {
                 "title": "I am",
                 "disc_number": 1,
@@ -1311,7 +1326,7 @@ Adds a new track to the album. The track representation must be valid against th
 + Response 201
 
     + Headers
-    
+
             Location: /api/artists/VA/albums/Thorns vs Emperor/1/2/
 
 
@@ -1320,19 +1335,19 @@ Adds a new track to the album. The track representation must be valid against th
     The client is trying to send a JSON document that doesn't validate against the schema.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Thorns vs Emperor/",
                 "@error": {
                     "@message": "Invalid JSON document",
                     "@messages": [
                         "'5:04' does not match '^[0-9]{2}:[0-5][0-9]:[0-5][0-9]$'
-                        
+
                         Failed validating 'pattern' in schema['properties']['length']:
                         {'description': 'Track length',
                         'pattern': '^[0-9]{2}:[0-5][0-9]:[0-5][0-9]$',
                         'type': 'string'}
-                        
+
                         On instance
                         ['length']: '5:04'"
                     ]
@@ -1349,7 +1364,7 @@ Adds a new track to the album. The track representation must be valid against th
     The client is trying to add a track for an album that doesn't exist.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Xenogears/",
                 "@error": {
@@ -1362,13 +1377,13 @@ Adds a new track to the album. The track representation must be valid against th
                     }
                 }
             }
-        
+
 + Response 409 (application/vnd.mason+json)
 
     The client is trying to add a track with a combination of disc and track numbers that is already occupied.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Thorns vs Emperor/",
                 "@error": {
@@ -1383,13 +1398,13 @@ Adds a new track to the album. The track representation must be valid against th
                     }
                 }
             }
-        
+
 + Response 415 (application/vnd.mason+json)
 
     The client sent a request with the wrong content type or the request body was not valid JSON.
 
     + Body
-        
+
             {
                 "resource_url": "/api/artists/VA/albums/Thorns vs Emperor/",
                 "@error": {
@@ -1407,24 +1422,24 @@ Adds a new track to the album. The track representation must be valid against th
 
 ### Edit album information [PUT]
 
-Replace the album's representation with a new one. Missing optinal fields will be set to null. Must validate against the album schema. 
+Replace the album's representation with a new one. Missing optinal fields will be set to null. Must validate against the album schema.
 
 + Relation: edit
 + Request (application/json)
 
     + Headers
-        
+
             Accept: application/vnd.mason+json
-        
+
     + Body
-    
+
             {
                 "title": "Thorns vs Emperor",
                 "release": "1999-01-01",
                 "genre": "Industrial Black Metal",
                 "discs": 1
             }
-        
+
 + Response 204
 
 + Response 400 (application/vnd.mason+json)
@@ -1432,7 +1447,7 @@ Replace the album's representation with a new one. Missing optinal fields will b
     The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Thorns vs Emperor/",
                 "@error": {
@@ -1453,7 +1468,7 @@ Replace the album's representation with a new one. Missing optinal fields will b
     The client is trying to modify an album that doesn't exist.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Transcendental/",
                 "@error": {
@@ -1466,13 +1481,13 @@ Replace the album's representation with a new one. Missing optinal fields will b
                     }
                 }
             }
-            
+
 + Response 409 (application/vnd.mason+json)
 
     The client is trying to change the title to a one that is already in use.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Yogsothery/",
                 "@error": {
@@ -1487,13 +1502,13 @@ Replace the album's representation with a new one. Missing optinal fields will b
                     }
                 }
             }
-        
+
 + Response 415 (application/vnd.mason+json)
 
     The client sent a request with the wrong content type or the request body was not valid JSON.
 
     + Body
-        
+
             {
                 "resource_url": "/api/artists/VA/albums/Thorns vs Emperor/",
                 "@error": {
@@ -1515,9 +1530,9 @@ Replace the album's representation with a new one. Missing optinal fields will b
 + Request
 
     + Headers
-        
+
             Accept: application/vnd.mason+json
-        
+
 + Response 204
 
 + Response 404 (application/vnd.mason+json)
@@ -1525,7 +1540,7 @@ Replace the album's representation with a new one. Missing optinal fields will b
     The client is trying to delete an album that doesn't exist.
 
     + Body
-    
+
             {
                 "resource_url": "/api/artists/VA/albums/Transcendental/",
                 "@error": {
