@@ -12,31 +12,27 @@ This section described custom link relations defined in this API. These are not 
 
 ## add-player
 
-This is a control that is used to add an album to the associated collection resource. The control includes a JSON schema and must be accessed with POST. 
+This is a control that is used to add a player to the associated collection resource. The control includes a JSON schema and must be accessed with POST. 
 
 ## add-match
 
-This is a control that is used to add a track to an album resource. The control includes a JSON schema and must be accessed with POST.
+This is a control that is used to add a match to the associated collection. The control includes a JSON schema and must be accessed with POST.
 
 ## add-game
 
-This is a control
+This is a control that is used to add a game to the associated collection. The control includes a JSON schema and must be accessed with POST.
 
 ## matches-all
 
-Leads to the root level albums collection which is a list of all albums known to the API regardless of artist. This collection can be sorted using query parameters as described in the resource documentation.
+Leads to the root level matches collection which is a list of all matches known to the API. This collection can be sorted using query parameters as described in the resource documentation.
 
-## albums-by
+## games-all
 
-Leads to a collection resoruce that includes all albums by the associated artist.
+Leads to the root level games collection which is a list of all games known to the API. This collection can be sorted using query parameters as described in the resource documentation.
 
-## albums-va
+## players-all
 
-Leads to a collection resource that includes all collaborative albums (various artists, VA).
-
-## artists-all
-
-Leads to the root level artists collection which is a list of all artists known to the API. 
+Leads to the root level players collection which is a list of all players known to the API. This collection can be sorted using query parameters as described in the resource documentation.
 
 ## delete
 
@@ -46,15 +42,15 @@ Deletes the associated resource. Must be accessed with DELETE
 
 This section includes resource profiles which provide semantic descriptions for the attributes of each resource, as well as the list of controls (by link relation) available from that resource.
 
-## Album Profile
+## Games Profile
 
-Profile definition for all album related resources.
+Profile definition for all games related resources.
 
 ### Link Relations
 
 This section lists all possible link relations associated with albums; not all of them are necessarily present on each resource type. The following link relations from the mumeta namespace are used:
 
- * [add-album](reference/link-relations/add-album)
+ * [add-game](reference/link-relations/add-game)
  * [add-track](reference/link-relations/add-track)
  * [albums-all](reference/link-relations/albums-all)
  * [albums-va](reference/link-relations/albums-va)
