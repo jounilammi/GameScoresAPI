@@ -1,13 +1,14 @@
 # Meetings notes
 
 ## Meeting 1.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE: February 21st, 2020**
+* **ASSISTANTS: Mika Oja**
 
 ### Minutes
 *Summary of what was discussed during the meeting*
 
 ### Action points
+General things about the API.
 *List here the actions points discussed with assistants*
 
 
@@ -15,8 +16,8 @@
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Meeting 2.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE: February 24th, 2020**
+* **ASSISTANTS: Mika Oja**
 Palaute 2 harkasta:
 Birthdate stringistä -> dateksi
 time stringistä -> dateksi
