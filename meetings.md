@@ -5,11 +5,11 @@
 * **ASSISTANTS: Mika Oja**
 
 ### 10 Minutes
-We went trough our plans of the projecti with Mika. 
+We went trough our plans of the project with Mika. 
 
 ### Action points
-General things about the API.
-TA said that the plan was okay. Only thing that we needed to do was change http request from put to post in API uses.
+
+Mika said that the plan was okay. Only thing that we needed to do was change the  http request from put to post in API uses.
 
 
 ### Comments from staff
@@ -19,13 +19,8 @@ TA said that the plan was okay. Only thing that we needed to do was change http 
 * **DATE: February 24th, 2020**
 * **ASSISTANTS: Mika Oja**
 
-set_nullable, nullable = true
-ondelete = "SET NULL" pitää olla myös nullable = True
-foreign_key päälle laitto harkka 1 sidenote: foreign key
-
-Kysyttävää 3 harkasta/tehtvistä:
 ### 20 Minutes
-In this meeting we went trough our database design and implementation
+In this meeting we went trough our database design and implementation.
 
 ### Action points
 In this meeting we got some feedback:
