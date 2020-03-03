@@ -8,7 +8,7 @@ GameScores API is a web API that stores game score data. The API serves JSON dat
 # Group Link Relations
 
 This section described custom link relations defined in this API. These are not resources. The API also uses
-[IANA link relations](http://www.iana.org/assignments/link-relations/link-relations.xhtml) where applicable. Custom link relations are CURIEs that use the mumeta prefix.
+[IANA link relations](http://www.iana.org/assignments/link-relations/link-relations.xhtml) where applicable. Custom link relations are CURIEs that use the gamsco prefix.
 
 ## add-person
 
@@ -50,9 +50,25 @@ Leads to person item from match item
 
 Leads to match item from person or game item
 
+## game
+
+Leads to match item from person or game item
+
+## hobbyist
+
+Leads to Game item from person
+
 ## delete
 
 Deletes the associated resource. Must be accessed with DELETE
+
+## edit
+
+Edits the associated resource. Must be accessed with EDIT
+
+## add
+
+Add the associated resource. Must be accessed with add-person, add-match or add-game
 
 # Group Profiles
 
@@ -64,19 +80,22 @@ Profile definition for all games related resources.
 
 ### Link Relations
 
-This section lists all possible link relations associated with games; not all of them are necessarily present on each resource type. The following link relations from the mumeta namespace are used:
+This section lists all possible link relations associated with Games;
+not all of them are necessarily present on each resource type. The following link
+relations from the gamsco namespace are used:
 
  * [add-game](reference/link-relations/add-game)
  * [matches-all](reference/link-relations/matches-all)
-
+ * [hobbyist](reference/link-relations/hobbyist)
+ * [delete](reference/link-relations/delete)
 
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
- * author
- * collection
- * edit
  * profile
  * self
+ * collection
+ * edit
+
 
 ### Semantic Descriptors
 
@@ -84,26 +103,73 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
 
  * `id`: The game id is primary key. Mandatory.
  * `name`: The game name as it is written, including capitalization and punctuation. Data type is string. Game name is unique, and it is mandatory.
- * `score_type`: Score type of the game. It tells how the game is won. Type is integer. Mandatory.
+ * `score_type`: Score type of the game. It tells how the game is won. Either by smaller score or bigger score player wins. Type is integer. Mandatory.
  * `matches`: matches connects Game class to Match class.
  * `hobbyist`: hobbyist connects Game class to Person class.
 
 
+## Match Profile
+
+Profile definition for all match related resources.
+
+### Link Relations
+
+This section lists all possible link relations associated with match; not all of them are necessarily present on each resource type. The following link relations from the gamsco namespace are used:
+
+ * [add-match](reference/link-relations/add-match)
+ * [participant](reference/link-relations/participant)
+ * [game](reference/link-relations/game)
+ * [delete](reference/link-relations/delete)
+
+
+The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
+
+ * collection
+ * edit
+ * profile
+ * self
+ * up
+
+### Semantic Descriptors
 
 #### Data Type Match
 
  * `id`: The unique match id. integer, primary key. Mandatory
  * `game`: The games name as it is written on the release, including capitalization and punctuation. Data type is string and it is used as a foreign key to game.
- * `place`: Location where the game is/was played. Optional.
- * `time`: The time that the game was played, including capitalization and pucntuation. Time is in form of [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
+ * `place`: Location where the match is/was played. Optional.
+ * `time`: The time that the match was played, including capitalization and pucntuation. Time is in form of [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (YYYY-MM-DD). Use 01 for month or day if not known. Mandatory.
  * `player1_id`: id of one of the players in a match. foreign key, integer, mandatory
  * `player2_id`: id of another player in a match. foreign key, integer, mandatory
  * `player1_score`: score of the first player. integer, mandatory
  * `player2_score`: score of the second player. integer, mandatory
- * `comment`: Custom comment for the game. string
- * `games`: The albums musical genre as a string. Opti
- * `person`: The albums musical genre as a string. Opti
- * `person2`: The albums musical genre as a string. Opti
+ * `comment`: Custom comment for the game. string. Optional
+ * `games`: games connects Match class to Game class.
+ * `person`: person connects Match class to Person class. player1_id works as a foreign key.
+ * `person2`: person2 connects Match class to Game class. player2_id works as a foreign key.
+
+
+## Person Profile
+
+Profile definition for all Person related resources.
+
+### Link Relations
+
+This section lists all possible link relations associated with person; not all of them are necessarily present on each resource type. The following link relations from the gamsco namespace are used:
+
+ * [add-person](reference/link-relations/add-person)
+ * [matches-all](reference/link-relations/matches-all)
+ * [delete](reference/link-relations/delete)
+
+
+The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
+
+ * collection
+ * edit
+ * self
+ * profile
+
+
+### Semantic Descriptors
 
 #### Data Person
 
@@ -122,34 +188,10 @@ Profile definition for all errors returned by the API. See [Mason error control]
 
     + resource_url (string, required) - URI of the resource the error was generated from.
 
-## Track Profile
 
-Profile definition for all track related resources.
 
-### Link Relations
 
-This section lists all possible link relations associated with tracks; not all of them are necessarily present on each resource type. The following link relations from the mumeta namespace are used:
 
- * [albums-by](reference/link-relations/albums-by)
- * [delete](reference/link-relations/delete)
-
-The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
-
- * author
- * edit
- * profile
- * self
- * up
-
-### Semantic Descriptors
-
-#### Data Type Track
-
- * `title`: The track's title as it is written on the release, including capitalization and punctuation. Not unique. Mandatory.
- * `artist`: The track artist's name which is either the album artist, or the track's artist on VA albums.
- * `length`: Track length as a time in [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) (hh:mm:ss). Mandatory.
- * `disc_number`: Number of the disc of the album this track is on. Default is 1. Unique together with track number per album.
- * `track_number`: Number of the track on the disc it's on. Mandatory. Unique together with disc number per album.
 
 # Group Entry
 
@@ -173,15 +215,15 @@ Get the API entry point
 
             {
                 "@namespaces": {
-                    "mumeta": {
-                        "name": "/musicmeta/link-relations#"
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
                     }
                 },
                 "@controls": {
-                    "mumeta:albums-all": {
+                    "gamsco:persons-all": {
                         "href": "/api/albums/"
                     },
-                    "mumeta:artists-all": {
+                    "gamsco:artists-all": {
                         "href": "/api/artists/"
                     }
                 }
@@ -192,9 +234,9 @@ Get the API entry point
 
 All of these resources use the [Album Profile](reference/profiles/album-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
 
-## Album Collection [/api/albums/?sortby={field}]
+## Games Collection [/api/games/?sortby={field}]
 
-A list of all albums known to the API. This collection can be sorted using the sortby query parameter. For each album only artist name and title is included, more information can be found by following the `self` relation of each album. Albums cannot be directly added to this collection, it only supports GET.
+A list of all games known to the API. This collection can be sorted using the sortby query parameter. For each game only player name and title is included, more information can be found by following the `self` relation of each game. Games cannot be directly added to this collection, it only supports GET.
 
 + Parameters
 
@@ -208,11 +250,11 @@ A list of all albums known to the API. This collection can be sorted using the s
             + `genre`
             + `release`
 
-### List all albums [GET]
+### List all games [GET]
 
-Get a list of all albums known to the API.
+Get a list of all games known to the API.
 
-+ Relation: albums-all
++ Relation: games-all
 + Request
 
     + Headers
@@ -225,60 +267,44 @@ Get a list of all albums known to the API.
 
             {
                 "@namespaces": {
-                    "mumeta": {
-                        "name": "/musicmeta/link-relations#"
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
                     }
                 },
                 "@controls": {
                     "self": {
-                        "href": "/api/albums/"
+                        "href": "/api/games/"
                     },
-                    "mumeta:artists-all": {
-                        "href": "/api/artists/",
-                        "title": "All artists"
+                    "gamsco:persons-all": {
+                        "href": "/api/persons/",
+                        "title": "All persons"
                     },
-                    "mumeta:albums-va": {
-                        "href": "/api/artists/VA/albums/",
-                        "title": "All VA albums"
-                    }
                 },
                 "items": [
                     {
-                        "title": "Hello World",
-                        "artist": "Scandal",
+                        "name": "Tennis",
+                        "score_type": "1",
                         "@controls": {
                             "self": {
                                 "href": "/api/artists/scandal/Hello World/"
                             },
                             "profile": {
-                                "href": "/profiles/album/"
+                                "href": "/profiles/game/"
                             }
                         },
                     },
-                    {
-                        "title": "Thorns vs Emperor",
-                        "artist": "VA",
-                        "@controls": {
-                            "self": {
-                                "href": "/api/artists/VA/Thorns vs Emperor/"
-                            },
-                            "profile": {
-                                "href": "/profiles/album/"
-                            }
-                        }
-                    }
                 ]
             }
 
-## Albums by Artist [/api/artists/{artist}/albums/]
+## Games by person [/api/artists/{artist}/albums/]
 
-This is an album collection by given artist using the artist's unique name. For each album only artist and title is included, more information can be found by following the `self` relation of each album. Albums released by this artist can be added to this collection.
+This is an game collection by given person using the persons unique id. For each game only id, person and score type is included, more information can be found by following the `self` relation of each game. games played by this person can be added to this collection.
 
 + Parameters
 
-    + artist: scandal (string) - artist's unique name (unique_name)
+    + person: Matti (string) - artist's unique name (unique_name)
 
-### List albums by artist [GET]
+### List games by artist [GET]
 
 Get a list of albums by an artist.
 
@@ -295,19 +321,19 @@ Get a list of albums by an artist.
 
             {
                 "@namespaces": {
-                    "mumeta": {
-                        "name": "/musicmeta/link-relations#"
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
                     }
                 },
                 "@controls": {
                     "self": {
                         "href": "/api/artists/scandal/albums/"
                     },
-                    "mumeta:artists-all": {
+                    "gamsco:artists-all": {
                         "href": "/api/artists/",
                         "title": "All artists"
                     },
-                    "mumeta:albums-all": {
+                    "gamsco:albums-all": {
                         "href": "/api/albums/?{sortby}",
                         "title": "All albums",
                         "isHrefTemplate": true,
@@ -327,7 +353,7 @@ Get a list of albums by an artist.
                     "author": {
                         "href": "/api/artists/scandal/"
                     },
-                    "mumeta:add-album": {
+                    "gamsco:add-album": {
                         "href": "/api/artists/scandal/albums/",
                         "title": "Add a new album for this artist",
                         "encoding": "json",
@@ -520,192 +546,6 @@ Adds a new album for the artist. The album representation must be valid against 
                 }
             }
 
-## Albums by Various Artists [/api/artists/VA/albums/]
-
-This is an album collection of collaborative releases aka various artists (VA) albums. For each album only artist and title is included, and artist is listed as "VA". More information can be found by following the `self` relation of each album. VA albums can be added to this collection.
-
-### List albums by various artists [GET]
-
-Gets the list of VA albums known to the API.
-
-+ Relation: albums-va
-+ Request
-
-    + Headers
-
-            Accept: application/vnd.mason+json
-
-+ Response 200 (application/vnd.mason+json)
-
-    + Body
-
-            {
-                "@namespaces": {
-                    "mumeta": {
-                        "name": "/musicmeta/link-relations#"
-                    }
-                },
-                "@controls": {
-                    "self": {
-                        "href": "/api/artists/VA/albums/"
-                    },
-                    "mumeta:artists-all": {
-                        "href": "/api/artists/",
-                        "title": "All artists"
-                    },
-                    "mumeta:albums-all": {
-                        "href": "/api/albums/?{sortby}",
-                        "title": "All albums",
-                        "isHrefTemplate": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "sortby": {
-                                    "description": "Field to use for sorting",
-                                    "type": "string",
-                                    "default": "title",
-                                    "enum": ["artist", "title", "genre", "release"]
-                                }
-                            },
-                            "required": []
-                        }
-                    },
-                    "mumeta:add-album": {
-                        "href": "/api/artists/VA/albums/",
-                        "title": "Add a new VA album",
-                        "encoding": "json",
-                        "method": "POST",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "title": {
-                                    "description": "Album title",
-                                    "type": "string"
-                                },
-                                "release": {
-                                    "description": "Release date",
-                                    "type": "string",
-                                    "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]$"
-                                },
-                                "genre": {
-                                    "description": "Album's genre(s)",
-                                    "type": "string"
-                                },
-                                "discs": {
-                                    "description": "Number of discs",
-                                    "type": "integer",
-                                    "default": 1
-                                }
-                            },
-                            "required": ["title", "release"]
-                        }
-                    }
-                },
-                "items": [
-                    {
-                        "title": "Thorns vs Emperor",
-                        "artist": "VA",
-                        "@controls": {
-                            "self": {
-                                "href": "/api/artists/VA/albums/Thorns vs Emperor/"
-                            },
-                            "profile": {
-                                "href": "/profiles/album/"
-                            }
-                        }
-                    }
-                ]
-            }
-
-### Add new various artists album [POST]
-
-Adds a new VA album. The album representation must be valid against the album schema.
-
-+ Relation: add-album
-+ Request (application/json)
-
-    + Headers
-
-            Accept: application/vnd.mason+json
-
-    + Body
-
-            {
-                "title": "Transcendental",
-                "release": "2015-10-23",
-                "genre": "Post-Rock, Atmospheric Sludge Metal",
-                "discs": 1
-            }
-
-+ Response 201
-
-    + Headers
-
-            Location: /api/artists/VA/albums/Transcendental/
-
-+ Response 400 (application/vnd.mason+json)
-
-    The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
-
-    + Body
-
-            {
-                "resource_url": "/api/artists/VA/albums/",
-                "@error": {
-                    "@message": "Invalid date format",
-                    "@messages": [
-                        "Release date must be written in ISO format (YYYY-MM-DD)"
-                    ]
-                },
-                "@controls": {
-                    "profile": {
-                        "href": "/profiles/error/"
-                    }
-                }
-            }
-
-+ Response 409 (application/vnd.mason+json)
-
-    The client is trying to add an album with a title that already exists.
-
-    + Body
-
-            {
-                "resource_url": "/api/artists/VA/albums/",
-                "@error": {
-                    "@message": "Already exists",
-                    "@messages": [
-                        "Artist 'VA' already has album with title 'Thorns vs Emperor'"
-                    ]
-                },
-                "@controls": {
-                    "profile": {
-                        "href": "/profiles/error/"
-                    }
-                }
-            }
-
-+ Response 415 (application/vnd.mason+json)
-
-    The client sent a request with the wrong content type or the request body was not valid JSON.
-
-    + Body
-
-            {
-                "resource_url": "/api/artists/scandal/albums/",
-                "@error": {
-                    "@message": "Unsupported media type",
-                    "@messages": [
-                        "Use JSON"
-                    ]
-                },
-                "@controls": {
-                    "profile": {
-                        "href": "/profiles/error-profile/"
-                    }
-                }
-            }
-
 ## Album [/api/artists/{artist}/albums/{title}/]
 
 This resource represents an album by a single artist, as identified by the artist's unique name and the albm's title. It includes the list of tracks on the album in addition to the album's own metadata. Individual tracks are usually only visited when modifying their data. They use the [Track Profile](/reference/profiles/track-profile).
@@ -733,8 +573,8 @@ Get the album representation.
 
             {
                 "@namespaces": {
-                    "mumeta": {
-                        "name": "/musicmeta/link-relations#"
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
                     }
                 },
                 "title": "Hello World",
@@ -746,7 +586,7 @@ Get the album representation.
                     "author": {
                         "href": "/api/artists/scandal/"
                     },
-                    "mumeta:albums-by": {
+                    "gamsco:albums-by": {
                         "href": "/api/artists/scandal/albums/"
                     },
                     "self": {
@@ -758,11 +598,11 @@ Get the album representation.
                     "collection": {
                         "href": "/api/albums/"
                     },
-                    "mumeta:artists-all": {
+                    "gamsco:artists-all": {
                         "href": "/api/artists/",
                         "title": "All artists"
                     },
-                    "mumeta:add-track": {
+                    "gamsco:add-track": {
                         "href": "/api/artists/scandal/albums/Hello World/",
                         "title": "Add a track to this album",
                         "encoding": "json",
@@ -822,7 +662,7 @@ Get the album representation.
                             "required": ["title", "release"]
                         }
                     },
-                    "mumeta:delete": {
+                    "gamsco:delete": {
                         "href": "/api/artists/scandal/albums/Hello World/",
                         "title": "Delete this album",
                         "method": "DELETE"
@@ -1125,14 +965,6 @@ Deletes the album, and all associated tracks.
                 }
             }
 
-## Various Artists Album [/api/artists/VA/albums/{title}/]
-
-This resource represents an album by multiple artists, as identified by the album's title. It includes the list of tracks on the album in addition to the album's own metadata. Individual tracks are usually only visited when modifying their data. They use the [Track Profile](/reference/profiles/track-profile).
-
-+ Parameters
-
-    + title: 'Thorns vs Emperor' (string) - album's title
-
 
 ### Album information [GET]
 
@@ -1151,8 +983,8 @@ Get the album's representation.
 
             {
                 "@namespaces": {
-                    "mumeta": {
-                        "name": "/musicmeta/link-relations#"
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
                     }
                 },
                 "title": "Thorns vs Emperor",
@@ -1161,7 +993,7 @@ Get the album's representation.
                 "discs": 1,
                 "artist": "VA",
                 "@controls": {
-                    "mumeta:albums-va": {
+                    "gamsco:albums-va": {
                         "href": "/api/artists/VA/albums/",
                         "title": "All VA albums"
                     },
@@ -1174,11 +1006,11 @@ Get the album's representation.
                     "collection": {
                         "href": "/api/albums/"
                     },
-                    "mumeta:artists-all": {
+                    "gamsco:artists-all": {
                         "href": "/api/artists/",
                         "title": "All artists"
                     },
-                    "mumeta:add-track": {
+                    "gamsco:add-track": {
                         "href": "/api/artists/VA/albums/Thorns vs Emperor/",
                         "title": "Add a track to this album",
                         "encoding": "json",
@@ -1242,7 +1074,7 @@ Get the album's representation.
                             "required": ["title", "release"]
                         }
                     },
-                    "mumeta:delete": {
+                    "gamsco:delete": {
                         "href": "/api/artists/VA/albums/Thorns vs Emperor/",
                         "title": "Delete this album",
                         "method": "DELETE"
