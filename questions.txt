@@ -1,0 +1,9 @@
+
+Meeting 3 muistiinpanot ja kysymykset
+
+Miten Hobbyist ja game toteutetaan "Game" ja "Person" välillä?
+
+Pitääkö olla participant 2 lisäksi, kun haetaan
+matsista participant (Halutaan kaksi participanttia?)
+
+patternin takia joku error koodi? (400)
