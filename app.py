@@ -43,7 +43,7 @@ class Match (db.Model):
     # __tablename__ = "match"
     id = db.Column(db.Integer, primary_key=True)
     game = db.Column(
-        db.String(64),
+        db.Integer,
         db.ForeignKey("game.id", ondelete="SET NULL"),
         nullable=True
     )

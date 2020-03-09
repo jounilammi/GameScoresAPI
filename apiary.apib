@@ -70,7 +70,7 @@ Add the associated resource. Must be accessed with add-person, add-match or add-
 
 This section includes resource profiles which provide semantic descriptions for the attributes of each resource, as well as the list of controls (by link relation) available from that resource.
 
-## Games Profile
+## Game Profile
 
 Profile definition for all games related resources.
 
@@ -250,6 +250,7 @@ Get the API entry point
 
 All of these resources use the [Album Profile](reference/profiles/album-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
 
+
 ## Games [/api/games/?sortby={field}]
 
 A list of all games known to the API. This collection can be sorted using the sortby query parameter. For each game only player name and title is included, more information can be found by following the `self` relation of each game. Games cannot be directly added to this collection, it only supports GET.
@@ -258,9 +259,9 @@ A list of all games known to the API. This collection can be sorted using the so
 
     + field (string, optional) - Field to use for sorting
 
-        + Default: `name`
+        + Default: `id`
         + Members
-
+            + `id`
             + `name`
             + `score_type`
 
@@ -296,7 +297,31 @@ Get a list of all games known to the API.
                     "gamsco:matches-all": {
                         "href": "/api/matches/",
                         "title": "All matches"
-                    }
+                    },
+                    "gamsco:add-game": {
+                        "href": "/api/games/",
+                        "title": "Add a game to a game collection",
+                        "encoding": "json",
+                        "method": "POST",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "description": "Game information",
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "description": "Name of the game",
+                                    "type": "string"
+                                },
+                                "score_type": {
+                                    "description": "Score type of the game",
+                                    "type": "integer"
+                                },
+                            },
+                            "required": ["name", "score_type"]
+                        },
+                    },
                 },
                 "items": [
                     {
@@ -304,7 +329,7 @@ Get a list of all games known to the API.
                         "score_type": "1",
                         "@controls": {
                             "self": {
-                                "href": "/api/games/Tennis/"
+                                "href": "/api/games/1/"
                             },
                             "profile": {
                                 "href": "/profiles/game/"
@@ -312,6 +337,298 @@ Get a list of all games known to the API.
                         },
                     },
                 ]
+            }
+
+### Add game [POST]
+
++ Relation: add-game
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
+    + Body
+
+            {
+                "name": "Tennis",
+                "score_type": 1,
+                "@controls": {
+                    "self": {
+                        "href": "/api/games/1/"
+                    }
+                }
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/games/1/
+
++ Response 400 (application/vnd.mason+json)
+
+        The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+
+        + Body
+
+            {
+                "resource_url": "/api/games/2/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": [
+                        "Game id 2 missing parameter "name"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+
+
++ Response 409 (application/vnd.mason+json)
+
+    The client is trying to add a game with a name that already exists.
+
+    + Body
+
+            {
+                "resource_url": "/api/games/3/",
+                "@error": {
+                    "@message": "Already exists",
+                    "@messages": [
+                        "Game with id 3 already has the name "Tennis"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 415 (application/vnd.mason+json)
+
+        The client did not use the proper content type, or the request body was not valid JSON.
+
+        + Body
+
+            {
+                "resource_url": "/api/games/1/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
+
+
+## Game [/api/games/{id}/]
+
+This resource represents a single game, as identified by the games`s unique id. It includes games own metadata.
+
++ Parameters
+
+    + id (integer) - game`s unique id (id)
+
+### Game information [GET]
+
+Get the game representation.
+
++ Relation: self
++ Request
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
++ Response 200
+
+    + Body
+
+            {
+                "@namespaces": {
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
+                    }
+                },
+                "name": "Football",
+                "score_type": 2,
+                "@controls": {
+                    "self": {
+                        "href": "/api/games/1/"
+                    },
+                    "gamsco:instance": {
+                        "href": "/api/matches/1/"
+                    },
+                    "profile": {
+                        "href": "/profiles/game/"
+                    },
+                    "collection": {
+                        "href": "/api/games/"
+                    },
+                    "gamsco:games-all": {
+                        "href": "/api/games/",
+                        "title": "All games"
+                    },
+
+                    "edit": {
+                        "href": "/api/games/1/",
+                        "title": "Edit this game",
+                        "encoding": "json",
+                        "method": "PUT",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "description": "Name of the game",
+                                    "type": "string"
+                                },
+                                "score_type": {
+                                    "description": "Score type of the game",
+                                    "type": "integer",
+                                },
+                            },
+                            "required": ["name", "score_type"]
+                        }
+                    },
+                    "gamsco:delete": {
+                        "href": "/api/games/1/",
+                        "title": "Delete this game",
+                        "method": "DELETE"
+                    }
+                },
+                "items": [
+                    {
+                "name": "Football",
+                "score_type": "2",
+                    "@controls": {
+                        "self": {
+                            "href": "/api/games/1/"
+                            }
+                        }
+                    }
+                ]
+            }
+
+
+### Edit Game [PUT]
+
+Replace the games's representation with a new one. Missing optional fields will be set to null.
+
++ Relation: edit
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
+    + Body
+
+            {
+                "name": "Football",
+                "score_type": "2",
+            }
+
++ Response 204
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema, or has is missing score_type.
+
+    + Body
+
+            {
+                "resource_url": "/api/games/1/",
+                "@error": {
+                    "@message": "Invalid score_type",
+                    "@messages": [
+                        "Score_type has to be 1 or 2"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to edit a game that does not exist.
+
+    + Body
+
+            {
+                "resource_url": "/api/games/4/",
+                "@error": {
+                    "@message": "Game not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 415 (application/vnd.mason+json)
+
+    The client sent a request with the wrong content type or the request body was not valid JSON.
+
+    + Body
+
+            {
+                "resource_url": "/api/games/1/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
+
+### Delete Game [DELETE]
+
+Deletes the game.
+
++ Relation: delete
++ Request
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
++ Response 204
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to delete a game that doesn't exist.
+
+    + Body
+
+            {
+                "resource_url": "/api/games/4/",
+                "@error": {
+                    "@message": "Game not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
             }
 
 
@@ -326,9 +643,191 @@ Get a list of all games known to the API.
 
 
 
-## Game [/api/artists/{artist}/albums/{title}/]
 
-This resource represents a single match, as identified by the matche`s unique id. It includes the list of tracks on the album in addition to the album's own metadata. Individual tracks are usually only visited when modifying their data. They use the [Track Profile](/reference/profiles/track-profile).
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Group Match
+
+
+## Matches [/api/matches/?sortby={field}]
+
+A list of all games known to the API. This collection can be sorted using the sortby query parameter. For each game only player name and title is included, more information can be found by following the `self` relation of each game. Games cannot be directly added to this collection, it only supports GET.
+
++ Parameters
+
+    + field (string, optional) - Field to use for sorting
+
+        + Default: `id`
+        + Members
+            + `id`
+            + `game`
+            + `place`
+            + `time`
+            + `player1_id`
+            + `player2_id`
+            + `player1_score`
+            + `player2_score`
+            + `comments`
+
+### List all matches [GET]
+
+Get a list of all matches known to the API.
+
++ Relation: matches-all
++ Request
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+
+    + Body
+
+            {
+                "@namespaces": {
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
+                    }
+                },
+                "@controls": {
+                    "self": {
+                        "href": "/api/matches/"
+                    },
+                    "gamsco:persons-all": {
+                        "href": "/api/persons/",
+                        "title": "All persons"
+                    },
+                    "gamsco:games-all": {
+                        "href": "/api/games/",
+                        "title": "All games"
+                    }
+                    "gamsco:add-match":{
+                        "href": "api/matches/",
+                        "title": "Add a match to a match collection",
+                        "encoding": "json",
+                        "method": "POST",
+                        "schema":{
+                            "type": "object",
+                            "properties": {
+                                "game": {
+                                    "description": "Type of game played",
+                                    "type": "string"
+                                },
+                                "place": {
+                                    "description": "Name of the place where the game is played",
+                                    "type": "string"
+                                },
+                                "time": {
+                                    "description": "Total time that the match took",
+                                    "type": "string"
+                                },
+                                "player1_id": {
+                                    "description": "Id of the first player",
+                                    "type": "integer"
+                                },
+                                "player2_id": {
+                                    "description": "Id of the second player",
+                                    "type": "integer"
+                                },
+                                "player1_score": {
+                                    "description": "Score of the first player",
+                                    "type": "integer"
+                                },
+                                "player2_score": {
+                                    "description": "Score of the second player",
+                                    "type": "integer"
+                                },
+                                "comment": {
+                                    "description": "Custom comments for the match",
+                                    "type": "string"
+                                },
+
+                            },
+                            "required": ["game","player1_id","player2_id"]
+                        }
+                    }
+                },
+                "items": [
+                    {
+                        "game": "Tennis",
+                        "place": "Heinapaa, Oulu"
+                        "time": "01:15:35",
+                        "player1_id": "1",
+                        "player2_id": "2",
+                        "player1_score": "15",
+                        "player2_score": "60",
+                        "comments": "Player 2 won in a landslide",
+                        "@controls": {
+                            "self": {
+                                "href": "/api/matches/1/"
+                            },
+                            "profile": {
+                                "href": "/profiles/matches/"
+                            }
+                        },
+                    },
+                ]
+            }
+
+### Add match [POST]
+
++ Relation: add-match
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
+    + Body
+
+            {
+                "game": "Disc Golf",
+                "place": "Iironen, Oulu"
+                "time": "01:55:13",
+                "player1_id": "4",
+                "player2_id": "11",
+                "player1_score": "-3",
+                "player2_score": "2",
+                "comments": "Player 2 lost a disc",
+                "@controls": {
+                    "self": {
+                        "href": "/api/matches/2/"
+                    }
+                }
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/matches/2/
+
++ Response 400 (application/vnd.mason+json)
+
+        The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+
++ Response 415 (application/vnd.mason+json)
+
+        The client did not use the proper content type, or the request body was not valid JSON.
+
+
+
+
+## Match [/api/matches/{id}/]
+
+This resource represents a single match, as identified by the matche's unique id. It includes matche's own metadata.
 
 + Parameters
 
@@ -351,90 +850,103 @@ Get the match representation.
 
             {
                 "@namespaces": {
-                    "kyykka": {
-                        "name": "/kyykka_apiary/link-relations#"
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
                     }
                 },
-                "team1": "Omenat",
-                "team2": "Banaanit",
-                "date": "5.5.2018",
-                "team1_points": null,
-                "team2_points": null,
+                "game": "Football",
+                "place": "Oulu",
+                "time": "Oulu",
+                "player1_id": 1,
+                "player2_id": 2,
+                "player1_score": 10,
+                "player2_score": 5,
+                "comment": "Fun match!",
                 "@controls": {
-                    "author": {
-                        "href": "/api/matches/3/"
-                    },
-                    "kyykka:matches-by": {
-                        "href": "/api/matches/3/"
-                    },
                     "self": {
-                        "href": "/api/matches/3/"
+                        "href": "/api/matches/1/"
+                    },
+                    "gamsco:game": {
+                        "href": "/api/games/1/"
                     },
                     "profile": {
-                        "href": "/profiles/matches/"
+                        "href": "/profiles/match/"
                     },
                     "collection": {
                         "href": "/api/matches/"
                     },
-                    "kyykka:matches-all": {
+                    "gamsco:matches-all": {
                         "href": "/api/matches/",
                         "title": "All matches"
                     },
+                    "gamsco:participant": {
+                        "href": "/api/persons/1/"
+                    },
 
                     "edit": {
-                        "href": "/api/matches/3/",
+                        "href": "/api/matches/1/",
                         "title": "Edit this match",
                         "encoding": "json",
                         "method": "PUT",
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "title": {
-                                    "description": "Match`s id",
+                                "game": {
+                                    "description": "Name of the game",
                                     "type": "string"
                                 },
-                                "team1": {
-                                    "description": "Name of the first team",
+                                "place": {
+                                    "description": "Location where the match was played",
                                     "type": "string",
                                 },
-                                "team2": {
-                                    "description": "Name of the second team",
-                                    "type": "string"
-                                },
-                                "date": {
-                                    "description": "Date when the match was played",
+                                "time": {
+                                    "description": "Time when the match was played",
                                     "type": "string",
+                                    "pattern": "^[0-3][0-9]-[01][0-9]-[0-9]{4}$"
                                 },
-                                "team1_points": {
-                                    "description": "Final points of the first team",
+                                "player1_id": {
+                                    "description": "Id of the player1",
                                     "type": "integer",
-                                    "default": null
                                 },
-                                "team2_points": {
-                                    "description": "Final points of the second team",
+                                "player2_id": {
+                                    "description": "Id of the player2",
                                     "type": "integer",
-                                    "default": null
+                                },
+                                "player1_score": {
+                                    "description": "Score of the player1",
+                                    "type": "integer",
+                                },
+                                "player2_score": {
+                                    "description": "Score of the player2",
+                                    "type": "integer",
+                                },
+                                "comment": {
+                                    "description": "Comment about the match played",
+                                    "type": "string",
                                 },
                             },
-                            "required": ["team1", "team2", "date"]
+                            "required": ["player1_id", "player2_id", "player1_score", "player2_score"]
                         }
                     },
-                    "kyykka:delete": {
-                        "href": "/api/matches/3/",
+                    "gamsco:delete": {
+                        "href": "/api/matches/1/",
                         "title": "Delete this match",
                         "method": "DELETE"
                     }
                 },
                 "items": [
                     {
-                "team1": "Omenat",
-                "team2": "Banaanit",
-                "date": "5.5.2018",
-                "team1_points": null,
-                "team2_points": null,
+                "game": "Football",
+                "place": "Oulu",
+                "time": "Oulu",
+                "player1_id": 1,
+                "player2_id": 2,
+                "player1_score": 10,
+                "player2_score": 5,
+                "comment": "Fun match!",
                     "@controls": {
                         "self": {
-                            "href": "/api/matches/3/"
+                            "href": "/api/matches/1/"
                             }
                         }
                     }
@@ -444,7 +956,7 @@ Get the match representation.
 
 ### Edit Match [PUT]
 
-Replace the match's representation with a new one. Missing optional fields will be set to null.
+Replace the matche's representation with a new one. Missing optional fields will be set to null.
 
 + Relation: edit
 + Request (application/json)
@@ -456,27 +968,30 @@ Replace the match's representation with a new one. Missing optional fields will 
     + Body
 
             {
-                "team1": "Omenat",
-                "team2": "Banaanit",
-                "date": "5.5.2018",
-                "team1_points": 10,
-                "team2_points": 20
+                "game": "Football",
+                "place": "Oulu",
+                "time": "Oulu",
+                "player1_id": 1,
+                "player2_id": 2,
+                "player1_score": 10,
+                "player2_score": 5,
+                "comment": "Fun match!",
             }
 
 + Response 204
 
 + Response 400 (application/vnd.mason+json)
 
-    The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent team points.
+    The client is trying to send a JSON document that doesn't validate against the schema, or has missing "player1_id", "player2_id", "player1_score" or "player2_score".
 
     + Body
 
             {
                 "resource_url": "/api/matches/",
                 "@error": {
-                    "@message": "Invalid points format",
+                    "@message": "Invalid or missing document type",
                     "@messages": [
-                        "Points must be integers"
+                        "Check player1_id, player2_id, player1_score or player2_score"
                     ]
                 },
                 "@controls": {
@@ -488,7 +1003,7 @@ Replace the match's representation with a new one. Missing optional fields will 
 
 + Response 404 (application/vnd.mason+json)
 
-    The client is trying to edit a match that doesn't exist.
+    The client is trying to edit a match that does not exist.
 
     + Body
 
@@ -512,7 +1027,7 @@ Replace the match's representation with a new one. Missing optional fields will 
     + Body
 
             {
-                "resource_url": "/api/matches/",
+                "resource_url": "/api/games/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -563,12 +1078,6 @@ Deletes the match.
 
 
 
-# Group Match
-
-
-## Matches [/api/artists/{artist}/albums/{title}/]
-
-## Match [/api/artists/{artist}/albums/{title}/]
 
 
 
@@ -581,9 +1090,199 @@ Deletes the match.
 # Group Person
 
 
-## Persons [/api/artists/{artist}/albums/{title}/]
+## Persons [/api/persons/?sortby={field}]
 
-## Person [/api/artists/{artist}/albums/{title}/]
+A list of all games known to the API. This collection can be sorted using the sortby query parameter. For each game only player name and title is included, more information can be found by following the `self` relation of each game. Games cannot be directly added to this collection, it only supports GET.
+
++ Parameters
+
+    + field (string, optional) - Field to use for sorting
+
+        + Default: `id`
+        + Members
+            + `id`
+            + `username`
+            + `first_name`
+            + `last_name`
+            + `birthdate`
+            + `description`
+
+### List all persons [GET]
+
+Get a list of all persons known to the API.
+
++ Relation: persons-all
++ Request
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+
+    + Body
+
+            {
+                "@namespaces": {
+                    "gamsco": {
+                        "name": "/gamescores/link-relations#"
+                    }
+                },
+                "@controls": {
+                    "self": {
+                        "href": "/api/persons/"
+                    },
+                    "gamsco:games-all": {
+                        "href": "/api/games/",
+                        "title": "All games"
+                    },
+                    "gamsco:matches-all": {
+                        "href": "/api/matches/",
+                        "title": "All matches"
+                    }
+                    "gamsco:add-persons":{
+                        "href": "api/persons/",
+                        "title": "Add a person to a persons collection",
+                        "encoding": "json",
+                        "method": "POST",
+                        "schema":{
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Type of game played",
+                                    "type": "string"
+                                },
+                                "first_name": {
+                                    "description": "First name of the person",
+                                    "type": "string"
+                                },
+                                "last_name": {
+                                    "description": "Last name of the person",
+                                    "type": "string"
+                                },
+                                "birthdate": {
+                                    "description": "Birthdate of the person",
+                                    "type": "string"
+                                    "pattern": "^[0-3][0-9]-[01][0-9]-[0-9]{4}$"
+                                },
+                                "description": {
+                                    "description": "Custom description for the person",
+                                    "type": "string"
+                                },
+                            },
+                            "required": ["username","first_name","last_name"]
+                        }
+                    }
+                },
+                "items": [
+                    {
+                        "username": "Sjohn",
+                        "first_name": "John"
+                        "last_name": "Smith",
+                        "birthdate": "19-03-1990",
+                        "description": "I mainly play tennis, discgolf and cs-go",
+                        "@controls": {
+                            "self": {
+                                "href": "/api/persons/1/"
+                            },
+                            "profile": {
+                                "href": "/profiles/persons/"
+                            }
+                        },
+                    },
+                ]
+            }
+
+## Add person information [PUT]
+
++ Relation: add-person
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
+    + Body
+
+            {
+                "username": "Bullyhunter_77",
+                "first_name": "Tomas"
+                "last_name": "Thetankengine",
+                "birthdate": "21-12-1999",
+                "description": null,
+                "@controls": {
+                    "self": {
+                        "href": "/api/persons/2/"
+                    },
+                    "profile": {
+                        "href": "/profiles/persons/"
+                    }
+                }
+            }
+
+
++ Response 201 #######Tästä alaspäin kesken
+
+    + Headers
+
+            Location: /api/players/pekka/
+
+    + Body
+
+            {}
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema.
+
+    + Body
+
+            {
+                "resource_url": "/api/players/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": [
+                        "'name' is a required property
+
+                        Failed validating 'required' in schema:
+                        {'properties': {'name': {'description': \"Name of the player\",
+                        'type': 'string'},
+                        'team': {'description': \"Team of the player\",
+                        'type': 'string'}},
+                        'required': ['name'],
+                        'type': 'object'}
+
+                        On instance:
+                        {'name': 'pekka'}"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 415 (application/vnd.mason+json)
+
+    The client sent a request with the wrong content type or the request body was not valid JSON.
+
+    + Body
+
+            {
+                "resource_url": "/api/players/pekka/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
 
 
 
@@ -601,6 +1300,23 @@ Deletes the match.
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
