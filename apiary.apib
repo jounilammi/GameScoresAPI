@@ -12,7 +12,7 @@ This section described custom link relations defined in this API. These are not 
 
 ## add-person
 
-This is a control that is used to add a person to the associated collection resource. The control includes a JSON schema and must be accessed with POST.
+This is a control that is used to add a person to  he associated collection resource. The control includes a JSON schema and must be accessed with POST.
 
 ## add-match
 
@@ -30,21 +30,25 @@ Leads to the root level matches collection which is a list of all matches known 
 
 Leads to the root level games collection which is a list of all games known to the API. This collection can be sorted using query parameters as described in the resource documentation.
 
+## persons-all
+
+Leads to the root level persons collection which is a list of all persons known to the API. This collection can be sorted using query parameters as described in the resource documentation.
+
 ## game
 
-Leads to game item from match or player item
+Leads to Game item from Match or Person item
+
+## instance
+
+Leads to Match item from Game item
+
+## match
+
+Leads to Match item from Person item
 
 ## participant
 
 Leads to person item from match item
-
-## match
-
-Leads to match item from person or game item
-
-## game
-
-Leads to match item from person or game item
 
 ## hobbyist
 
@@ -78,8 +82,12 @@ relations from the gamsco namespace are used:
 
  * [add-game](reference/link-relations/add-game)
  * [matches-all](reference/link-relations/matches-all)
+ * [instance](reference/link-relations/instance)
+ * [persons-all](reference/link-relations/persons-all)
  * [hobbyist](reference/link-relations/hobbyist)
  * [delete](reference/link-relations/delete)
+ * [game](reference/link-relations/game)
+ * [games-all](reference/link-relations/games-all)
 
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
@@ -109,8 +117,13 @@ Profile definition for all match related resources.
 This section lists all possible link relations associated with match; not all of them are necessarily present on each resource type. The following link relations from the gamsco namespace are used:
 
  * [add-match](reference/link-relations/add-match)
+ * [match](reference/link-relations/match)
+ * [matches-all](reference/link-relations/matches-all)
+ * [instance](reference/link-relations/instance)
  * [participant](reference/link-relations/participant)
+ * [persons-all](reference/link-relations/persons-all)
  * [game](reference/link-relations/game)
+ * [games-all](reference/link-relations/games-all)
  * [delete](reference/link-relations/delete)
 
 
@@ -120,7 +133,7 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
  * edit
  * profile
  * self
- * up
+
 
 ### Semantic Descriptors
 
@@ -149,7 +162,13 @@ Profile definition for all Person related resources.
 This section lists all possible link relations associated with person; not all of them are necessarily present on each resource type. The following link relations from the gamsco namespace are used:
 
  * [add-person](reference/link-relations/add-person)
+ * [match](reference/link-relations/match)
+ * [game](reference/link-relations/game)
+ * [games-all](reference/link-relations/games-all)
+ * [persons-all](reference/link-relations/persons-all)
+ * [participant](reference/link-relations/participant)
  * [matches-all](reference/link-relations/matches-all)
+ * [hobbyist](reference/link-relations/hobbyist)
  * [delete](reference/link-relations/delete)
 
 
@@ -213,13 +232,19 @@ Get the API entry point
                 },
                 "@controls": {
                     "gamsco:persons-all": {
-                        "href": "/api/albums/"
+                        "href": "/api/persons/"
                     },
-                    "gamsco:artists-all": {
-                        "href": "/api/artists/"
+                    "gamsco:matches-all": {
+                        "href": "/api/matches/"
+                    },
+                    "gamsco:games-all": {
+                        "href": "/api/games/"
                     }
                 }
             }
+
+
+
 
 
 # Group Albums
@@ -234,13 +259,11 @@ A list of all games known to the API. This collection can be sorted using the so
 
     + field (string, optional) - Field to use for sorting
 
-        + Default: `title`
+        + Default: `name`
         + Members
 
-            + `artist`
-            + `title`
-            + `genre`
-            + `release`
+            + `name`
+            + `score_type`
 
 ### List all games [GET]
 
@@ -271,6 +294,10 @@ Get a list of all games known to the API.
                         "href": "/api/persons/",
                         "title": "All persons"
                     },
+                    "gamsco:matches-all": {
+                        "href": "/api/matches/",
+                        "title": "All matches"
+                    }
                 },
                 "items": [
                     {
@@ -278,7 +305,7 @@ Get a list of all games known to the API.
                         "score_type": "1",
                         "@controls": {
                             "self": {
-                                "href": "/api/artists/scandal/Hello World/"
+                                "href": "/api/games/Tennis/"
                             },
                             "profile": {
                                 "href": "/profiles/game/"
@@ -287,6 +314,27 @@ Get a list of all games known to the API.
                     },
                 ]
             }
+
+
+
+
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
+
 
 ## Games by person [/api/artists/{artist}/albums/]
 
@@ -537,6 +585,22 @@ Adds a new album for the artist. The album representation must be valid against 
                     }
                 }
             }
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
 
 ## Album [/api/artists/{artist}/albums/{title}/]
 
