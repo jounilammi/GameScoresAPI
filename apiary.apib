@@ -246,12 +246,11 @@ Get the API entry point
 
 
 
-
-# Group Albums
+# Group Game
 
 All of these resources use the [Album Profile](reference/profiles/album-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
 
-## Games Collection [/api/games/?sortby={field}]
+## Games [/api/games/?sortby={field}]
 
 A list of all games known to the API. This collection can be sorted using the sortby query parameter. For each game only player name and title is included, more information can be found by following the `self` relation of each game. Games cannot be directly added to this collection, it only supports GET.
 
@@ -316,6 +315,275 @@ Get a list of all games known to the API.
             }
 
 
+
+
+
+
+
+
+
+
+
+
+
+## Game [/api/artists/{artist}/albums/{title}/]
+
+This resource represents a single match, as identified by the matche`s unique id. It includes the list of tracks on the album in addition to the album's own metadata. Individual tracks are usually only visited when modifying their data. They use the [Track Profile](/reference/profiles/track-profile).
+
++ Parameters
+
+    + id (integer) - matche`s unique id (id)
+
+### Match information [GET]
+
+Get the match representation.
+
++ Relation: self
++ Request
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
++ Response 200
+
+    + Body
+
+            {
+                "@namespaces": {
+                    "kyykka": {
+                        "name": "/kyykka_apiary/link-relations#"
+                    }
+                },
+                "team1": "Omenat",
+                "team2": "Banaanit",
+                "date": "5.5.2018",
+                "team1_points": null,
+                "team2_points": null,
+                "@controls": {
+                    "author": {
+                        "href": "/api/matches/3/"
+                    },
+                    "kyykka:matches-by": {
+                        "href": "/api/matches/3/"
+                    },
+                    "self": {
+                        "href": "/api/matches/3/"
+                    },
+                    "profile": {
+                        "href": "/profiles/matches/"
+                    },
+                    "collection": {
+                        "href": "/api/matches/"
+                    },
+                    "kyykka:matches-all": {
+                        "href": "/api/matches/",
+                        "title": "All matches"
+                    },
+
+                    "edit": {
+                        "href": "/api/matches/3/",
+                        "title": "Edit this match",
+                        "encoding": "json",
+                        "method": "PUT",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "description": "Match`s id",
+                                    "type": "string"
+                                },
+                                "team1": {
+                                    "description": "Name of the first team",
+                                    "type": "string",
+                                },
+                                "team2": {
+                                    "description": "Name of the second team",
+                                    "type": "string"
+                                },
+                                "date": {
+                                    "description": "Date when the match was played",
+                                    "type": "string",
+                                },
+                                "team1_points": {
+                                    "description": "Final points of the first team",
+                                    "type": "integer",
+                                    "default": null
+                                },
+                                "team2_points": {
+                                    "description": "Final points of the second team",
+                                    "type": "integer",
+                                    "default": null
+                                },
+                            },
+                            "required": ["team1", "team2", "date"]
+                        }
+                    },
+                    "kyykka:delete": {
+                        "href": "/api/matches/3/",
+                        "title": "Delete this match",
+                        "method": "DELETE"
+                    }
+                },
+                "items": [
+                    {
+                "team1": "Omenat",
+                "team2": "Banaanit",
+                "date": "5.5.2018",
+                "team1_points": null,
+                "team2_points": null,
+                    "@controls": {
+                        "self": {
+                            "href": "/api/matches/3/"
+                            }
+                        }
+                    }
+                ]
+            }
+
+
+### Edit Match [PUT]
+
+Replace the match's representation with a new one. Missing optional fields will be set to null.
+
++ Relation: edit
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
+    + Body
+
+            {
+                "team1": "Omenat",
+                "team2": "Banaanit",
+                "date": "5.5.2018",
+                "team1_points": 10,
+                "team2_points": 20
+            }
+
++ Response 204
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent team points.
+
+    + Body
+
+            {
+                "resource_url": "/api/matches/",
+                "@error": {
+                    "@message": "Invalid points format",
+                    "@messages": [
+                        "Points must be integers"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to edit a match that doesn't exist.
+
+    + Body
+
+            {
+                "resource_url": "/api/matches/",
+                "@error": {
+                    "@message": "Match not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 415 (application/vnd.mason+json)
+
+    The client sent a request with the wrong content type or the request body was not valid JSON.
+
+    + Body
+
+            {
+                "resource_url": "/api/matches/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
+
+### Delete Match [DELETE]
+
+Deletes the match.
+
++ Relation: delete
++ Request
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
++ Response 204
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to delete a match that doesn't exist.
+
+    + Body
+
+            {
+                "resource_url": "/api/matches/",
+                "@error": {
+                    "@message": "Match not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
+
+
+
+
+
+# Group Match
+
+
+## Matches [/api/artists/{artist}/albums/{title}/]
+
+## Match [/api/artists/{artist}/albums/{title}/]
+
+
+
+
+
+
+
+
+
+# Group Person
+
+
+## Persons [/api/artists/{artist}/albums/{title}/]
+
+## Person [/api/artists/{artist}/albums/{title}/]
 
 
 
@@ -602,7 +870,14 @@ Adds a new album for the artist. The album representation must be valid against 
 --------------------------------------------------------------------------------------
 
 
-## Album [/api/artists/{artist}/albums/{title}/]
+
+
+
+## Games [/api/artists/{artist}/albums/{title}/]
+
+
+
+
 
 This resource represents an album by a single artist, as identified by the artist's unique name and the albm's title. It includes the list of tracks on the album in addition to the album's own metadata. Individual tracks are usually only visited when modifying their data. They use the [Track Profile](/reference/profiles/track-profile).
 
