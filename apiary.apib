@@ -326,7 +326,7 @@ Get a list of all games known to the API.
                 "items": [
                     {
                         "name": "Tennis",
-                        "score_type": "1",
+                        "score_type": 1,
                         "@controls": {
                             "self": {
                                 "href": "/api/games/1/"
@@ -397,7 +397,7 @@ Get a list of all games known to the API.
                 "@error": {
                     "@message": "Already exists",
                     "@messages": [
-                        "Game with id 3 already has the name "Tennis"
+                        "Game with id 3 already has the name Tennis"
                     ]
                 },
                 "@controls": {
@@ -507,7 +507,7 @@ Get the game representation.
                 "items": [
                     {
                 "name": "Football",
-                "score_type": "2",
+                "score_type": 2,
                     "@controls": {
                         "self": {
                             "href": "/api/games/1/"
@@ -533,7 +533,7 @@ Replace the games's representation with a new one. Missing optional fields will 
 
             {
                 "name": "Football",
-                "score_type": "2",
+                "score_type": 2,
             }
 
 + Response 204
@@ -730,8 +730,9 @@ Get a list of all matches known to the API.
                                     "type": "string"
                                 },
                                 "time": {
-                                    "description": "Total time that the match took",
-                                    "type": "string"
+                                    "description": "When the match was played",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]-[01][0-9]-[0-9]{4}$"
                                 },
                                 "player1_id": {
                                     "description": "Id of the first player",
@@ -750,7 +751,7 @@ Get a list of all matches known to the API.
                                     "type": "integer"
                                 },
                                 "comment": {
-                                    "description": "Custom comments for the match",
+                                    "description": "Custom comment for the match",
                                     "type": "string"
                                 },
 
@@ -763,11 +764,11 @@ Get a list of all matches known to the API.
                     {
                         "game": "Tennis",
                         "place": "Heinapaa, Oulu"
-                        "time": "01:15:35",
-                        "player1_id": "1",
-                        "player2_id": "2",
-                        "player1_score": "15",
-                        "player2_score": "60",
+                        "time": "01-10-2020",
+                        "player1_id": 1,
+                        "player2_id": 2,
+                        "player1_score": 15,
+                        "player2_score": 60,
                         "comments": "Player 2 won in a landslide",
                         "@controls": {
                             "self": {
@@ -795,11 +796,11 @@ Get a list of all matches known to the API.
             {
                 "game": "Disc Golf",
                 "place": "Iironen, Oulu"
-                "time": "01:55:13",
-                "player1_id": "4",
-                "player2_id": "11",
-                "player1_score": "-3",
-                "player2_score": "2",
+                "time": "01-10-2020",
+                "player1_id": 4,
+                "player2_id": 11,
+                "player1_score": 3,
+                "player2_score": 2,
                 "comments": "Player 2 lost a disc",
                 "@controls": {
                     "self": {
@@ -814,14 +815,68 @@ Get a list of all matches known to the API.
 
             Location: /api/matches/2/
 
+
 + Response 400 (application/vnd.mason+json)
 
         The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+
+        + Body
+
+            {
+                "resource_url": "/api/matches/2/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": [
+                        "Match id 2 is missing parameter game"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+
+
++ Response 409 (application/vnd.mason+json)
+
+    The client is trying to add a match with a name that already exists.
+
+    + Body
+
+            {
+                "resource_url": "/api/matches/3/",
+                "@error": {
+                    "@message": "Already exists",
+                    "@messages": [
+                        "Match with id 3 already exists "
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
 
 + Response 415 (application/vnd.mason+json)
 
         The client did not use the proper content type, or the request body was not valid JSON.
 
+        + Body
+
+            {
+                "resource_url": "/api/matches/1/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
 
 
 
@@ -987,7 +1042,7 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "resource_url": "/api/matches/",
+                "resource_url": "/api/matches/2/",
                 "@error": {
                     "@message": "Invalid or missing document type",
                     "@messages": [
@@ -1008,7 +1063,7 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "resource_url": "/api/matches/",
+                "resource_url": "/api/matches/2/",
                 "@error": {
                     "@message": "Match not found",
                     "@messages": [null]
@@ -1027,7 +1082,7 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "resource_url": "/api/games/",
+                "resource_url": "/api/matches/2/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -1061,7 +1116,7 @@ Deletes the match.
     + Body
 
             {
-                "resource_url": "/api/matches/",
+                "resource_url": "/api/matches/2/",
                 "@error": {
                     "@message": "Match not found",
                     "@messages": [null]
@@ -1092,7 +1147,7 @@ Deletes the match.
 
 ## Persons [/api/persons/?sortby={field}]
 
-A list of all games known to the API. This collection can be sorted using the sortby query parameter. For each game only player name and title is included, more information can be found by following the `self` relation of each game. Games cannot be directly added to this collection, it only supports GET.
+A list of all persons known to the API. This collection can be sorted using the sortby query parameter, more information can be found by following the `self` relation of each name. Persons cannot be directly added to this collection, it only supports GET.
 
 + Parameters
 
@@ -1149,7 +1204,7 @@ Get a list of all persons known to the API.
                             "type": "object",
                             "properties": {
                                 "username": {
-                                    "description": "Type of game played",
+                                    "description": "Username of person",
                                     "type": "string"
                                 },
                                 "first_name": {
@@ -1186,7 +1241,7 @@ Get a list of all persons known to the API.
                                 "href": "/api/persons/1/"
                             },
                             "profile": {
-                                "href": "/profiles/persons/"
+                                "href": "/profile/persons/"
                             }
                         },
                     },
@@ -1221,39 +1276,44 @@ Get a list of all persons known to the API.
             }
 
 
-+ Response 201 #######Tästä alaspäin kesken
++ Response 201
 
     + Headers
 
             Location: /api/persons/1/
 
-    + Body
-
-            {}
-
 + Response 400 (application/vnd.mason+json)
 
-    The client is trying to send a JSON document that doesn't validate against the schema.
+        The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+
+        + Body
+
+            {
+                "resource_url": "/api/persons/2/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": [
+                        "Person id 2 missing parameter username"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+
+
++ Response 409 (application/vnd.mason+json)
+
+    The client is trying to add a person with a username that already exists.
 
     + Body
 
             {
-                "resource_url": "/api/players/",
+                "resource_url": "/api/persons/3/",
                 "@error": {
-                    "@message": "Invalid JSON document",
+                    "@message": "Already exists",
                     "@messages": [
-                        "'name' is a required property
-
-                        Failed validating 'required' in schema:
-                        {'properties': {'name': {'description': \"Name of the player\",
-                        'type': 'string'},
-                        'team': {'description': \"Team of the player\",
-                        'type': 'string'}},
-                        'required': ['name'],
-                        'type': 'object'}
-
-                        On instance:
-                        {'name': 'pekka'}"
+                        "Person with this username already exists"
                     ]
                 },
                 "@controls": {
@@ -1265,9 +1325,9 @@ Get a list of all persons known to the API.
 
 + Response 415 (application/vnd.mason+json)
 
-    The client sent a request with the wrong content type or the request body was not valid JSON.
+        The client did not use the proper content type, or the request body was not valid JSON.
 
-    + Body
+        + Body
 
             {
                 "resource_url": "/api/persons/1/",
@@ -1286,20 +1346,6 @@ Get a list of all persons known to the API.
 
 
 
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
 
 
 
@@ -1318,28 +1364,26 @@ Get a list of all persons known to the API.
 
 
 
+## Person [/api/person/{id}/]
 
-
-## Games by person [/api/artists/{artist}/albums/]
-
-This is an game collection by given person using the persons unique id. For each game only id, person and score type is included, more information can be found by following the `self` relation of each game. games played by this person can be added to this collection.
+This resource represents a single match, as identified by the matche's unique id. It includes matche's own metadata.
 
 + Parameters
 
-    + person: Matti (string) - artist's unique name (unique_name)
+    + id (integer) - matche`s unique id (id)
 
-### List games by artist [GET]
+### Match information [GET]
 
-Get a list of albums by an artist.
+Get the match representation.
 
-+ Relation: albums-by
++ Relation: self
 + Request
 
     + Headers
 
             Accept: application/vnd.mason+json
 
-+ Response 200 (application/vnd.mason+json)
++ Response 200
 
     + Body
 
@@ -1349,106 +1393,111 @@ Get a list of albums by an artist.
                         "name": "/gamescores/link-relations#"
                     }
                 },
+                "game": "Football",
+                "place": "Oulu",
+                "time": "Oulu",
+                "player1_id": 1,
+                "player2_id": 2,
+                "player1_score": 10,
+                "player2_score": 5,
+                "comment": "Fun match!",
                 "@controls": {
                     "self": {
-                        "href": "/api/artists/scandal/albums/"
+                        "href": "/api/matches/1/"
                     },
-                    "gamsco:artists-all": {
-                        "href": "/api/artists/",
-                        "title": "All artists"
+                    "gamsco:game": {
+                        "href": "/api/games/1/"
                     },
-                    "gamsco:albums-all": {
-                        "href": "/api/albums/?{sortby}",
-                        "title": "All albums",
-                        "isHrefTemplate": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "sortby": {
-                                    "description": "Field to use for sorting",
-                                    "type": "string",
-                                    "default": "title",
-                                    "enum": ["artist", "title", "genre", "release"]
-                                }
-                            },
-                            "required": []
-                        }
+                    "profile": {
+                        "href": "/profiles/match/"
                     },
-                    "author": {
-                        "href": "/api/artists/scandal/"
+                    "collection": {
+                        "href": "/api/matches/"
                     },
-                    "gamsco:add-album": {
-                        "href": "/api/artists/scandal/albums/",
-                        "title": "Add a new album for this artist",
+                    "gamsco:matches-all": {
+                        "href": "/api/matches/",
+                        "title": "All matches"
+                    },
+                    "gamsco:participant": {
+                        "href": "/api/persons/1/"
+                    },
+
+                    "edit": {
+                        "href": "/api/matches/1/",
+                        "title": "Edit this match",
                         "encoding": "json",
-                        "method": "POST",
+                        "method": "PUT",
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "title": {
-                                    "description": "Album title",
+                                "game": {
+                                    "description": "Name of the game",
                                     "type": "string"
                                 },
-                                "release": {
-                                    "description": "Release date",
+                                "place": {
+                                    "description": "Location where the match was played",
                                     "type": "string",
-                                    "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]$"
                                 },
-                                "genre": {
-                                    "description": "Album's genre(s)",
-                                    "type": "string"
+                                "time": {
+                                    "description": "Time when the match was played",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]-[01][0-9]-[0-9]{4}$"
                                 },
-                                "discs": {
-                                    "description": "Number of discs",
+                                "player1_id": {
+                                    "description": "Id of the player1",
                                     "type": "integer",
-                                    "default": 1
-                                }
+                                },
+                                "player2_id": {
+                                    "description": "Id of the player2",
+                                    "type": "integer",
+                                },
+                                "player1_score": {
+                                    "description": "Score of the player1",
+                                    "type": "integer",
+                                },
+                                "player2_score": {
+                                    "description": "Score of the player2",
+                                    "type": "integer",
+                                },
+                                "comment": {
+                                    "description": "Comment about the match played",
+                                    "type": "string",
+                                },
                             },
-                            "required": ["title", "release"]
+                            "required": ["player1_id", "player2_id", "player1_score", "player2_score"]
                         }
+                    },
+                    "gamsco:delete": {
+                        "href": "/api/matches/1/",
+                        "title": "Delete this match",
+                        "method": "DELETE"
                     }
                 },
                 "items": [
                     {
-                        "title": "Hello World",
-                        "artist": "Scandal",
-                        "@controls": {
-                            "self": {
-                                "href": "/api/artists/scandal/albums/Hello World/"
-                            },
-                            "profile": {
-                                "href": "/profiles/album/"
+                "game": "Football",
+                "place": "Oulu",
+                "time": "Oulu",
+                "player1_id": 1,
+                "player2_id": 2,
+                "player1_score": 10,
+                "player2_score": 5,
+                "comment": "Fun match!",
+                    "@controls": {
+                        "self": {
+                            "href": "/api/matches/1/"
                             }
                         }
                     }
                 ]
             }
 
-+ Response 404 (application/vnd.mason+json)
 
-    The client is trying to retrieve list of albums for an artist that doesn't exist.
+### Edit Match [PUT]
 
-    + Body
+Replace the matche's representation with a new one. Missing optional fields will be set to null.
 
-
-            {
-                "resource_url": "/api/artists/hemuli/albums/",
-                "@error": {
-                    "@message": "Artist not found",
-                    "@messages": [null]
-                },
-                "@controls": {
-                    "profile": {
-                        "href": "/profiles/error/"
-                    }
-                }
-            }
-
-### Add album for artist [POST]
-
-Adds a new album for the artist. The album representation must be valid against the album schema.
-
-+ Relation: add-album
++ Relation: edit
 + Request (application/json)
 
     + Headers
@@ -1458,47 +1507,30 @@ Adds a new album for the artist. The album representation must be valid against 
     + Body
 
             {
-                "title": "Best Scandal",
-                "release": "2009-10-21",
-                "genre": "Pop Rock",
-                "discs": 1
+                "game": "Football",
+                "place": "Oulu",
+                "time": "Oulu",
+                "player1_id": 1,
+                "player2_id": 2,
+                "player1_score": 10,
+                "player2_score": 5,
+                "comment": "Fun match!",
             }
 
-+ Response 201
-
-    + Headers
-
-            Location: /api/artists/scandal/albums/Best Scandal/
++ Response 204
 
 + Response 400 (application/vnd.mason+json)
 
-    The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+    The client is trying to send a JSON document that doesn't validate against the schema, or has missing "player1_id", "player2_id", "player1_score" or "player2_score".
 
     + Body
 
             {
-                "resource_url": "/api/artists/scandal/albums/",
+                "resource_url": "/api/matches/2/",
                 "@error": {
-                    "@message": "Invalid JSON document",
+                    "@message": "Invalid or missing document type",
                     "@messages": [
-                        "'release' is a required property
-
-                        Failed validating 'required' in schema:
-                        {'properties': {'discs': {'default': 1,
-                        'description': 'Number of discs',
-                        'type': 'integer'},
-                        'genre': {'description': \"Album's genre(s)\",
-                        'type': 'string'},
-                        'release': {'description': 'Release date',
-                        'pattern': '^[0-9]{4}-[01][0-9]-[0-3][0-9]$',
-                        'type': 'string'},
-                        'title': {'description': 'Album title',
-                        'type': 'string'}},
-                        'required': ['title', 'release'],
-                        'type': 'object'}
-
-                        On instance:
-                        {'title': 'Best Scandal'}"
+                        "Check player1_id, player2_id, player1_score or player2_score"
                     ]
                 },
                 "@controls": {
@@ -1510,14 +1542,14 @@ Adds a new album for the artist. The album representation must be valid against 
 
 + Response 404 (application/vnd.mason+json)
 
-    The client is trying to add an album for an artist that doesn't exist.
+    The client is trying to edit a match that does not exist.
 
     + Body
 
             {
-                "resource_url": "/api/artists/hemuli/albums/",
+                "resource_url": "/api/matches/2/",
                 "@error": {
-                    "@message": "Artist not found",
+                    "@message": "Match not found",
                     "@messages": [null]
                 },
                 "@controls": {
@@ -1527,36 +1559,14 @@ Adds a new album for the artist. The album representation must be valid against 
                 }
             }
 
-+ Response 409 (application/vnd.mason+json)
-
-    The client is trying to add an album with a title that's already used by another album for the same artist.
-
-    + Body
-
-            {
-                "resource_url": "/api/artists/scandal/albums/",
-                "@error": {
-                    "@message": "Already exists",
-                    "@messages": [
-                        "Artist 'scandal' already has album with title 'Hello World'"
-                    ]
-                },
-                "@controls": {
-                    "profile": {
-                        "href": "/profiles/error/"
-                    }
-                }
-            }
-
-
 + Response 415 (application/vnd.mason+json)
 
-    The client did not use the proper content type, or the request body was not valid JSON.
+    The client sent a request with the wrong content type or the request body was not valid JSON.
 
     + Body
 
             {
-                "resource_url": "/api/artists/scandal/albums/",
+                "resource_url": "/api/matches/2/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -1566,6 +1576,38 @@ Adds a new album for the artist. The album representation must be valid against 
                 "@controls": {
                     "profile": {
                         "href": "/profiles/error-profile/"
+                    }
+                }
+            }
+
+### Delete Match [DELETE]
+
+Deletes the match.
+
++ Relation: delete
++ Request
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+
++ Response 204
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to delete a match that doesn't exist.
+
+    + Body
+
+            {
+                "resource_url": "/api/matches/2/",
+                "@error": {
+                    "@message": "Match not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
                     }
                 }
             }
