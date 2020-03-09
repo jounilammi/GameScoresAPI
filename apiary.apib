@@ -1366,15 +1366,15 @@ Get a list of all persons known to the API.
 
 ## Person [/api/person/{id}/]
 
-This resource represents a single match, as identified by the matche's unique id. It includes matche's own metadata.
+This resource represents a single person, as identified by the person's unique id. It includes person's own metadata.
 
 + Parameters
 
-    + id (integer) - matche`s unique id (id)
+    + id (integer) - person`s unique id (id)
 
-### Match information [GET]
+### Person information [GET]
 
-Get the match representation.
+Get the person representation.
 
 + Relation: self
 + Request
@@ -1393,99 +1393,74 @@ Get the match representation.
                         "name": "/gamescores/link-relations#"
                     }
                 },
-                "game": "Football",
-                "place": "Oulu",
-                "time": "Oulu",
-                "player1_id": 1,
-                "player2_id": 2,
-                "player1_score": 10,
-                "player2_score": 5,
-                "comment": "Fun match!",
+                "username": "Football",
+                "first_name": "Alex",
+                "last_name": "King",
+                "birthdate": "10-10-2010",
+                "description": "I am alex",
                 "@controls": {
                     "self": {
+                        "href": "/api/persons/1/"
+                    },
+                    "gamsco:match": {
                         "href": "/api/matches/1/"
                     },
-                    "gamsco:game": {
-                        "href": "/api/games/1/"
-                    },
                     "profile": {
-                        "href": "/profiles/match/"
+                        "href": "/profiles/person/"
                     },
                     "collection": {
-                        "href": "/api/matches/"
-                    },
-                    "gamsco:matches-all": {
-                        "href": "/api/matches/",
-                        "title": "All matches"
-                    },
-                    "gamsco:participant": {
-                        "href": "/api/persons/1/"
+                        "href": "/api/persons/"
                     },
 
                     "edit": {
-                        "href": "/api/matches/1/",
-                        "title": "Edit this match",
+                        "href": "/api/persons/1/",
+                        "title": "Edit this person",
                         "encoding": "json",
                         "method": "PUT",
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "game": {
-                                    "description": "Name of the game",
+                                "username": {
+                                    "description": "Username of the person",
                                     "type": "string"
                                 },
-                                "place": {
-                                    "description": "Location where the match was played",
+                                "first_name": {
+                                    "description": "First name of the person",
                                     "type": "string",
                                 },
-                                "time": {
-                                    "description": "Time when the match was played",
+                                "last_name": {
+                                    "description": "Last name of the person",
+                                    "type": "string",
+                                },
+                                "birthdate": {
+                                    "description": "Birthdate of the person",
                                     "type": "string",
                                     "pattern": "^[0-3][0-9]-[01][0-9]-[0-9]{4}$"
                                 },
-                                "player1_id": {
-                                    "description": "Id of the player1",
-                                    "type": "integer",
-                                },
-                                "player2_id": {
-                                    "description": "Id of the player2",
-                                    "type": "integer",
-                                },
-                                "player1_score": {
-                                    "description": "Score of the player1",
-                                    "type": "integer",
-                                },
-                                "player2_score": {
-                                    "description": "Score of the player2",
-                                    "type": "integer",
-                                },
-                                "comment": {
-                                    "description": "Comment about the match played",
+                                "description": {
+                                    "description": "Description of the person",
                                     "type": "string",
                                 },
                             },
-                            "required": ["player1_id", "player2_id", "player1_score", "player2_score"]
+                            "required": ["username", "first_name", "last_name"]
                         }
                     },
                     "gamsco:delete": {
-                        "href": "/api/matches/1/",
-                        "title": "Delete this match",
+                        "href": "/api/persons/1/",
+                        "title": "Delete this person",
                         "method": "DELETE"
                     }
                 },
                 "items": [
                     {
-                "game": "Football",
-                "place": "Oulu",
-                "time": "Oulu",
-                "player1_id": 1,
-                "player2_id": 2,
-                "player1_score": 10,
-                "player2_score": 5,
-                "comment": "Fun match!",
+                "username": "alexa",
+                "first_name": "Alex",
+                "last_name": "King",
+                "birthdate": "10-10-1992"
+                "description": "Not entertained",
                     "@controls": {
                         "self": {
-                            "href": "/api/matches/1/"
+                            "href": "/api/persons/1/"
                             }
                         }
                     }
@@ -1493,9 +1468,9 @@ Get the match representation.
             }
 
 
-### Edit Match [PUT]
+### Edit Person [PUT]
 
-Replace the matche's representation with a new one. Missing optional fields will be set to null.
+Replace the person's representation with a new one. Missing optional fields will be set to null.
 
 + Relation: edit
 + Request (application/json)
@@ -1507,30 +1482,27 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "game": "Football",
-                "place": "Oulu",
-                "time": "Oulu",
-                "player1_id": 1,
-                "player2_id": 2,
-                "player1_score": 10,
-                "player2_score": 5,
-                "comment": "Fun match!",
+                "username": "alexa",
+                "first_name": "Alex",
+                "last_name": "King",
+                "birthdate": "10-10-1992"
+                "description": "Not entertained",
             }
 
 + Response 204
 
 + Response 400 (application/vnd.mason+json)
 
-    The client is trying to send a JSON document that doesn't validate against the schema, or has missing "player1_id", "player2_id", "player1_score" or "player2_score".
+    The client is trying to send a JSON document that doesn't validate against the schema, or has missing "username", "first_name" or "last_name".
 
     + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/persons/2/",
                 "@error": {
                     "@message": "Invalid or missing document type",
                     "@messages": [
-                        "Check player1_id, player2_id, player1_score or player2_score"
+                        "Check username, first_name or last_name"
                     ]
                 },
                 "@controls": {
@@ -1542,14 +1514,14 @@ Replace the matche's representation with a new one. Missing optional fields will
 
 + Response 404 (application/vnd.mason+json)
 
-    The client is trying to edit a match that does not exist.
+    The client is trying to edit a person that does not exist.
 
     + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/persons/2/",
                 "@error": {
-                    "@message": "Match not found",
+                    "@message": "Person not found",
                     "@messages": [null]
                 },
                 "@controls": {
@@ -1566,7 +1538,7 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/persons/2/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -1580,9 +1552,9 @@ Replace the matche's representation with a new one. Missing optional fields will
                 }
             }
 
-### Delete Match [DELETE]
+### Delete Person [DELETE]
 
-Deletes the match.
+Deletes the person.
 
 + Relation: delete
 + Request
@@ -1595,14 +1567,14 @@ Deletes the match.
 
 + Response 404 (application/vnd.mason+json)
 
-    The client is trying to delete a match that doesn't exist.
+    The client is trying to delete a person that doesn't exist.
 
     + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/persons/2/",
                 "@error": {
-                    "@message": "Match not found",
+                    "@message": "Person not found",
                     "@messages": [null]
                 },
                 "@controls": {
