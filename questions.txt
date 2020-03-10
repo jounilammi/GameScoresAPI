@@ -7,3 +7,5 @@ Pitääkö olla participant 2 lisäksi, kun haetaan
 matsista participant (Halutaan kaksi participanttia?)
 
 patternin takia joku error koodi? (400)
+
+miten olisi järkevä korjata sort-by ongelma (esim. add game vs add album)
