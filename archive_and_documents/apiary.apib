@@ -38,7 +38,7 @@ Leads to the root level persons collection which is a list of all persons known 
 
 Leads to Game item from Match or Person item
 
-## instance
+## match
 
 Leads to Match item from Game item
 
@@ -82,7 +82,7 @@ relations from the gamsco namespace are used:
 
  * [add-game](reference/link-relations/add-game)
  * [matches-all](reference/link-relations/matches-all)
- * [instance](reference/link-relations/instance)
+ * [match](reference/link-relations/match)
  * [persons-all](reference/link-relations/persons-all)
  * [hobbyist](reference/link-relations/hobbyist)
  * [delete](reference/link-relations/delete)
@@ -119,7 +119,7 @@ This section lists all possible link relations associated with match; not all of
  * [add-match](reference/link-relations/add-match)
  * [match](reference/link-relations/match)
  * [matches-all](reference/link-relations/matches-all)
- * [instance](reference/link-relations/instance)
+ * [match](reference/link-relations/match)
  * [participant](reference/link-relations/participant)
  * [persons-all](reference/link-relations/persons-all)
  * [game](reference/link-relations/game)
@@ -227,7 +227,7 @@ Get the API entry point
             {
                 "@namespaces": {
                     "gamsco": {
-                        "name": "/gamescores/link-relations#"
+                        "name": "/gamescores/link-relations/#"
                     }
                 },
                 "@controls": {
@@ -235,7 +235,7 @@ Get the API entry point
                         "href": "/api/persons/"
                     },
                     "gamsco:matches-all": {
-                        "href": "/api/matches/"
+                        "href": "/api/games/{game}/matches/"
                     },
                     "gamsco:games-all": {
                         "href": "/api/games/"
@@ -283,7 +283,7 @@ Get a list of all games known to the API.
             {
                 "@namespaces": {
                     "gamsco": {
-                        "name": "/gamescores/link-relations#"
+                        "name": "/gamescores/link-relations/#"
                     }
                 },
                 "@controls": {
@@ -295,7 +295,7 @@ Get a list of all games known to the API.
                         "title": "All persons"
                     },
                     "gamsco:matches-all": {
-                        "href": "/api/matches/",
+                        "href": "/api/games/{game}/matches/",
                         "title": "All matches"
                     },
                     "gamsco:add-game": {
@@ -455,7 +455,7 @@ Get the game representation.
             {
                 "@namespaces": {
                     "gamsco": {
-                        "name": "/gamescores/link-relations#"
+                        "name": "/gamescores/link-relations/#"
                     }
                 },
                 "name": "Football",
@@ -464,8 +464,8 @@ Get the game representation.
                     "self": {
                         "href": "/api/games/1/"
                     },
-                    "gamsco:instance": {
-                        "href": "/api/matches/1/"
+                    "gamsco:match": {
+                        "href": "/api/games/{game}/matches/1/"
                     },
                     "profile": {
                         "href": "/profiles/game/"
@@ -503,18 +503,8 @@ Get the game representation.
                         "title": "Delete this game",
                         "method": "DELETE"
                     }
-                },
-                "items": [
-                    {
-                "name": "Football",
-                "score_type": 2,
-                    "@controls": {
-                        "self": {
-                            "href": "/api/games/1/"
-                            }
-                        }
-                    }
-                ]
+                }
+
             }
 
 
@@ -660,7 +650,7 @@ Deletes the game.
 # Group Match
 
 
-## Matches [/api/matches/?sortby={field}]
+## Matches [/api/games/{game}/matches/?sortby={field}]
 
 A list of all games known to the API. This collection can be sorted using the sortby query parameter. For each game only player name and title is included, more information can be found by following the `self` relation of each game. Games cannot be directly added to this collection, it only supports GET.
 
@@ -698,12 +688,12 @@ Get a list of all matches known to the API.
             {
                 "@namespaces": {
                     "gamsco": {
-                        "name": "/gamescores/link-relations#"
+                        "name": "/gamescores/link-relations/#"
                     }
                 },
                 "@controls": {
                     "self": {
-                        "href": "/api/matches/"
+                        "href": "/api/games/{game}/matches/"
                     },
                     "gamsco:persons-all": {
                         "href": "/api/persons/",
@@ -714,7 +704,7 @@ Get a list of all matches known to the API.
                         "title": "All games"
                     }
                     "gamsco:add-match":{
-                        "href": "api/matches/",
+                        "href": "/api/games/{game}/matches/",
                         "title": "Add a match to a match collection",
                         "encoding": "json",
                         "method": "POST",
@@ -772,7 +762,7 @@ Get a list of all matches known to the API.
                         "comments": "Player 2 won in a landslide",
                         "@controls": {
                             "self": {
-                                "href": "/api/matches/1/"
+                                "href": "/api/games/{game}/matches/1"
                             },
                             "profile": {
                                 "href": "/profiles/matches/"
@@ -804,7 +794,7 @@ Get a list of all matches known to the API.
                 "comments": "Player 2 lost a disc",
                 "@controls": {
                     "self": {
-                        "href": "/api/matches/2/"
+                        "href": "/api/games/{game}/matches/2/"
                     }
                 }
             }
@@ -813,7 +803,7 @@ Get a list of all matches known to the API.
 
     + Headers
 
-            Location: /api/matches/2/
+            Location: /api/games/{game}/matches/2/
 
 
 + Response 400 (application/vnd.mason+json)
@@ -823,7 +813,7 @@ Get a list of all matches known to the API.
         + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/games/{game}/matches/2/",
                 "@error": {
                     "@message": "Invalid JSON document",
                     "@messages": [
@@ -843,7 +833,7 @@ Get a list of all matches known to the API.
     + Body
 
             {
-                "resource_url": "/api/matches/3/",
+                "resource_url": "/api/games/{game}/matches/3/",
                 "@error": {
                     "@message": "Already exists",
                     "@messages": [
@@ -864,7 +854,7 @@ Get a list of all matches known to the API.
         + Body
 
             {
-                "resource_url": "/api/matches/1/",
+                "resource_url": "/api/games/{game}/matches/1/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -880,7 +870,7 @@ Get a list of all matches known to the API.
 
 
 
-## Match [/api/matches/{id}/]
+## Match [/api/games/{game}/matches/{id}/]
 
 This resource represents a single match, as identified by the matche's unique id. It includes matche's own metadata.
 
@@ -906,7 +896,7 @@ Get the match representation.
             {
                 "@namespaces": {
                     "gamsco": {
-                        "name": "/gamescores/link-relations#"
+                        "name": "/gamescores/link-relations/#"
                     }
                 },
                 "game": "Football",
@@ -919,19 +909,19 @@ Get the match representation.
                 "comment": "Fun match!",
                 "@controls": {
                     "self": {
-                        "href": "/api/matches/1/"
+                        "href": "/api/games/{game}/matches/1/"
                     },
                     "gamsco:game": {
-                        "href": "/api/games/1/"
+                        "href": "/api/games/{game}/matches/1/"
                     },
                     "profile": {
                         "href": "/profiles/match/"
                     },
                     "collection": {
-                        "href": "/api/matches/"
+                        "href": "/api/games/{game}/matches/"
                     },
                     "gamsco:matches-all": {
-                        "href": "/api/matches/",
+                        "href": "/api/games/{game}/matches/",
                         "title": "All matches"
                     },
                     "gamsco:participant": {
@@ -939,7 +929,7 @@ Get the match representation.
                     },
 
                     "edit": {
-                        "href": "/api/matches/1/",
+                        "href": "/api/games/{game}/matches/1/",
                         "title": "Edit this match",
                         "encoding": "json",
                         "method": "PUT",
@@ -984,7 +974,7 @@ Get the match representation.
                         }
                     },
                     "gamsco:delete": {
-                        "href": "/api/matches/1/",
+                        "href": "/api/games/{game}/matches/1/",
                         "title": "Delete this match",
                         "method": "DELETE"
                     }
@@ -1001,7 +991,7 @@ Get the match representation.
                 "comment": "Fun match!",
                     "@controls": {
                         "self": {
-                            "href": "/api/matches/1/"
+                            "href": "/api/games/{game}/matches/1/"
                             }
                         }
                     }
@@ -1042,7 +1032,7 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/games/{game}/matches/2/",
                 "@error": {
                     "@message": "Invalid or missing document type",
                     "@messages": [
@@ -1063,7 +1053,7 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/games/{game}/matches/2/",
                 "@error": {
                     "@message": "Match not found",
                     "@messages": [null]
@@ -1082,7 +1072,7 @@ Replace the matche's representation with a new one. Missing optional fields will
     + Body
 
             {
-                "resource_url": "/api/matches/2/",
+                "resource_url": "/api/games/{game}/matches/2/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -1180,7 +1170,7 @@ Get a list of all persons known to the API.
             {
                 "@namespaces": {
                     "gamsco": {
-                        "name": "/gamescores/link-relations#"
+                        "name": "/gamescores/link-relations/#"
                     }
                 },
                 "@controls": {
@@ -1390,7 +1380,7 @@ Get the person representation.
             {
                 "@namespaces": {
                     "gamsco": {
-                        "name": "/gamescores/link-relations#"
+                        "name": "/gamescores/link-relations/#"
                     }
                 },
                 "username": "Football",
