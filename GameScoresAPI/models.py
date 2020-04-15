@@ -1,19 +1,6 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.engine import Engine
-from sqlalchemy import event
-
-
-@event.listens_for(Engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
-
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///GameScoresApiDB.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
+import click
+from flask.cli import with_appcontext
+from GameScoresAPI import db
 
 
 player = db.Table(
@@ -37,6 +24,27 @@ class Person (db.Model):
     description = db.Column(db.String(256), nullable=True)
 
     game = db.relationship("Game", secondary=player, back_populates="hobbyist")
+
+    @staticmethod
+    def get_schema():
+        schema = {
+            "type": "object",
+            "required": ["username", "first_name", "last_name"]
+        }
+        props = schema["properties"] = {}
+        props["username"] = {
+            "description": "Person's username",
+            "type": "string"
+        }
+        props["first_name"] = {
+            "description": "Person's first name",
+            "type": "string"
+        }
+        props["last_name"] = {
+            "description": "Person's last name",
+            "type": "string"
+        }
+        return schema
 
 
 class Match (db.Model):
@@ -74,6 +82,41 @@ class Match (db.Model):
         foreign_keys="Match.player2_id",
     )
 
+    @staticmethod
+    def get_schema():
+        schema = {
+            "type": "object",
+            "required": [
+                "game",
+                "player1_id",
+                "player2_id",
+                "player1_score",
+                "player2_score"
+            ]
+        }
+        props = schema["properties"] = {}
+        props["game"] = {
+            "description": "Name of the game in the match",
+            "type": "string"
+        }
+        props["player1_id"] = {
+            "description": "Id of player 1 or team 1",
+            "type": "string"
+        }
+        props["player2_id"] = {
+            "description": "Id of player 1 or team 1",
+            "type": "string"
+        }
+        props["player1_score"] = {
+            "description": "Score of player 1 or team 1",
+            "type": "string"
+        }
+        props["player2_score"] = {
+            "description": "Score of player 2 or team 2",
+            "type": "string"
+        }
+        return schema
+
 
 class Game (db.Model):
     # __tablename__ = "game"
@@ -86,3 +129,21 @@ class Game (db.Model):
     hobbyist = db.relationship(
         "Person", secondary=player, back_populates="game"
     )
+
+    @staticmethod
+    def get_schema():
+        schema = {
+            "type": "object",
+            "required": ["name", "score_type"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Name of the game",
+            "type": "string"
+        }
+        props["score_type"] = {
+            "description": "Score type of the game",
+            "type": "string"
+        }
+        return schema
+
