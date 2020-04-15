@@ -5,8 +5,8 @@ Gamen items on lista matseista jotka kuuluu pelkiin, niissä on self linkki matc
 Gamen itemsit menee kontrolleihin?
 
 
-Match siirrä -> api/games/game/match
-eli gamesta matches linkki, game->match nimeä instance matchesiksi
+Match siirrä -> api/games/game/match ### DONE ###
+eli gamesta matches linkki, game->match nimeä instance matchesiksi ### DONE ###
 Game resurssissa ei silloin varsinaista listaa vaan linkki matsilistaan
 
 
@@ -15,7 +15,7 @@ Matchin itemsiin participantit
 Yksittäisissä itemeissä turhia itemsejä
 
 Datelle ei tarvitse patternia: date format olemassa. Katso json-schema.orgista string
- 
+
 
 Kysymykset: -------------------------------------------------------------------------------------
 
