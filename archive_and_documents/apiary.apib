@@ -50,9 +50,13 @@ Leads to Match item from Person item
 
 Leads to person item from match item
 
+## participant2
+
+Leads to person item from match item
+
 ## hobbyist
 
-Leads to Game item from person
+Leads to Game item from person and from person item to game item via a resource Hobbyist. Hobbyist resource holds items links to person and game.
 
 ## delete
 
@@ -462,10 +466,10 @@ Get the game representation.
                 "score_type": 2,
                 "@controls": {
                     "self": {
-                        "href": "/api/games/1/"
+                        "href": "/api/games/1/"<
                     },
-                    "gamsco:match": {
-                        "href": "/api/games/{game}/matches/1/"
+                    "gamsco:matches": {
+                        "href": "/api/games/{game}/matches/"
                     },
                     "profile": {
                         "href": "/profiles/game/"
@@ -476,6 +480,9 @@ Get the game representation.
                     "gamsco:games-all": {
                         "href": "/api/games/",
                         "title": "All games"
+                    },
+                    "gamsco:hobbyist": {
+                        "href": "api/games/<game>/hobbyists/"
                     },
 
                     "edit": {
@@ -503,7 +510,21 @@ Get the game representation.
                         "title": "Delete this game",
                         "method": "DELETE"
                     }
-                }
+                },
+                "items": [
+                    {
+                        "score_type": 1,
+                        "name": "Tennis"
+                        "@controls": {
+                            "self": {
+                                "href": "/api/games/{tennis}/matches/1/"
+                            },
+                            "profile": {
+                                "href": "/profiles/game/"
+                            }
+                        },
+                    },
+                ]
 
             }
 
@@ -746,20 +767,17 @@ Get a list of all matches known to the API.
                                 },
 
                             },
-                            "required": ["game","player1_id","player2_id"]
+                            "required": ["game","player1_id","player2_id", "player1_score", "player2_score]
                         }
                     }
                 },
                 "items": [
                     {
                         "game": "Tennis",
-                        "place": "Heinapaa, Oulu"
-                        "time": "01-10-2020",
                         "player1_id": 1,
                         "player2_id": 2,
                         "player1_score": 15,
                         "player2_score": 60,
-                        "comments": "Player 2 won in a landslide",
                         "@controls": {
                             "self": {
                                 "href": "/api/games/{game}/matches/1"
@@ -927,7 +945,9 @@ Get the match representation.
                     "gamsco:participant": {
                         "href": "/api/persons/1/"
                     },
-
+                    "gamsco:participant2": {
+                        "href": "/api/persons/2/"
+                    },
                     "edit": {
                         "href": "/api/games/{game}/matches/1/",
                         "title": "Edit this match",
@@ -981,14 +1001,10 @@ Get the match representation.
                 },
                 "items": [
                     {
-                "game": "Football",
-                "place": "Oulu",
-                "time": "Oulu",
                 "player1_id": 1,
                 "player2_id": 2,
                 "player1_score": 10,
                 "player2_score": 5,
-                "comment": "Fun match!",
                     "@controls": {
                         "self": {
                             "href": "/api/games/{game}/matches/1/"
@@ -1208,7 +1224,7 @@ Get a list of all persons known to the API.
                                 "birthdate": {
                                     "description": "Birthdate of the person",
                                     "type": "string"
-                                    "pattern": "^[0-3][0-9]-[01][0-9]-[0-9]{4}$"
+                                    "format": "date"
                                 },
                                 "description": {
                                     "description": "Custom description for the person",
@@ -1224,8 +1240,6 @@ Get a list of all persons known to the API.
                         "username": "Sjohn",
                         "first_name": "John"
                         "last_name": "Smith",
-                        "birthdate": "19-03-1990",
-                        "description": "I mainly play tennis, discgolf and cs-go",
                         "@controls": {
                             "self": {
                                 "href": "/api/persons/1/"
@@ -1253,7 +1267,7 @@ Get a list of all persons known to the API.
                 "username": "Bullyhunter_77",
                 "first_name": "Tomas"
                 "last_name": "Thetankengine",
-                "birthdate": "21-12-1999",
+                "birthdate": "2018-11-13",
                 "description": null,
                 "@controls": {
                     "self": {
@@ -1386,7 +1400,7 @@ Get the person representation.
                 "username": "Football",
                 "first_name": "Alex",
                 "last_name": "King",
-                "birthdate": "10-10-2010",
+                "birthdate": "2015-12-13",
                 "description": "I am alex",
                 "@controls": {
                     "self": {
@@ -1401,6 +1415,10 @@ Get the person representation.
                     "collection": {
                         "href": "/api/persons/"
                     },
+                    "gamsco:hobbyist": {
+                        "href": "api/games/<game>/hobbyists/"
+                    },
+
 
                     "edit": {
                         "href": "/api/persons/1/",
@@ -1425,7 +1443,7 @@ Get the person representation.
                                 "birthdate": {
                                     "description": "Birthdate of the person",
                                     "type": "string",
-                                    "pattern": "^[0-3][0-9]-[01][0-9]-[0-9]{4}$"
+                                    "format": "date"
                                 },
                                 "description": {
                                     "description": "Description of the person",
@@ -1446,7 +1464,7 @@ Get the person representation.
                 "username": "alexa",
                 "first_name": "Alex",
                 "last_name": "King",
-                "birthdate": "10-10-1992"
+                "birthdate": "2000-01-10"
                 "description": "Not entertained",
                     "@controls": {
                         "self": {
@@ -1475,7 +1493,7 @@ Replace the person's representation with a new one. Missing optional fields will
                 "username": "alexa",
                 "first_name": "Alex",
                 "last_name": "King",
-                "birthdate": "10-10-1992"
+                "birthdate": "1900-10-10"
                 "description": "Not entertained",
             }
 
