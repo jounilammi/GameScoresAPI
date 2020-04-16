@@ -12,14 +12,14 @@ class GameCollection(Resource):
 
     def get(self):
         body = GamescoresBuilder(items=[])
-        for game in db.session.query(Game).all():
+        for game_instance in db.session.query(Game).all():
             item = GamescoresBuilder(
-                name=game.name,
-                score_type=game.score_type,
+                name=game_instance.name,
+                score_type=game_instance.score_type,
             )
             item.add_control(
                 "self",
-                url_for("api.gameitem", game_id=game.id)
+                url_for("api.gameitem", game_id=game_instance.id)
             )
             item.add_control("profile", GAME_PROFILE)
             body["items"].append(item)
@@ -53,27 +53,24 @@ class GameCollection(Resource):
         try:
             name = str(request.json["name"])
             score_type = int(request.json["score_type"])
-            game = Game(
+            game_instance = Game(
                 name=name,
                 score_type=score_type
             )
-            print("jee")
-            db.session.add(game)
-
+            db.session.add(game_instance)
             db.session.commit()
-            print("susket")
         except IntegrityError:
             return create_error_response(
                 409,
                 "Already exists",
                 "Game with name {} already exists".format(name)
             )
-        game = db.session.query(Game).filter_by(name=name).first()
+        game_instance = db.session.query(Game).filter_by(name=name).first()
         return Response(
             status=201,
             mimetype=MASON,
             headers={
-                "Location": str(url_for("api.gameitem", game_id=game.id))
+                "Location": str(url_for("api.gameitem", game_id=game_instance.id))
             }
         )
 
@@ -81,18 +78,18 @@ class GameCollection(Resource):
 class GameItem(Resource):
 
     def get(self, game_id):
-        game = db.session.query(Game).filter_by(id=game_id).first()
-        if game is None:
+        game_instance = db.session.query(Game).filter_by(id=game_id).first()
+        if game_instance is None:
 
             return create_error_response(
                 status_code=404,
                 title="Not found",
-                message="game not found"
+                message="game_instance not found"
             )
 
         body = GamescoresBuilder(
-            name=game.name,
-            score_type=game.score_type,
+            name=game_instance.name,
+            score_type=game_instance.score_type,
         )
         body.add_control("self", url_for("api.gameitem", game_id=game_id))
         body.add_control("profile", GAME_PROFILE)
@@ -103,7 +100,7 @@ class GameItem(Resource):
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
     def put(self, game_id):
-        game = db.session.query(Game).filter_by(id=game_id).first()
+        game_instance = db.session.query(Game).filter_by(id=game_id).first()
 
         try:
             validate(request.json, Game.get_schema())
@@ -114,16 +111,16 @@ class GameItem(Resource):
                 message=str(e)
             )
 
-        if game is None:
+        if game_instance is None:
             return create_error_response(
                 status_code=404,
                 title="Unexisting",
-                message="The game does not exist"
+                message="The game_instance does not exist"
             )
         try:
             dic = request.json
-            game.name = dic["name"]
-            game.score_type = dic["score_type"]
+            game_instance.name = dic["name"]
+            game_instance.score_type = dic["score_type"]
 
         except TypeError:
             return create_error_response(
@@ -139,7 +136,7 @@ class GameItem(Resource):
             return create_error_response(
                 status_code=409,
                 title="Handle taken",
-                message="PUT failed due to the  game name being already taken"
+                message="PUT failed due to the  game_instance name being already taken"
             )
 
         return Response(
@@ -148,14 +145,14 @@ class GameItem(Resource):
         )
 
     def delete(self, game_id):
-        game = db.session.query(Game).filter_by(id=game_id).first()
-        if game is None:
+        game_instance = db.session.query(Game).filter_by(id=game_id).first()
+        if game_instance is None:
 
             return create_error_response(
                 status_code=404,
                 title="Not found",
-                message="game not found"
+                message="game_instance not found"
             )
-        db.session.delete(game)
+        db.session.delete(game_instance)
         db.session.commit()
         return Response(status=204, mimetype=MASON)
