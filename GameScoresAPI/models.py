@@ -96,7 +96,7 @@ class Match (db.Model):
         }
         props = schema["properties"] = {}
         props["game"] = {
-            "description": "Name of the game in the match",
+            "description": "ID of the game in the match",
             "type": "number"
         }
         props["player1_id"] = {
@@ -153,5 +153,48 @@ class Game (db.Model):
 def init_db_command():
     db.create_all()
 
+@click.command("testgen")
+@with_appcontext
+def generate_test_data():
+    p1 = Person(
+        username="user-1",
+        first_name="Test",
+        last_name="User"
+    )
+    p2 = Person(
+        username="user-2",
+        first_name="Test",
+        last_name="User"
+    )
+    p3 = Person(
+        username="user-3",
+        first_name="Test",
+        last_name="User"
+    )
+    g1 = Game(
+        name="Tennis",
+        score_type=1
+    )
+    g2 = Game(
+        name="DiscGolf",
+        score_type=2
+    )
+
+    m1 = Match(
+        game=1,
+        person1_id=1,
+        person2_id=2,
+        person1_score=45,
+        person2_score=15
+    )
+
+    db.session.add(p1)
+    db.session.add(p2)
+    db.session.add(p3)
+    db.session.add(g1)
+    db.session.add(g2)
+    db.session.add(m1)
+
+    db.session.commit()
 
 
