@@ -5,7 +5,7 @@
 * **ASSISTANTS: Mika Oja**
 
 ### 10 Minutes
-We went trough our plans of the project with Mika. 
+We went trough our plans of the project with Mika.
 
 ### Action points
 
@@ -31,15 +31,21 @@ In the database we had to change birthdate and time to date from string. We had 
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Meeting 3.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE: March 18, 2020**
+* **ASSISTANTS: Mika Oja**
 
-### Minutes
-*Summary of what was discussed during the meeting*
+### 20 Minutes
+In this meeting we discussed about RESTful API design. The focus was on the design and on our own questions about the design and implementation.
 
 ### Action points
-*List here the actions points discussed with assistants*
+Meeting 3 muistiinpanot ja kysymykset
 
+In this meeting we discussed with Mika a lot about questions we had about design and implementation. Questions such as how game and games should be implemented.
+In the meeting we reached to a following solution:
+match should be transferred to  "api/games/game/match". Also what was discussed during this meeting was that we should implement two participants ("participant" and "participant2").
+
+In addition to this discussion we had noticed during the meeting thigs such as that we had unnecesary items and that we should implement date with format rather than using a pattern, also
+we had a sort by issue but this was a thing that was not required to fix.
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
