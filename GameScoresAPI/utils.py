@@ -65,68 +65,114 @@ class MasonBuilder(dict):
 
 class GamescoresBuilder(MasonBuilder):
 
-    def add_control_delete_sensor(self, sensor):
+    def add_control_all_games(self):
         self.add_control(
-            "senhub:delete",
-            url_for("api.sensoritem", sensor=sensor),
+            "gamsco:games-all",
+            url_for("api.gamecollection",),
+            method="GET",
+            encoding="JSON"
+        )
+
+    def add_control_all_matches(self):
+        self.add_control(
+            "gamsco:matches-all",
+            url_for("api.matchcollection", game_id=game_id),
+            method="GET",
+            encoding="JSON"
+        )
+
+    def add_control_all_persons(self):
+        self.add_control(
+            "gamsco:persons-all",
+            url_for("api.personcollection"),
+            method="GET",
+            encoding="JSON"
+        )
+
+    def add_control_add_game(self):
+        self.add_control(
+            "gamsco:add-game",
+            url_for("api.gamecollection"),
+            method="POST",
+            encoding="json",
+            title="Add a new game",
+            schema=Game.get_schema()
+        )
+
+    def add_control_add_match(self, game):
+        self.add_control(
+            "gamsco:add-match",
+            url_for("api.matchcollection", game=game),
+            method="POST",
+            encoding="json",
+            title="Add a new match for a game",
+            schema=Match.get_schema()
+        )
+
+    def add_control_add_person(self):
+        self.add_control(
+            "gamsco:add-person",
+            url_for("api.personcollection"),
+            method="POST",
+            encoding="json",
+            title="Add a new person",
+            schema=Person.get_schema()
+        )
+
+    def add_control_delete_game(self, game_id):
+        self.add_control(
+            "gamsco:delete-game",
+            url_for("api.gameitem", game_id=game_id
+            ),
             method="DELETE",
-            title="Delete this sensor"
+            title="Delete this game"
         )
 
-    def add_control_add_measurement(self, sensor):
+    def add_control_delete_match(self, game_id, match_id):
         self.add_control(
-            "senhub:add-measurement",
-            url_for("api.measurementcollection", sensor=sensor),
-            method="POST",
-            encoding="json",
-            title="Add a new measurement for this sensor",
-            schema=Measurement.get_schema()
+            "gamsco:delete-match",
+            url_for("api.matchitem", game_id=game_id, match_id=match_id),
+            method="DELETE",
+            title="Delete this match"
         )
 
-    def add_control_add_sensor(self):
+    def add_control_delete_person(self, id):
         self.add_control(
-            "senhub:add-sensor",
-            url_for("api.sensorcollection"),
-            method="POST",
-            encoding="json",
-            title="Add a new sensor",
-            schema=Sensor.get_schema()
+            "gamsco:delete-person",
+            url_for("api.personitem", id=id),
+            method="DELETE",
+            title="Delete this person"
         )
 
-    def add_control_modify_sensor(self, sensor):
+    def add_control_edit_sensor(self, sensor):
         self.add_control(
             "edit",
-            url_for("api.sensoritem", sensor=sensor),
+            url_for("api.gameitem", sensor=sensor),
             method="PUT",
             encoding="json",
-            title="Edit this sensor",
-            schema=Sensor.get_schema()
+            title="Edit this game",
+            schema=Game.get_schema()
         )
 
-    def add_control_get_measurements(self, sensor):
-        base_uri = url_for("api.measurementcollection", sensor=sensor)
-        uri = base_uri + "?start={index}"
+    def add_control_edit_sensor(self, sensor):
         self.add_control(
-            "senhub:measurements",
-            uri,
-            isHrefTemplate=True,
-            schema=self._paginator_schema()
+            "edit",
+            url_for("api.matchitem", sensor=sensor),
+            method="PUT",
+            encoding="json",
+            title="Edit this match",
+            schema=Match.get_schema()
         )
 
-    @staticmethod
-    def _paginator_schema():
-        schema = {
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
-        props = schema["properties"]
-        props["index"] = {
-            "description": "Starting index for pagination",
-            "type": "integer",
-            "default": "0"
-        }
-        return schema
+    def add_control_edit_person(self, id):
+        self.add_control(
+            "edit",
+            url_for("api.personitem", id=id),
+            method="PUT",
+            encoding="json",
+            title="Edit this person",
+            schema=Person.get_schema()
+        )
 
 def create_error_response(status_code, title, message=None):
     resource_url = request.path

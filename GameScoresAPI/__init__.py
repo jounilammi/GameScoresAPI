@@ -5,7 +5,9 @@ from gamescoresapi.constants import (
     MASON,
     LINK_RELATIONS_URL,
     ERROR_PROFILE,
-    SENSOR_PROFILE,
+    GAME_PROFILE,
+    MATCH_PROFILE,
+    PERSON_PROFILE,
     MEASUREMENT_PAGE_SIZE
 )
 
@@ -36,7 +38,7 @@ def create_app(test_config=None):
     from . import models
     from . import api
     app.cli.add_command(models.init_db_command)
-    app.cli.add_command(models.generate_test_data)
+    # app.cli.add_command(models.generate_test_data)
     app.register_blueprint(api.api_bp)
 
     @app.route(LINK_RELATIONS_URL)

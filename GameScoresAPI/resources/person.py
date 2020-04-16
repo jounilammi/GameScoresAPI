@@ -7,16 +7,23 @@ from gamescoresapi.utils import GamescoresBuilder, create_error_response
 
 class PersonCollection(Resource):
 
-    def get():
+    def get(self):
+        pass
 
-    def post():
+    def post(self):
+        pass
+
 
 class PersonItem(Resource):
 
-    def get():
+    def get(self, id):
+        pass
 
-    def post():
+    def post(self, id):
+        pass
 
-    def put():
+    def put(self, id):
+        pass
 
-    def delete():
+    def delete(self, id):
+        pass

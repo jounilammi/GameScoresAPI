@@ -1,6 +1,6 @@
 import click
 from flask.cli import with_appcontext
-from GameScoresAPI import db
+from gamescoresapi import db
 
 
 player = db.Table(
@@ -97,23 +97,23 @@ class Match (db.Model):
         props = schema["properties"] = {}
         props["game"] = {
             "description": "Name of the game in the match",
-            "type": "string"
+            "type": "number"
         }
         props["player1_id"] = {
             "description": "Id of player 1 or team 1",
-            "type": "string"
+            "type": "number"
         }
         props["player2_id"] = {
             "description": "Id of player 1 or team 1",
-            "type": "string"
+            "type": "number"
         }
         props["player1_score"] = {
             "description": "Score of player 1 or team 1",
-            "type": "string"
+            "type": "number"
         }
         props["player2_score"] = {
             "description": "Score of player 2 or team 2",
-            "type": "string"
+            "type": "number"
         }
         return schema
 
@@ -143,7 +143,15 @@ class Game (db.Model):
         }
         props["score_type"] = {
             "description": "Score type of the game",
-            "type": "string"
+            "type": "number"
         }
         return schema
+
+
+@click.command("init-db")
+@with_appcontext
+def init_db_command():
+    db.create_all()
+
+
 
