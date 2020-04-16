@@ -9,12 +9,12 @@ from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError, StatementError
 
-from ..gamescoresapi import db, app, create_app
-from ..gamescoresapi.api import api
-from ..gamescoresapi.resources.game import GameCollection, GameItem
-from ..gamescoresapi.resources.match import MatchCollection, MatchItem
-from ..gamescoresapi.resources.person import PersonCollection, PersonItem
-from ..gamescoresapi.models import Game, Match, Person
+from gamescoresapi import db, create_app
+from gamescoresapi.api import api
+from gamescoresapi.resources.game import GameCollection, GameItem
+from gamescoresapi.resources.match import MatchCollection, MatchItem
+from gamescoresapi.resources.person import PersonCollection, PersonItem
+from gamescoresapi.models import Game, Match, Person
 
 from datetime import datetime
 

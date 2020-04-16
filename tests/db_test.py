@@ -4,9 +4,9 @@ import tempfile
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
-from app import db, Person, Match, Game
+from gamescoresapi.models import Person, Match, Game
+from gamescoresapi import db
 
-import app
 
 
 @pytest.fixture
