@@ -5,31 +5,32 @@ from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
 from gamescoresapi.models import Person, Match, Game
-from gamescoresapi import db
-
-
-
-@pytest.fixture
-def db_handle():
-    db_fd, db_fname = tempfile.mkstemp()
-    app.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_fname
-    app.app.config["TESTING"] = True
-
-    with app.app.app_context():
-        app.db.create_all()
-
-    yield app.db
-
-    app.db.session.remove()
-    os.close(db_fd)
-    os.unlink(db_fname)
-
+from gamescoresapi import db, create_app
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor = dbapi_connection.cursor()
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
+
+@pytest.fixture
+def app():
+    db_fd, db_fname = tempfile.mkstemp()
+    config = {
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///" + db_fname,
+        "TESTING": True
+    }
+
+    app = create_app(config)
+
+    with app.app_context():
+        db.create_all()
+
+    yield app
+
+    os.close(db_fd)
+    os.unlink(db_fname)
+
 
 
 def _get_person(word="a"):
@@ -57,172 +58,179 @@ def _get_game(gamename="a"):
     return(game)
 
 
-def test_create_everything(db_handle):
+def test_create_everything(app):
     '''create everything and test correctness'''
+    with app.app_context():
+        # create everything
+        person1 = _get_person("aaaa")
+        person2 = _get_person("bbbb")
+        game = _get_game("tennis")
+        match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
-    # create everything
-    person1 = _get_person("aaaa")
-    person2 = _get_person("bbbb")
-    game = _get_game("tennis")
-    match = _get_match(p1_id=1, p2_id=2, game_id=1)
+        db.session.add(person1)
+        db.session.add(person2)
+        db.session.add(game)
+        db.session.add(match)
 
-    db_handle.session.add(person1)
-    db_handle.session.add(person2)
-    db_handle.session.add(game)
-    db_handle.session.add(match)
+        db.session.commit()
 
-    db_handle.session.commit()
+        # make sure they exist
+        assert game.name == "tennis"
+        assert game.id == 1
 
-    # make sure they exist
-    assert game.name == "tennis"
-    assert game.id == 1
-
-    assert Person.query.count() == 2
-    assert Game.query.count() == 1
-    assert Match.query.count() == 1
+        assert Person.query.count() == 2
+        assert Game.query.count() == 1
+        assert Match.query.count() == 1
 
 
-def test_check_relationships(db_handle):
+def test_check_relationships(app):
     ''' test foreign keys '''
-    person1 = _get_person("aaaa")
-    person2 = _get_person("bbbb")
-    game = _get_game("tennis")
-    match = _get_match(p1_id=1, p2_id=2, game_id=1)
+    with app.app_context():
+        person1 = _get_person("aaaa")
+        person2 = _get_person("bbbb")
+        game = _get_game("tennis")
+        match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
-    db_handle.session.add(person1)
-    db_handle.session.add(person2)
-    db_handle.session.add(game)
-    db_handle.session.add(match)
+        db.session.add(person1)
+        db.session.add(person2)
+        db.session.add(game)
+        db.session.add(match)
 
-    db_handle.session.commit()
+        db.session.commit()
 
-    assert Match.query.filter_by(id=1).first().player1_id == \
-        Person.query.filter_by(id=1).first().id
-    assert Match.query.filter_by(id=1).first().id == \
-        Game.query.filter_by(id=1).first().id
-    assert Match.query.filter_by(id=1).first().player2_id == \
-        Person.query.filter_by(id=2).first().id
+        assert Match.query.filter_by(id=1).first().player1_id == \
+            Person.query.filter_by(id=1).first().id
+        assert Match.query.filter_by(id=1).first().id == \
+            Game.query.filter_by(id=1).first().id
+        assert Match.query.filter_by(id=1).first().player2_id == \
+            Person.query.filter_by(id=2).first().id
 
 
-def test_unique(db_handle):
+def test_unique(app):
     '''
     Testing uniqueness' of values that are supposed to be unique i.e. can't
     create two identical instances
     '''
-    person_1 = _get_person()
-    person_2 = _get_person()
-    # match_1 = _get_match()
-    # match_2 = _get_match()
-    game_1 = _get_game()
-    game_2 = _get_game()
-    db_handle.session.add(person_1)
-    db_handle.session.add(person_2)
-    # db_handle.session.add(match_1)
-    # db_handle.session.add(match_2)
-    db_handle.session.add(game_1)
-    db_handle.session.add(game_2)
-    with pytest.raises(IntegrityError):
-        db_handle.session.commit()
-    db.session.rollback()
+    with app.app_context():
+        person_1 = _get_person()
+        person_2 = _get_person()
+        # match_1 = _get_match()
+        # match_2 = _get_match()
+        game_1 = _get_game()
+        game_2 = _get_game()
+        db.session.add(person_1)
+        db.session.add(person_2)
+        # db.session.add(match_1)
+        # db.session.add(match_2)
+        db.session.add(game_1)
+        db.session.add(game_2)
+        with pytest.raises(IntegrityError):
+            db.session.commit()
+        db.session.rollback()
 
 
-def test_update(db_handle):
+def test_update(app):
     '''Testing updating information of player with id 1'''
-    person = _get_person()
-    db_handle.session.add(person)
-    db_handle.session.commit()
+    with app.app_context():
+        person = _get_person()
+        db.session.add(person)
+        db.session.commit()
 
-    Person.query.filter_by(id=1).update({"username": "petteri"})
-    db_handle.session.add(person)
-    db_handle.session.commit()
-    assert Person.query.filter_by(id=1).first().username == "petteri"
+        Person.query.filter_by(id=1).update({"username": "petteri"})
+        db.session.add(person)
+        db.session.commit()
+        assert Person.query.filter_by(id=1).first().username == "petteri"
 
 
-def test_remove(db_handle):
+def test_remove(app):
     ''' test removing person from DB'''
-    person1 = _get_person("aaaa")
-    person2 = _get_person("bbbb")
-    game = _get_game("tennis")
-    match = _get_match(p1_id=1, p2_id=2, game_id=1)
+    with app.app_context():
+        person1 = _get_person("aaaa")
+        person2 = _get_person("bbbb")
+        game = _get_game("tennis")
+        match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
-    db_handle.session.add(person1)
-    db_handle.session.add(person2)
-    db_handle.session.add(game)
-    db_handle.session.add(match)
+        db.session.add(person1)
+        db.session.add(person2)
+        db.session.add(game)
+        db.session.add(match)
 
-    db_handle.session.commit()
+        db.session.commit()
 
-    Person.query.filter_by(id=1).delete()
-    db_handle.session.commit()
+        Person.query.filter_by(id=1).delete()
+        db.session.commit()
 
-    with pytest.raises(AttributeError):
-        assert Person.query.filter_by(id=1).first().id == 1
+        with pytest.raises(AttributeError):
+            assert Person.query.filter_by(id=1).first().id == 1
 
 
-def test_set_null_on_delete(db_handle):
+def test_set_null_on_delete(app):
     ''' test that foreign key is set null when the source is deleted'''
-    person1 = _get_person("aaaa")
-    person2 = _get_person("bbbb")
-    game = _get_game("tennis")
-    match = _get_match(p1_id=1, p2_id=2, game_id=1)
+    with app.app_context():
+        person1 = _get_person("aaaa")
+        person2 = _get_person("bbbb")
+        game = _get_game("tennis")
+        match = _get_match(p1_id=1, p2_id=2, game_id=1)
 
-    db_handle.session.add(person1)
-    db_handle.session.add(person2)
-    db_handle.session.add(game)
-    db_handle.session.add(match)
+        db.session.add(person1)
+        db.session.add(person2)
+        db.session.add(game)
+        db.session.add(match)
 
-    db_handle.session.commit()
+        db.session.commit()
 
-    Person.query.filter_by(id=1).delete()
-    db_handle.session.commit()
+        Person.query.filter_by(id=1).delete()
+        db.session.commit()
 
-    with pytest.raises(AssertionError):
-        assert Match.query.filter_by(id=1).first().player1_id == 1
-    assert Match.query.filter_by(id=1).first().player1_id is None
+        with pytest.raises(AssertionError):
+            assert Match.query.filter_by(id=1).first().player1_id == 1
+        assert Match.query.filter_by(id=1).first().player1_id is None
 
 
-def test_foreign_key_relationship_match_to_game(db_handle):
+def test_foreign_key_relationship_match_to_game(app):
     """
     Tests that we can't assign match in a game that doesn't exist.
     """
-    person1 = _get_person()
-    person2 = Person(
-        username="NickNamesss",
-        first_name="Testsssy",
-        last_name="Testssser"
-    )
-    match = Match(
-        game=1,
-        player1_id=1,
-        player2_id=2,
-        player1_score=23,
-        player2_score=33
-    )
-    db_handle.session.add(person1)
-    db_handle.session.add(person2)
-    db_handle.session.add(match)
-    with pytest.raises(IntegrityError):
-        db_handle.session.commit()
-    db.session.rollback()
+    with app.app_context():
+        person1 = _get_person()
+        person2 = Person(
+            username="NickNamesss",
+            first_name="Testsssy",
+            last_name="Testssser"
+        )
+        match = Match(
+            game=1,
+            player1_id=1,
+            player2_id=2,
+            player1_score=23,
+            player2_score=33
+        )
+        db.session.add(person1)
+        db.session.add(person2)
+        db.session.add(match)
+        with pytest.raises(IntegrityError):
+            db.session.commit()
+        db.session.rollback()
 
 
-def test_foreign_key_relationship_player1_to_game(db_handle):
+def test_foreign_key_relationship_player1_to_game(app):
     """
     Tests that we can't assign match in a game if player 2 is missing.
     """
-    game = _get_game()
-    person1 = _get_person()
-    db_handle.session.add(person1)
-    db_handle.session.add(game)
+    with app.app_context():
+        game = _get_game()
+        person1 = _get_person()
+        db.session.add(person1)
+        db.session.add(game)
 
-    match = Match(
-        game=1,
-        player1_id=1,
-        player2_id=2,
-        player1_score=23,
-        player2_score=33
-    )
-    db_handle.session.add(match)
-    with pytest.raises(IntegrityError):
-        db_handle.session.commit()
-    db.session.rollback()
+        match = Match(
+            game=1,
+            player1_id=1,
+            player2_id=2,
+            player1_score=23,
+            player2_score=33
+        )
+        db.session.add(match)
+        with pytest.raises(IntegrityError):
+            db.session.commit()
+        db.session.rollback()
