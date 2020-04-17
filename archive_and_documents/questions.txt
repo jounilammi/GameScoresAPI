@@ -30,3 +30,33 @@ matsista participant (Halutaan kaksi participanttia?)
 
 miten olisi järkevä korjata sort-by ongelma (esim. add game vs add album)
 - etsi / jos ei saa korjattua niin ei kuolemanvakavaa
+
+
+
+Meeting 4
+_________________________________________________________________________________________________
+Gamesta linkki matchesiin
+
+Documentation for gamescoresbuilder functions
+-------Add source for code that isnt yours-------
+
+Errori ajossa: try
+lisää dokumentaatiota fileihin
+
+linkki dokumentaatioon esim. metodeille
+Apufunkioille dokumentaatio ja sen linkitys
+
+Lisää milloin esim. validationerror is raised and other errors
+
+docstring for functions
+
+vikassa miitissä tarvitaan test coverage
+
+
+Koita siirtää importit inittiin
+
+Koita löytää montako kertaa modelit katsotaan
+
+Katso commitit, löytyykö joku muutos joka hajotti
+
+2vko: fix tests, test http requests, client working
