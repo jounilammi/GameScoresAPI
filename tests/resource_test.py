@@ -29,7 +29,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 # based on http://flask.pocoo.org/docs/1.0/testing/
 # we don't need a client for database testing, just the db handle
 @pytest.fixture
-def app():
+def client():
     db_fd, db_fname = tempfile.mkstemp()
     config = {
         "SQLALCHEMY_DATABASE_URI": "sqlite:///" + db_fname,
@@ -82,16 +82,17 @@ def _populate_db():
     game = _get_game("tennis")
     game2 = _get_game("golf", score_type=2)
     match = _get_match(p1_id=1, p2_id=2, game_id=1)
-    match = _get_match(p1_id=1, p2_id=2, game_id=2)
+    match2 = _get_match(p1_id=1, p2_id=2, game_id=2)
 
-    db_handle.session.add(person1)
-    db_handle.session.add(person2)
-    db_handle.session.add(game)
-    db_handle.session.add(game2)
-    db_handle.session.add(match)
-    db_handle.session.add(match2)
+    db.session.add(person1)
+    db.session.add(person2)
+    db.session.add(game)
+    db.session.add(game2)
+    db.session.add(match)
+    db.session.add(match2)
 
-    db_handle.session.commit()
+    db.session.commit()
+
 
 def _check_namespace(client, response):
     """
@@ -103,6 +104,7 @@ def _check_namespace(client, response):
     resp = client.get(ns_href)
     assert resp.status_code == 200
 
+
 def _check_control_get_method(ctrl, client, obj):
     """
     Checks a GET type control from a JSON object be it root document or an item
@@ -112,6 +114,7 @@ def _check_control_get_method(ctrl, client, obj):
     href = obj["@controls"][ctrl]["href"]
     resp = client.get(href)
     assert resp.status_code == 200
+
 
 def _check_control_delete_method(ctrl, client, obj):
     """
@@ -125,6 +128,7 @@ def _check_control_delete_method(ctrl, client, obj):
     assert method == "delete"
     resp = client.delete(href)
     assert resp.status_code == 204
+
 
 def _check_control_put_method(ctrl, client, obj):
     """
@@ -149,6 +153,7 @@ def _check_control_put_method(ctrl, client, obj):
     resp = client.put(href, json=body)
     assert resp.status_code == 204
 
+
 def _check_control_post_method(ctrl, client, obj):
     """
     Checks a POST type control from a JSON object be it root document or an item
@@ -172,15 +177,12 @@ def _check_control_post_method(ctrl, client, obj):
     assert resp.status_code == 201
 
 
-
 def _get_game_json(number=1):
     """
     Creates a valid game JSON object to be used for PUT and POST tests.
     """
 
-    return {"name": "extra-game-{}".format(number), "model": "extragame"}
-
-
+    return {"name": "Tennis", "score_type": 1}
 
 
 class TestGameCollection(object):
@@ -192,8 +194,8 @@ class TestGameCollection(object):
         assert resp.status_code == 200
         body = json.loads(resp.data)
         _check_namespace(client, body)
-        _check_control_post_method("senhub:add-game", client, body)
-        assert len(body["items"]) == 3
+        _check_control_post_method("gamsco:add-game", client, body)
+        assert len(body["items"]) == 2
         for item in body["items"]:
             _check_control_get_method("self", client, item)
             _check_control_get_method("profile", client, item)

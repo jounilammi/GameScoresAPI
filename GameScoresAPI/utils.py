@@ -144,7 +144,7 @@ class GamescoresBuilder(MasonBuilder):
             title="Delete this person"
         )
 
-    def add_control_edit_sensor(self, sensor):
+    def add_control_edit_game(self, sensor):
         self.add_control(
             "edit",
             url_for("api.gameitem", sensor=sensor),
@@ -154,7 +154,7 @@ class GamescoresBuilder(MasonBuilder):
             schema=Game.get_schema()
         )
 
-    def add_control_edit_sensor(self, sensor):
+    def add_control_edit_match(self, sensor):
         self.add_control(
             "edit",
             url_for("api.matchitem", sensor=sensor),
