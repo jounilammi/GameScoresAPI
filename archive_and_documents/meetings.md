@@ -86,6 +86,33 @@ we try to create model table multiple times, test error might be caused.
 
 implement one client,cmd interface is OK for client
 
+
+-Diagrammi updated?
+-Don't need blueprint, can use flask_restful
+-not same as exercise 3
+-commenting the code!
+-sources
+-error -> create all in init, problem is that we are trying to create a table that has already been created
+-@click.command("init-db") add to documentation as extra work
+-error e-mail to mika or ivan
+-one option is to remove physical database somethingsomething?
+-documentation (again)
+-testing looks correct
+-documentation (again, but for tests)
+-coverage super important
+-json.dupms(valid) why, stange? in tests -> not correct content type
+
+Jouni shows
+-problem is * import, creating table again when it's already there
+-put all imports from ? to init, so when you call resourses it should be ok, from game.py match.py
+-then its matter of stack trace, accessing models.py and from where
+-check from previous commits when test was working before
+-called models.py multiple times
+
+try to have tests running
+
+implement 1 client that calls 2(or 4) resourses, call, modify and remove resource
+
 ### Minutes
 *Summary of what was discussed during the meeting*
 
