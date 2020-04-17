@@ -54,6 +54,65 @@ we had a sort by issue but this was a thing that was not required to fix.
 * **DATE:**
 * **ASSISTANTS:**
 
+Arrow between matches and game to diagram
+
+Comment code/document gamescorebuilder
+
+where we took code
+
+we have extra work from def init_db_command()
+
+ADD DOCUMENTATION! README!
+
+Returns, exceptions, etc comment these
+
+test_get, test_post -> comment these resource_test.py
+
+show coverage when testing
+
+player db table called maybe twice?
+
+imports to resource init_py (imports we do multiple times)
+
+check changes done
+
+email if we cant get it working
+
+meeting before final meeting, where test and implementation is done
+
+Total meeting length 40 min
+
+we try to create model table multiple times, test error might be caused.
+
+implement one client,cmd interface is OK for client
+
+
+-Diagrammi updated?
+-Don't need blueprint, can use flask_restful
+-not same as exercise 3
+-commenting the code!
+-sources
+-error -> create all in init, problem is that we are trying to create a table that has already been created
+-@click.command("init-db") add to documentation as extra work
+-error e-mail to mika or ivan
+-one option is to remove physical database somethingsomething?
+-documentation (again)
+-testing looks correct
+-documentation (again, but for tests)
+-coverage super important
+-json.dupms(valid) why, stange? in tests -> not correct content type
+
+Jouni shows
+-problem is * import, creating table again when it's already there
+-put all imports from ? to init, so when you call resourses it should be ok, from game.py match.py
+-then its matter of stack trace, accessing models.py and from where
+-check from previous commits when test was working before
+-called models.py multiple times
+
+try to have tests running
+
+implement 1 client that calls 2(or 4) resourses, call, modify and remove resource
+
 ### Minutes
 *Summary of what was discussed during the meeting*
 
