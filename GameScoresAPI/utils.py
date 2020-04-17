@@ -73,7 +73,7 @@ class GamescoresBuilder(MasonBuilder):
             encoding="JSON"
         )
 
-    def add_control_all_matches(self):
+    def add_control_all_matches(self, game_id):
         self.add_control(
             "gamsco:matches-all",
             url_for("api.matchcollection", game_id=game_id),
@@ -102,7 +102,7 @@ class GamescoresBuilder(MasonBuilder):
     def add_control_add_match(self, game):
         self.add_control(
             "gamsco:add-match",
-            url_for("api.matchcollection", game=game),
+            url_for("api.matchcollection", game_id=game_id),
             method="POST",
             encoding="json",
             title="Add a new match for a game",
@@ -122,8 +122,7 @@ class GamescoresBuilder(MasonBuilder):
     def add_control_delete_game(self, game_id):
         self.add_control(
             "gamsco:delete-game",
-            url_for("api.gameitem", game_id=game_id
-            ),
+            url_for("api.gameitem", game_id=game_id),
             method="DELETE",
             title="Delete this game"
         )
@@ -144,20 +143,20 @@ class GamescoresBuilder(MasonBuilder):
             title="Delete this person"
         )
 
-    def add_control_edit_game(self, sensor):
+    def add_control_edit_game(self, game_id):
         self.add_control(
             "edit",
-            url_for("api.gameitem", sensor=sensor),
+            url_for("api.gameitem", game_id=game_id),
             method="PUT",
             encoding="json",
             title="Edit this game",
             schema=Game.get_schema()
         )
 
-    def add_control_edit_match(self, sensor):
+    def add_control_edit_match(self, match_id):
         self.add_control(
             "edit",
-            url_for("api.matchitem", sensor=sensor),
+            url_for("api.matchitem", match_id=match_id),
             method="PUT",
             encoding="json",
             title="Edit this match",

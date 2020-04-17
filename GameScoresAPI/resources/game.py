@@ -4,7 +4,7 @@ from flask_restful import Resource
 from gamescoresapi import db
 from jsonschema import validate, ValidationError
 from sqlalchemy.exc import IntegrityError
-from gamescoresapi.models import Person, Game, Match
+from gamescoresapi.models import Game
 from gamescoresapi.constants import *
 from gamescoresapi.utils import GamescoresBuilder, create_error_response
 
@@ -12,7 +12,7 @@ class GameCollection(Resource):
 
     def get(self):
         body = GamescoresBuilder(items=[])
-        for game_instance in db.session.query(Game).all():
+        for game_instance in Game.query.all():
             item = GamescoresBuilder(
                 name=game_instance.name,
                 score_type=game_instance.score_type,
@@ -65,7 +65,7 @@ class GameCollection(Resource):
                 "Already exists",
                 "Game with name {} already exists".format(name)
             )
-        game_instance = db.session.query(Game).filter_by(name=name).first()
+        game_instance = Game.query.filter_by(name=name).first()
         return Response(
             status=201,
             mimetype=MASON,
@@ -78,7 +78,7 @@ class GameCollection(Resource):
 class GameItem(Resource):
 
     def get(self, game_id):
-        game_instance = db.session.query(Game).filter_by(id=game_id).first()
+        game_instance = Game.query.filter_by(id=game_id).first()
         if game_instance is None:
 
             return create_error_response(
@@ -100,7 +100,7 @@ class GameItem(Resource):
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
     def put(self, game_id):
-        game_instance = db.session.query(Game).filter_by(id=game_id).first()
+        game_instance = Game.query.filter_by(id=game_id).first()
 
         try:
             validate(request.json, Game.get_schema())
@@ -145,7 +145,7 @@ class GameItem(Resource):
         )
 
     def delete(self, game_id):
-        game_instance = db.session.query(Game).filter_by(id=game_id).first()
+        game_instance = Game.query.filter_by(id=game_id).first()
         if game_instance is None:
 
             return create_error_response(
