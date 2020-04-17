@@ -54,6 +54,38 @@ we had a sort by issue but this was a thing that was not required to fix.
 * **DATE:**
 * **ASSISTANTS:**
 
+Arrow between matches and game to diagram
+
+Comment code/document gamescorebuilder
+
+where we took code
+
+we have extra work from def init_db_command()
+
+ADD DOCUMENTATION! README!
+
+Returns, exceptions, etc comment these
+
+test_get, test_post -> comment these resource_test.py
+
+show coverage when testing
+
+player db table called maybe twice?
+
+imports to resource init_py (imports we do multiple times)
+
+check changes done
+
+email if we cant get it working
+
+meeting before final meeting, where test and implementation is done
+
+Total meeting length 40 min
+
+we try to create model table multiple times, test error might be caused.
+
+implement one client,cmd interface is OK for client
+
 ### Minutes
 *Summary of what was discussed during the meeting*
 
