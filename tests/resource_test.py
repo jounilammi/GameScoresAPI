@@ -18,7 +18,12 @@ from gamescoresapi.models import Game, Match, Person
 
 from datetime import datetime
 
-
+    """
+Source and help received to game.py from
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+and
+https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
+    """
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
