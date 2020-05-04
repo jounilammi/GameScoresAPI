@@ -11,6 +11,13 @@ from gamescoresapi.constants import (
     MEASUREMENT_PAGE_SIZE
 )
 
+"""
+Source and help received to game.py from
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+and
+https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
+"""
+
 db = SQLAlchemy()
 
 # Based on http://flask.pocoo.org/docs/1.0/tutorial/factory/#the-application-factory

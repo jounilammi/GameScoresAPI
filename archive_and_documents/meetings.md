@@ -54,17 +54,17 @@ we had a sort by issue but this was a thing that was not required to fix.
 * **DATE:**
 * **ASSISTANTS:**
 
-Arrow between matches and game to diagram
+Arrow between matches and game to diagram               Maybe?
 
-Comment code/document gamescorebuilder
+Comment code/document gamescorebuilder                  Maybe?
 
-where we took code
+where we took code                                                Done
 
-we have extra work from def init_db_command()
+we have extra work from def init_db_command()               Lisää APPENDID.EXtra workkiin maininta yms
 
 ADD DOCUMENTATION! README!
 
-Returns, exceptions, etc comment these
+Returns, exceptions, etc comment these                          Done for resources
 
 test_get, test_post -> comment these resource_test.py            Done
 

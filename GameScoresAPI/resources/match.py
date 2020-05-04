@@ -8,6 +8,13 @@ from gamescoresapi.models import Person, Game, Match
 from gamescoresapi.constants import *
 from gamescoresapi.utils import GamescoresBuilder, create_error_response
 
+    """
+Source and help received to game.py from
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+and
+https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
+    """
+
 class MatchCollection(Resource):
 
     def get(self):
@@ -31,6 +38,9 @@ class MatchCollection(Resource):
         body.add_control_add_match()
         body.add_namespace("gamsco", LINK_RELATIONS_URL)
 
+        '''
+        Returns list of all matches (GET)
+        '''
         return Response(
             status=200,
             response=json.dumps(body),
@@ -39,14 +49,20 @@ class MatchCollection(Resource):
 
     def post(self):
         if not request.json:
+            '''
+            Content did not use the proper content type, or the request body was not valid JSON.
+            '''
             return create_error_response(
                 415,
                 "Wrong content type",
                 "Request content type must be JSON"
             )
-        
+        '''
+        The client is trying to send a JSON document that doesn't validate against the schema, or has invalid data.
+        '''
         try:
             validate(request.json, Match.get_schema())
+
         except ValidationError as e:
             return create_error_response(
                 status_code=400,
@@ -68,7 +84,11 @@ class MatchCollection(Resource):
             )
             db.session.add(match_instance)
             db.session.commit()
-        
+
+
+        '''
+         If a match with a existing name is added response 409 "Game  with that name already exists"
+        '''
         #except IntegrityError:
         #    return create_error_response(
         #        409,
@@ -77,6 +97,10 @@ class MatchCollection(Resource):
         #    )
         #########
         #match_instance = Match.query.filter_by(????)
+
+        '''
+        Returns response of match_instance (POST)
+        '''
         return Response(
             status=201,
             mimetype=MASON,
@@ -91,6 +115,9 @@ class MatchItem(Resource):
         match_instance = Match.query.filter_by(id=match_id).first()
         if match_instance is None:
 
+            '''
+            The client is trying to send a JSON document that doesn't validate against the schema, or has is missing score_type.
+            '''
             return create_error_response(
                 status_code=404,
                 title="Not found",
@@ -110,12 +137,18 @@ class MatchItem(Resource):
         body_add_control_edit_match(match_id=match_id)
         body_add_control_delete_game(match_id=match_id)
         body.add_namespace("gamsco", LINK_RELATIONS_URL)
+        '''
+        Returns the match representation
+        '''
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
 
     def put(self, match_id):
         match_instance = Match.query.filter_by(id=match_id).first()
 
+        '''
+        The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+        '''
         try:
             validate(request.json, Match.get_schema())
         except ValidationError as e:
@@ -126,6 +159,9 @@ class MatchItem(Resource):
             )
 
         if match_instance is None:
+            '''
+            The client is trying to send a JSON document that doesn't validate against the schema, or has is missing score_type.
+            '''
             reutrn create_error_response(
                 status_code=404,
                 title="Unexisting",
@@ -138,7 +174,10 @@ class MatchItem(Resource):
             match_instance.player2_id = dic["player2_id"]
             match_instance.player1_score = dic["player1_score"]
             match_instance.player2_score = dic["player2_score"]
-        
+
+        '''
+        The client sent a request with the wrong content type or the request body was not valid JSON.
+        '''
         except TypeError:
             return create_error_response(
                 status_code=415,
@@ -148,6 +187,10 @@ class MatchItem(Resource):
 
         try:
             dp.session.commit()
+
+            '''
+            If a match with a existing game_instance is added response 409 is raised
+            '''
         except IntegrityError:
             db.session.rollback()
             return create_error_response(
@@ -155,17 +198,21 @@ class MatchItem(Resource):
                 title="Handle taken",
                 message="PUT failed due to the match_instance name being already taken"
             )
-
+        '''
+        Replace the matche's representation with a new one. Missing optional fields will be set to null.
+        '''
         return Response(
             status=204,
             mimetype=MASON
         )
-        
+
 
     def delete(self, match_id):
         match_instance = Match.query.filter_by(id=match_id).first()
         if match_instance is None:
-
+            '''
+            The client is trying to send a JSON document that doesn't validate against the schema.
+            '''
             return create_error_response(
                 status_code=404,
                 title="Not found",
@@ -173,4 +220,7 @@ class MatchItem(Resource):
             )
         db.session.delete(match_instance)
         db.session.commit()
+        '''
+        Delete match
+        '''
         return Response(status=204, mimetype=MASON)
