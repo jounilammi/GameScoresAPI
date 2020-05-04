@@ -66,7 +66,7 @@ ADD DOCUMENTATION! README!
 
 Returns, exceptions, etc comment these
 
-test_get, test_post -> comment these resource_test.py
+test_get, test_post -> comment these resource_test.py            Done
 
 show coverage when testing
 
