@@ -2,11 +2,11 @@ import json
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
-from gamescoresapi import db
+from .. import db
 from sqlalchemy.exc import IntegrityError
-from gamescoresapi.models import Game
-from gamescoresapi.constants import *
-from gamescoresapi.utils import GamescoresBuilder, create_error_response
+from ..models import Game
+from ..constants import *
+from ..utils import GamescoresBuilder, create_error_response
 
 """
 Source and help received to game.py from
@@ -129,7 +129,6 @@ class GameItem(Resource):
 
     def put(self, game_id):
         game_instance = Game.query.filter_by(id=game_id).first()
-
 
         # The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
 

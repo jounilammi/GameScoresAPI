@@ -1,12 +1,12 @@
 import json
 from flask import Response, request, url_for
 from flask_restful import Resource
-from gamescoresapi import db
+from .. import db
 from jsonschema import validate, ValidationError
 from sqlalchemy.exc import IntegrityError
-from gamescoresapi.models import Person, Game, Match
-from gamescoresapi.constants import *
-from gamescoresapi.utils import GamescoresBuilder, create_error_response
+from ..models import Person, Game, Match
+from ..constants import *
+from ..utils import GamescoresBuilder, create_error_response
 
 """
 Source and help received to game.py from
@@ -17,9 +17,9 @@ https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 
 class MatchCollection(Resource):
 
-    def get(self):
+    def get(self, game_id):
         body = GamescoresBuilder(items=[])
-        for match_instance in Match.query.all():
+        for match_instance in Match.query.filter_by(game=game_id):
             item = GamescoresBuilder(
                 game=match_instance.game,
                 player1_id=match_instance.player1_id,
@@ -29,13 +29,17 @@ class MatchCollection(Resource):
             )
             item.add_control(
                 "self",
-                url_for("api.machitem", match_id=match_instance.id)
+                url_for(
+                    "api.matchitem",
+                    game_id=match_instance.game,
+                    match_id=match_instance.id
+                )
             )
             item.add_control("profile", MATCH_PROFILE)
             body["items"].append(item)
 
-        body.add_control("self", url_for("api.matchcollection"))
-        body.add_control_add_match()
+        body.add_control("self", url_for("api.matchcollection", game_id=game_id))
+        body.add_control_add_match(game_id=game_id)
         body.add_namespace("gamsco", LINK_RELATIONS_URL)
 
         '''
@@ -47,7 +51,7 @@ class MatchCollection(Resource):
             mimetype=MASON
         )
 
-    def post(self):
+    def post(self, game_id):
         if not request.json:
             '''
             Content did not use the proper content type, or the request body was not valid JSON.
@@ -69,14 +73,14 @@ class MatchCollection(Resource):
                 title="Invalid JSON document",
                 message=str(e)
             )
-        # try:
-        game = int(request.json["game"])
+
+        game_id = int(request.json["game"])
         player1_id = int(request.json["player1_id"])
         player2_id = int(request.json["player2_id"])
         player1_score = int(request.json["player1_score"])
         player2_score = int(request.json["player2_score"])
         match_instance = Match(
-            game=game,
+            game=game_id,
             player1_id=player1_id,
             player2_id=player2_id,
             player1_score=player1_score,
@@ -87,32 +91,20 @@ class MatchCollection(Resource):
 
 
         '''
-        If a match with a existing name is added response 409 "Game  with that name already exists"
-        '''
-        #except IntegrityError:
-        #    return create_error_response(
-        #        409,
-        #        "Already exists",
-        #        "Match with name {} already exists".format(????)
-        #    )
-        #########
-        #match_instance = Match.query.filter_by(????)
-
-        '''
         Returns response of match_instance (POST)
         '''
         return Response(
             status=201,
             mimetype=MASON,
             headers={
-                "Location": str(url_for("api.matchitem", match_id=match_instance.id))
+                "Location": str(url_for("api.matchitem", game_id=game_id, match_id=match_instance.id))
             }
         )
 
 class MatchItem(Resource):
 
-    def get(self, match_id):
-        match_instance = Match.query.filter_by(id=match_id).first()
+    def get(self, game_id, match_id):
+        match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
         if match_instance is None:
 
             '''
@@ -130,12 +122,15 @@ class MatchItem(Resource):
             player2_id=match_instance.player2_id,
             player1_score=match_instance.player1_score,
             player2_score=match_instance.player2_score,
+            place=match_instance.place,
+            time=match_instance.time,
+            comment=match_instance.comment
         )
-        body.add_control("self", url_for("api.matchitem", match_id=match_id))
+        body.add_control("self", url_for("api.matchitem", game_id=game_id, match_id=match_id))
         body.add_control("profile", MATCH_PROFILE)
-        body.add_control("gamsco:matches-all", url_for("api.matchcollection"))
-        body_add_control_edit_match(match_id=match_id)
-        body_add_control_delete_game(match_id=match_id)
+        body.add_control("gamsco:matches-all", url_for("api.matchcollection", game_id=game_id))
+        body.add_control_edit_match(game_id=game_id, match_id=match_id)
+        body.add_control_delete_match(game_id=game_id, match_id=match_id)
         body.add_namespace("gamsco", LINK_RELATIONS_URL)
         '''
         Returns the match representation
@@ -143,8 +138,8 @@ class MatchItem(Resource):
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
 
-    def put(self, match_id):
-        match_instance = Match.query.filter_by(id=match_id).first()
+    def put(self, game_id, match_id):
+        match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
 
         '''
         The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
@@ -174,6 +169,9 @@ class MatchItem(Resource):
             match_instance.player2_id = dic["player2_id"]
             match_instance.player1_score = dic["player1_score"]
             match_instance.player2_score = dic["player2_score"]
+            match_instance.place = dic.get("place", "")
+            match_instance.time = dic.get("time", "")
+            match_instance.comment = dic.get("comment", "")
 
 
             # The client sent a request with the wrong content type or the request body was not valid JSON.
@@ -186,7 +184,7 @@ class MatchItem(Resource):
             )
 
         try:
-            dp.session.commit()
+            db.session.commit()
 
             '''
             If a match with a existing game_instance is added response 409 is raised
@@ -207,8 +205,8 @@ class MatchItem(Resource):
         )
 
 
-    def delete(self, match_id):
-        match_instance = Match.query.filter_by(id=match_id).first()
+    def delete(self, game_id, match_id):
+        match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
         if match_instance is None:
             '''
             The client is trying to send a JSON document that doesn't validate against the schema.

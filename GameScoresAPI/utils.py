@@ -1,7 +1,7 @@
 import json
 from flask import Response, request, url_for
-from gamescoresapi.constants import *
-from gamescoresapi.models import Person, Match, Game
+from .constants import *
+from .models import Person, Match, Game
 
 """
 Source and help received to game.py from
@@ -160,10 +160,10 @@ class GamescoresBuilder(MasonBuilder):
             schema=Game.get_schema()
         )
 
-    def add_control_edit_match(self, match_id):
+    def add_control_edit_match(self,game_id, match_id):
         self.add_control(
             "edit",
-            url_for("api.matchitem", match_id=match_id),
+            url_for("api.matchitem",game_id=game_id, match_id=match_id),
             method="PUT",
             encoding="json",
             title="Edit this match",

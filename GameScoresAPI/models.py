@@ -1,6 +1,6 @@
 import click
 from flask.cli import with_appcontext
-from gamescoresapi import db
+from . import db
 
 """
 Source and help received to game.py from
@@ -21,7 +21,7 @@ player = db.Table(
 
 
 class Person (db.Model):
-    # __tablename__ = "person"
+    __tablename__ = "person"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), nullable=False, unique=True)
     first_name = db.Column(db.String(64), nullable=False)
@@ -54,7 +54,7 @@ class Person (db.Model):
 
 
 class Match (db.Model):
-    # __tablename__ = "match"
+    __tablename__ = "match"
     id = db.Column(db.Integer, primary_key=True)
     game = db.Column(
         db.Integer,
@@ -125,7 +125,7 @@ class Match (db.Model):
 
 
 class Game (db.Model):
-    # __tablename__ = "game"
+    __tablename__ = "game"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
@@ -159,48 +159,48 @@ class Game (db.Model):
 def init_db_command():
     db.create_all()
 
-# @click.command("testgen")
-# @with_appcontext
-# def generate_test_data():
-#     p1 = Person(
-#         username="user-1",
-#         first_name="Test",
-#         last_name="User"
-#     )
-#     p2 = Person(
-#         username="user-2",
-#         first_name="Test",
-#         last_name="User"
-#     )
-#     p3 = Person(
-#         username="user-3",
-#         first_name="Test",
-#         last_name="User"
-#     )
-#     g1 = Game(
-#         name="Tennis",
-#         score_type=1
-#     )
-#     g2 = Game(
-#         name="DiscGolf",
-#         score_type=2
-#     )
+@click.command("testgen")
+@with_appcontext
+def generate_test_data():
+    p1 = Person(
+        username="user-1",
+        first_name="Test",
+        last_name="User"
+    )
+    p2 = Person(
+        username="user-2",
+        first_name="Test",
+        last_name="User"
+    )
+    p3 = Person(
+        username="user-3",
+        first_name="Test",
+        last_name="User"
+    )
+    g1 = Game(
+        name="Tennis",
+        score_type=1
+    )
+    g2 = Game(
+        name="DiscGolf",
+        score_type=2
+    )
 
-#     m1 = Match(
-#         game=1,
-#         person1_id=1,
-#         person2_id=2,
-#         person1_score=45,
-#         person2_score=15
-#     )
+    m1 = Match(
+        game=1,
+        player1_id=1,
+        player2_id=2,
+        player1_score=45,
+        player2_score=15
+    )
 
-#     db.session.add(p1)
-#     db.session.add(p2)
-#     db.session.add(p3)
-#     db.session.add(g1)
-#     db.session.add(g2)
-#     db.session.add(m1)
+    db.session.add(p1)
+    db.session.add(p2)
+    db.session.add(p3)
+    db.session.add(g1)
+    db.session.add(g2)
+    db.session.add(m1)
 
-#     db.session.commit()
+    db.session.commit()
 
 

@@ -2,10 +2,10 @@ import json
 
 from flask import Response, request, url_for
 from flask_restful import Resource
-from gamescoresapi import db
-from gamescoresapi.models import Person, Game, Match
-from gamescoresapi.constants import *
-from gamescoresapi.utils import GamescoresBuilder, create_error_response
+from .. import db
+from ..models import Person, Game, Match
+from ..constants import *
+from ..utils import GamescoresBuilder, create_error_response
 from sqlalchemy.exc import IntegrityError
 from jsonschema import validate, ValidationError
 
@@ -22,7 +22,7 @@ class PersonCollection(Resource):
 
     def get(self):
         body = GamescoresBuilder(items=[])
-        for game_instance in Game.query.all():
+        for person_instance in Person.query.all():
             item = GamescoresBuilder(
                 username=person_instance.username,
                 first_name=person_instance.first_name,
@@ -137,9 +137,6 @@ class PersonItem(Resource):
         Returns the person's representation
         '''
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
-
-    def post(self, person_id):
-        pass
 
     def put(self, person_id):
         person_instance = Person.query.filter_by(id=person_id).first()
