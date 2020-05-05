@@ -175,9 +175,9 @@ class MatchItem(Resource):
             match_instance.player1_score = dic["player1_score"]
             match_instance.player2_score = dic["player2_score"]
 
-        '''
-        The client sent a request with the wrong content type or the request body was not valid JSON.
-        '''
+
+            # The client sent a request with the wrong content type or the request body was not valid JSON.
+
         except TypeError:
             return create_error_response(
                 status_code=415,
