@@ -1,7 +1,7 @@
 import json
 from flask import Response, request, url_for
 from gamescoresapi.constants import *
-from gamescoresapi.models import *
+from gamescoresapi.models import Person, Match, Game
 
 """
 Source and help received to game.py from
@@ -75,7 +75,7 @@ class GamescoresBuilder(MasonBuilder):
     def add_control_all_games(self):
         self.add_control(
             "gamsco:games-all",
-            url_for("api.gamecollection",),
+            url_for("api.gamecollection"),
             method="GET",
             encoding="JSON"
         )
@@ -106,7 +106,7 @@ class GamescoresBuilder(MasonBuilder):
             schema=Game.get_schema()
         )
 
-    def add_control_add_match(self, game):
+    def add_control_add_match(self, game_id):
         self.add_control(
             "gamsco:add-match",
             url_for("api.matchcollection", game_id=game_id),

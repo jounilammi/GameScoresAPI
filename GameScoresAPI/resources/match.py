@@ -162,7 +162,7 @@ class MatchItem(Resource):
             '''
             The client is trying to send a JSON document that doesn't validate against the schema, or has is missing score_type.
             '''
-            reutrn create_error_response(
+            return create_error_response(
                 status_code=404,
                 title="Unexisting",
                 message="The match_instance does not exist"

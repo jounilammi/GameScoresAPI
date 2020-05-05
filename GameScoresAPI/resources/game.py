@@ -1,8 +1,8 @@
 import json
+from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
 from gamescoresapi import db
-from jsonschema import validate, ValidationError
 from sqlalchemy.exc import IntegrityError
 from gamescoresapi.models import Game
 from gamescoresapi.constants import *
