@@ -1,6 +1,7 @@
 import requests
 import sys
 import json
+import datetime
 
 BASE_URL="127.0.0.1:5000"
 
@@ -212,8 +213,17 @@ def post_person():
         data["Last_name"] = input_last_name
         break
 
-    
-    data["birthdate"] = input("Give person birthdate (optional): ")
+    while True:
+        year = input("Enter year: ")
+        month = input("Enter month: ")
+        day = input("Enter day: ")
+        try:
+            datetime.datetime(year=year, month=month, day=day)
+        except Exception:
+            continue
+        input_birthdate = year+"-"+month+"-"+day
+
+    data["birthdate"] = input_birthdate
     data["description"] = input("Give custom description (optional): ")
 
     return requests.post(BASE_URL + "/api/persons/", data=json.dumps(data))
@@ -385,7 +395,17 @@ def put_match(game_id):
     input_place = input("Give the place the match happened(optional): ")
     data["place"] = input_place
 
-    input_time = input("Give the time and date the match(optional): ")
+    while True:
+        year = input("Enter year: ")
+        month = input("Enter month: ")
+        day = input("Enter day: ")
+        hour = input("Enter hour: ")
+        minute = input("Enter minute: ")
+        try:
+            datetime.datetime(year=year, month=month, day=day, hour=hour,minute=minute)
+        except Exception:
+            continue
+        input_time = year+"-"+month+"-"+day+"-"+hour+"-"+minute
     data["time"] = input_time
 
 
