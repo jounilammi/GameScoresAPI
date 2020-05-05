@@ -60,5 +60,4 @@ def create_app(test_config=None):
     def admin_site():
         return app.send_static_file("html/admin.html")
 
-    print("wolo")
     return app
