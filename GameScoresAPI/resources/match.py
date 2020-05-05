@@ -8,12 +8,12 @@ from gamescoresapi.models import Person, Game, Match
 from gamescoresapi.constants import *
 from gamescoresapi.utils import GamescoresBuilder, create_error_response
 
-    """
+"""
 Source and help received to game.py from
 https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
-    """
+"""
 
 class MatchCollection(Resource):
 
@@ -21,11 +21,11 @@ class MatchCollection(Resource):
         body = GamescoresBuilder(items=[])
         for match_instance in Match.query.all():
             item = GamescoresBuilder(
-                game=match_instance.game
-                player1_id=match_instance.player1_id
-                player2_id=match_instance.player2_id
-                player1_score=match_instance.player1_score
-                player2_score=match_instance.player2_score
+                game=match_instance.game,
+                player1_id=match_instance.player1_id,
+                player2_id=match_instance.player2_id,
+                player1_score=match_instance.player1_score,
+                player2_score=match_instance.player2_score,
             )
             item.add_control(
                 "self",
@@ -69,25 +69,25 @@ class MatchCollection(Resource):
                 title="Invalid JSON document",
                 message=str(e)
             )
-        try:
-            game = int(request.json["game"])
-            player1_id = int(request.json["player1_id"])
-            player2_id = int(request.json["player2_id"])
-            player1_score = int(request.json["player1_score"])
-            player2_score = int(request.json["player2_score"])
-            match_instance = Match(
-                game=game
-                player1_id=player1_id
-                player2_id=player2_id
-                player1_score=player1_score
-                player2_score=player2_score
-            )
-            db.session.add(match_instance)
-            db.session.commit()
+        # try:
+        game = int(request.json["game"])
+        player1_id = int(request.json["player1_id"])
+        player2_id = int(request.json["player2_id"])
+        player1_score = int(request.json["player1_score"])
+        player2_score = int(request.json["player2_score"])
+        match_instance = Match(
+            game=game,
+            player1_id=player1_id,
+            player2_id=player2_id,
+            player1_score=player1_score,
+            player2_score=player2_score,
+        )
+        db.session.add(match_instance)
+        db.session.commit()
 
 
         '''
-         If a match with a existing name is added response 409 "Game  with that name already exists"
+        If a match with a existing name is added response 409 "Game  with that name already exists"
         '''
         #except IntegrityError:
         #    return create_error_response(
@@ -125,11 +125,11 @@ class MatchItem(Resource):
             )
 
         body = GamescoresBuilder(
-            game=match_instance.game
-            player1_id=match_instance.player1_id
-            player2_id=match_instance.player2_id
-            player1_score=match_instance.player1_score
-            player2_score=match_instance.player2_score
+            game=match_instance.game,
+            player1_id=match_instance.player1_id,
+            player2_id=match_instance.player2_id,
+            player1_score=match_instance.player1_score,
+            player2_score=match_instance.player2_score,
         )
         body.add_control("self", url_for("api.matchitem", match_id=match_id))
         body.add_control("profile", MATCH_PROFILE)

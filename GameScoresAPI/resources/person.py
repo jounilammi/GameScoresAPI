@@ -10,12 +10,12 @@ from sqlalchemy.exc import IntegrityError
 from jsonschema import validate, ValidationError
 
 
-    """
+"""
 Source and help received to game.py from
 https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
-    """
+"""
 
 
 class PersonCollection(Resource):
@@ -78,14 +78,14 @@ class PersonCollection(Resource):
             last_name = str(request.json["last_name"])
             person_instance = Person(
                 username=username,
-                first_name=first_name
+                first_name=first_name,
                 last_name=last_name
             )
             db.session.add(person_instance)
             db.session.commit()
-        '''
-         If a person with a existing name is added response 409 "Game  with that name already exists"
-        '''
+            '''
+            If a person with a existing name is added response 409 "Game  with that name already exists"
+            '''
         except IntegrityError:
             return create_error_response(
                 409,
@@ -171,9 +171,9 @@ class PersonItem(Resource):
             person_instance.first_name = dic["first_name"]
             person_instance.last_name = dic["score_type"]
 
-        '''
-        The client sent a request with the wrong content type or the request body was not valid JSON.
-        '''
+            '''
+            The client sent a request with the wrong content type or the request body was not valid JSON.
+            '''
         except TypeError:
             return create_error_response(
                 status_code=415,

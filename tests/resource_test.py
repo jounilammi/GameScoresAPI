@@ -18,12 +18,12 @@ from gamescoresapi.models import Game, Match, Person
 
 from datetime import datetime
 
-    """
+"""
 Source and help received to game.py from
 https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
-    """
+"""
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
@@ -76,6 +76,7 @@ def _get_match(p1_id, p2_id, game_id):
 def _get_game(gamename="a", score_type=1):
     game = Game(name=gamename, score_type=1)
     return(game)
+
 
 def _populate_db():
     """
@@ -195,10 +196,10 @@ class TestGameCollection(object):
     RESOURCE_URL = "/api/games/"
 
     def test_get(self, client):
-    """
-    Checks a GET type control from a JSON object be it root document or an item
-    in a collection. Also checks that the URL of the control can be accessed.
-    """
+        """
+        Checks a GET type control from a JSON object be it root document or an item
+        in a collection. Also checks that the URL of the control can be accessed.
+        """
 
         resp = client.get(self.RESOURCE_URL)
         assert resp.status_code == 200
@@ -211,11 +212,11 @@ class TestGameCollection(object):
             _check_control_get_method("profile", client, item)
 
     def test_post(self, client):
-    """
-    Checks a POST type test from a JSON object be it root document or an item
-    in a collection. Checks that using the control results in the correct
-    status code of 201. Tests the content type and validates that it exist.
-    """
+        """
+        Checks a POST type test from a JSON object be it root document or an item
+        in a collection. Checks that using the control results in the correct
+        status code of 201. Tests the content type and validates that it exist.
+        """
 
 
         valid = _get_game_json()
@@ -247,10 +248,10 @@ class TestGameItem(object):
     INVALID_URL = "/api/games/23341/"
 
     def test_get(self, client):
-    """
-    Checks a GET type control from a JSON object be it root document or an item
-    in a collection. Also checks that the URL of the control can be accessed.
-    """
+        """
+        Checks a GET type control from a JSON object be it root document or an item
+        in a collection. Also checks that the URL of the control can be accessed.
+        """
 
         resp = client.get(self.RESOURCE_URL)
         assert resp.status_code == 200
@@ -264,14 +265,14 @@ class TestGameItem(object):
         assert resp.status_code == 404
 
     def test_put(self, client):
-    """
-    Checks a PUT type control from a JSON object be it root document or an item
-    in a collection. In addition to checking the "href" attribute, also checks
-    that method, encoding and schema can be found from the control. Also
-    validates a valid game against the schema of the control to ensure that
-    they match. Finally checks that using the control results in the correct
-    status code of 204.
-    """
+        """
+        Checks a PUT type control from a JSON object be it root document or an item
+        in a collection. In addition to checking the "href" attribute, also checks
+        that method, encoding and schema can be found from the control. Also
+        validates a valid game against the schema of the control to ensure that
+        they match. Finally checks that using the control results in the correct
+        status code of 204.
+        """
 
         valid = _get_game_json()
 
@@ -298,11 +299,11 @@ class TestGameItem(object):
         assert resp.status_code == 400
 
     def test_delete(self, client):
-    """
-    Checks a DELETE type control from a JSON object be it root document or an
-    item in a collection. Checks the contrl's method in addition to its "href".
-    Also checks that using the control results in the correct status code of 204.
-    """
+        """
+        Checks a DELETE type control from a JSON object be it root document or an
+        item in a collection. Checks the contrl's method in addition to its "href".
+        Also checks that using the control results in the correct status code of 204.
+        """
 
         resp = client.delete(self.RESOURCE_URL)
         assert resp.status_code == 204
