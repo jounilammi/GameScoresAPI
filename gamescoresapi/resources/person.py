@@ -1,5 +1,5 @@
 import json
-
+import datetime
 from flask import Response, request, url_for
 from flask_restful import Resource
 from .. import db
@@ -27,6 +27,8 @@ class PersonCollection(Resource):
                 username=person_instance.username,
                 first_name=person_instance.first_name,
                 last_name=person_instance.last_name,
+                birthdate=str(person_instance.birthdate),
+                description=person_instance.description
             )
             item.add_control(
                 "self",
@@ -76,11 +78,28 @@ class PersonCollection(Resource):
             username = str(request.json["username"])
             first_name = str(request.json["first_name"])
             last_name = str(request.json["last_name"])
+            description = request.json.get("description", "")
+
             person_instance = Person(
                 username=username,
                 first_name=first_name,
-                last_name=last_name
+                last_name=last_name,
+                description=description
+
             )
+
+            time_parts = request.json.get("birthdate", "")
+            if time_parts:
+                time_parts = time_parts.split("-")
+                try:
+                    person_instance.birthdate = datetime.datetime(
+                        year=int(time_parts[0]),
+                        month=int(time_parts[1]),
+                        day=int(time_parts[2]),
+                    )
+                except Exception:
+                    pass
+
             db.session.add(person_instance)
             db.session.commit()
             '''
@@ -126,6 +145,8 @@ class PersonItem(Resource):
             username=person_instance.username,
             first_name=person_instance.first_name,
             last_name=person_instance.last_name,
+            birthdate=str(person_instance.birthdate),
+            description=person_instance.description
         )
         body.add_control("self", url_for("api.personitem", person_id=person_id))
         body.add_control("profile", PERSON_PROFILE)
@@ -166,7 +187,19 @@ class PersonItem(Resource):
             dic = request.json
             person_instance.username = dic["username"]
             person_instance.first_name = dic["first_name"]
-            person_instance.last_name = dic["score_type"]
+            person_instance.last_name = dic["last_name"]
+            person_instance.description = dic.get("description", "")
+            time_parts = dic.get("birthdate", "")
+            if time_parts:
+                time_parts = time_parts.split("-")
+                try:
+                    person_instance.birthdate = datetime.datetime(
+                        year=int(time_parts[0]),
+                        month=int(time_parts[1]),
+                        day=int(time_parts[2]),
+                    )
+                except Exception:
+                    pass
 
             '''
             The client sent a request with the wrong content type or the request body was not valid JSON.

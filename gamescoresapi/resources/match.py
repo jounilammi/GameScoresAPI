@@ -1,4 +1,5 @@
 import json
+import datetime
 from flask import Response, request, url_for
 from flask_restful import Resource
 from .. import db
@@ -26,6 +27,9 @@ class MatchCollection(Resource):
                 player2_id=match_instance.player2_id,
                 player1_score=match_instance.player1_score,
                 player2_score=match_instance.player2_score,
+                place=match_instance.place,
+                time=str(match_instance.time),
+                comment=match_instance.comment
             )
             item.add_control(
                 "self",
@@ -79,16 +83,33 @@ class MatchCollection(Resource):
         player2_id = int(request.json["player2_id"])
         player1_score = int(request.json["player1_score"])
         player2_score = int(request.json["player2_score"])
+        place = request.json.get("place", "")
+        comment = request.json.get("comment", "")
         match_instance = Match(
             game=game_id,
             player1_id=player1_id,
             player2_id=player2_id,
             player1_score=player1_score,
             player2_score=player2_score,
+            place=place,
+            comment=comment
         )
+        time_parts = request.json.get("time", "")
+        if time_parts:
+            time_parts = time_parts.split("-")
+            try:
+                match_instance.time = datetime.datetime(
+                    year=int(time_parts[0]),
+                    month=int(time_parts[1]),
+                    day=int(time_parts[2]),
+                    hour=int(time_parts[3]),
+                    minute=int(time_parts[4]),
+                )
+            except Exception:
+                pass
+
         db.session.add(match_instance)
         db.session.commit()
-
 
         '''
         Returns response of match_instance (POST)
@@ -123,7 +144,7 @@ class MatchItem(Resource):
             player1_score=match_instance.player1_score,
             player2_score=match_instance.player2_score,
             place=match_instance.place,
-            time=match_instance.time,
+            time=str(match_instance.time),
             comment=match_instance.comment
         )
         body.add_control("self", url_for("api.matchitem", game_id=game_id, match_id=match_id))
@@ -170,8 +191,22 @@ class MatchItem(Resource):
             match_instance.player1_score = dic["player1_score"]
             match_instance.player2_score = dic["player2_score"]
             match_instance.place = dic.get("place", "")
-            match_instance.time = dic.get("time", "")
             match_instance.comment = dic.get("comment", "")
+            time_parts = dic.get("time", "")
+            if time_parts:
+                time_parts = time_parts.split("-")
+                try:
+                    match_instance.time = datetime.datetime(
+                        year=int(time_parts[0]),
+                        month=int(time_parts[1]),
+                        day=int(time_parts[2]),
+                        hour=int(time_parts[3]),
+                        minute=int(time_parts[4])
+                    )
+                except Exception:
+                    pass
+
+
 
 
             # The client sent a request with the wrong content type or the request body was not valid JSON.
@@ -183,19 +218,9 @@ class MatchItem(Resource):
                 message="Content type should be JSON"
             )
 
-        try:
-            db.session.commit()
 
-            '''
-            If a match with a existing game_instance is added response 409 is raised
-            '''
-        except IntegrityError:
-            db.session.rollback()
-            return create_error_response(
-                status_code=409,
-                title="Handle taken",
-                message="PUT failed due to the match_instance name being already taken"
-            )
+        db.session.commit()
+
         '''
         Replace the matche's representation with a new one. Missing optional fields will be set to null.
         '''

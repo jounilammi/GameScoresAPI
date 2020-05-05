@@ -142,10 +142,10 @@ class GamescoresBuilder(MasonBuilder):
             title="Delete this match"
         )
 
-    def add_control_delete_person(self, id):
+    def add_control_delete_person(self, person_id):
         self.add_control(
             "gamsco:delete-person",
-            url_for("api.personitem", id=id),
+            url_for("api.personitem", person_id=id),
             method="DELETE",
             title="Delete this person"
         )
@@ -170,10 +170,10 @@ class GamescoresBuilder(MasonBuilder):
             schema=Match.get_schema()
         )
 
-    def add_control_edit_person(self, id):
+    def add_control_edit_person(self, person_id):
         self.add_control(
             "edit",
-            url_for("api.personitem", id=id),
+            url_for("api.personitem", person_id=id),
             method="PUT",
             encoding="json",
             title="Edit this person",
