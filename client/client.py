@@ -359,6 +359,7 @@ def get_match(game_id):
 def post_match(game_id):
 
     data = {}
+    data["game"] = int(game_id)
     while True:
         input_player1_score = input("Give player 1 score: ")
         if not input_player1_score:
@@ -378,7 +379,7 @@ def post_match(game_id):
     input_place = input("Give the place the match happened(optional): ")
     data["place"] = input_place
 
-    input_time = "1900-1-1"
+    input_time = "1900-1-1-0-0"
     while True:
         print("The time of the match: just press enter when year is prompt if")
         print("you don't want to give the time")
@@ -401,7 +402,7 @@ def post_match(game_id):
         except Exception:
             print("Date was not legit, try again")
             continue
-        input_time = year+"-"+month+"-"+day
+        input_time = year+"-"+month+"-"+day+"-"+hour+"-"+minute
         break
 
     data["time"] = input_time
@@ -421,6 +422,7 @@ def post_match(game_id):
 
 def put_match(game_id):
     data = {}
+    data["game"] = int(game_id)
     while True:
         input_id = input("Give match id: ")
         if not input_id:
@@ -433,7 +435,7 @@ def put_match(game_id):
         if not input_player1_score:
             print("Player 1 score can't be null")
             continue
-        data["player1_score"] = input_player1_score
+        data["player1_score"] = int(input_player1_score)
         break
 
     while True:
@@ -441,13 +443,13 @@ def put_match(game_id):
         if not input_player2_score:
             print("player 2 score can't be null")
             continue
-        data["player2_score"] = input_player2_score
+        data["player2_score"] = int(input_player2_score)
         break
 
     input_place = input("Give the place the match happened(optional): ")
     data["place"] = input_place
 
-    input_time = "1900-1-1"
+    input_time = "1900-1-1-0-0"
     while True:
         print("The time of the match: just press enter when year is prompt if")
         print("you don't want to give the time")
@@ -470,15 +472,15 @@ def put_match(game_id):
         except Exception:
             print("Date was not legit, try again")
             continue
-        input_time = year+"-"+month+"-"+day
+        input_time = year+"-"+month+"-"+day+"-"+hour+"-"+minute
         break
     data["time"] = input_time
 
     input_player1_id = input("Give person 1 id: ")
-    data["player1_id"] = input_player1_id
+    data["player1_id"] = int(input_player1_id)
 
     input_player2_id = input("Give person 2 id: ")
-    data["player2_id"] = input_player2_id
+    data["player2_id"] = int(input_player2_id)
 
     input_comment = input("Comment(optional): ")
     data["comment"] = input_comment
@@ -488,12 +490,14 @@ def put_match(game_id):
 
 
 def delete_match(game_id):
+
     while True:
-        input_id = ("Give match id: ")
+        input_id = input("Give match id: ")
         if not input_id:
             print("Id can't be null")
             continue
         break
+
     return requests.delete(BASE_URL + "/api/games/{}/matches/{}/".format(game_id,input_id))
 
 ###############
