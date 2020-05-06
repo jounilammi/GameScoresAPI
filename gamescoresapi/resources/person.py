@@ -20,6 +20,7 @@ https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 
 class PersonCollection(Resource):
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/person/persons/list-all-persons
     def get(self):
         body = GamescoresBuilder(items=[])
         for person_instance in Person.query.all():
@@ -51,6 +52,7 @@ class PersonCollection(Resource):
             mimetype=MASON
         )
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/person/persons/add-person-information
     def post(self):
         if not request.json:
             '''
@@ -127,6 +129,7 @@ class PersonCollection(Resource):
 
 class PersonItem(Resource):
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/person/person/person-information
     def get(self, person_id):
         person_instance = Person.query.filter_by(id=person_id).first()
         if person_instance is None:
@@ -160,6 +163,7 @@ class PersonItem(Resource):
         '''
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/person/person/edit-person
     def put(self, person_id):
         person_instance = Person.query.filter_by(id=person_id).first()
 
@@ -232,6 +236,7 @@ class PersonItem(Resource):
             mimetype=MASON
         )
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/person/person/delete-person
     def delete(self, person_id):
         person_instance = Person.query.filter_by(id=person_id).first()
         if person_instance is None:

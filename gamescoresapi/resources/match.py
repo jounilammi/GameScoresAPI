@@ -18,6 +18,8 @@ https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 
 class MatchCollection(Resource):
 
+
+    # https://gamescoresapi1.docs.apiary.io/#reference/match/matches/list-all-matches
     def get(self, game_id):
         body = GamescoresBuilder(items=[])
         for match_instance in Match.query.filter_by(game=game_id):
@@ -56,6 +58,7 @@ class MatchCollection(Resource):
             mimetype=MASON
         )
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/match/matches/add-match
     def post(self, game_id):
         if not request.json:
             '''
@@ -125,6 +128,7 @@ class MatchCollection(Resource):
 
 class MatchItem(Resource):
 
+    #https://gamescoresapi1.docs.apiary.io/#reference/match/match/match-information
     def get(self, game_id, match_id):
         match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
         if match_instance is None:
@@ -160,7 +164,7 @@ class MatchItem(Resource):
         '''
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
-
+    # https://gamescoresapi1.docs.apiary.io/#reference/match/match/edit-match
     def put(self, game_id, match_id):
         match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
 
@@ -231,7 +235,7 @@ class MatchItem(Resource):
             mimetype=MASON
         )
 
-
+    # https://gamescoresapi1.docs.apiary.io/#reference/match/match/delete-match
     def delete(self, game_id, match_id):
         match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
         if match_instance is None:

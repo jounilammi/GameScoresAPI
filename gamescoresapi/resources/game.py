@@ -17,6 +17,7 @@ https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 
 class GameCollection(Resource):
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/game/games/list-all-games
     def get(self):
         body = GamescoresBuilder(items=[])
         for game_instance in Game.query.all():
@@ -44,7 +45,7 @@ class GameCollection(Resource):
             response=json.dumps(body),
             mimetype=MASON
         )
-
+    # https://gamescoresapi1.docs.apiary.io/#reference/game/games/add-game
     def post(self):
         if not request.json:
 
@@ -101,6 +102,7 @@ class GameCollection(Resource):
 
 class GameItem(Resource):
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/game/game/game-information
     def get(self, game_id):
         game_instance = Game.query.filter_by(id=game_id).first()
         if game_instance is None:
@@ -129,6 +131,7 @@ class GameItem(Resource):
 
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/game/game/edit-game
     def put(self, game_id):
         game_instance = Game.query.filter_by(id=game_id).first()
 
@@ -190,6 +193,7 @@ class GameItem(Resource):
             mimetype=MASON
         )
 
+    # https://gamescoresapi1.docs.apiary.io/#reference/game/game/delete-game
     def delete(self, game_id):
         game_instance = Game.query.filter_by(id=game_id).first()
         if game_instance is None:
