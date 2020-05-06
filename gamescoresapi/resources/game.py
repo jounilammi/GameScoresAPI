@@ -166,7 +166,6 @@ class GameItem(Resource):
                 message="Content type should be JSON"
             )
 
-
         try:
             db.session.commit()
         except IntegrityError:

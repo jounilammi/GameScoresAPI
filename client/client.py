@@ -2,8 +2,10 @@ import requests
 import sys
 import json
 import datetime
+import os
 
-BASE_URL="http://127.0.0.1:5000"
+BASE_URL = "http://127.0.0.1:5000"
+
 
 def main():
 
@@ -20,10 +22,11 @@ def main():
     exit()
 
 
-#MENU FUNCTIONS#
+# MENU FUNCTIONS#
 def main_menu():
+
     while True:
-        print("----------------------------------------------------------------------\n")
+        print("\n----------------------------------------------------------------------\n")
         print("Welcome to GameScoresAPI client\n\n")
         print("Do you want to handle?\n")
         print("1. Person")
@@ -35,13 +38,14 @@ def main_menu():
         if menu_sel == "":
             print("Wrong input")
             continue
+        clear()
         return menu_sel
 
 
-
 def menu_page_2(menu_sel):
+
     if menu_sel == 1:
-        print("You want to?\n")
+        print("\nYou want to?\n")
         print("1. List all persons")
         print("2. Specific person information")
         print("3. Add a person")
@@ -52,18 +56,18 @@ def menu_page_2(menu_sel):
         print()
 
     elif menu_sel == 2:
-        print("You want to?\n")
+        print("\nYou want to?\n")
         print("1. List all matches")
         print("2. Specific match information")
         print("3. Add a match")
-        print("4. Edit a meatch")
+        print("4. Edit a match")
         print("5. Delete a match")
         print("6. Previous\n")
         sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
         print()
 
     elif menu_sel == 3:
-        print("You want to?\n")
+        print("\nYou want to?\n")
         print("1. List all games")
         print("2. Specific game information")
         print("3. Add a game")
@@ -79,7 +83,7 @@ def menu_page_2(menu_sel):
 
     else:
         print("Wrong input")
-
+    clear()
     return sel
 
 
@@ -167,13 +171,11 @@ def get_persons():
 
 
 def get_person():
-    data = {}
     while True:
         input_id = input("Give person id: ")
         if not input_id:
             print("Id can't be null")
             continue
-        data["id"] = input_id
         break
 
     url = BASE_URL + "/api/persons/{}/".format(input_id)
@@ -191,13 +193,6 @@ def get_person():
 
 def post_person():
     data = {}
-    while True:
-        input_id = input("Give person id: ")
-        if not input_id:
-            print("Id can't be null")
-            continue
-        data["id"] = input_id
-        break
 
     while True:
         input_username = input("Give person username: ")
@@ -223,20 +218,30 @@ def post_person():
         data["Last_name"] = input_last_name
         break
 
+    input_birthdate = "1900-1-1"
     while True:
+        print("The person's birthday: just press enter when year is prompt if")
+        print("you don't want to give birthdate")
+
         year = input("Enter year: ")
+        if year == "":
+            break
         month = input("Enter month: ")
         day = input("Enter day: ")
         try:
-            datetime.datetime(year=year, month=month, day=day)
+            datetime.datetime(year=int(year), month=int(month), day=int(day))
         except Exception:
+            print("Date was not legit, try again")
             continue
         input_birthdate = year+"-"+month+"-"+day
+        break
 
     data["birthdate"] = input_birthdate
     data["description"] = input("Give custom description (optional): ")
-
-    return requests.post(BASE_URL + "/api/persons/", data=json.dumps(data))
+    print(data)
+    return requests.post(BASE_URL + "/api/persons/", data=json.dumps(data),
+                         headers={"Content-type": "application/json"}
+    )
 
 
 def put_person():
@@ -272,10 +277,28 @@ def put_person():
         data["Last_name"] = input_last_name
         break
 
-    data["birthdate"] = input("Give person birthdate (optional): ")
+    input_birthdate = "1900-1-1"
+    while True:
+        print("The person's birthday: just press enter when year is prompt if")
+        print("you don't want to give birthdate")
+
+        year = input("Enter year: ")
+        if year == "":
+            break
+        month = input("Enter month: ")
+        day = input("Enter day: ")
+        try:
+            datetime.datetime(year=int(year), month=int(month), day=int(day))
+        except Exception:
+            print("Date was not legit, try again")
+            continue
+        input_birthdate = year+"-"+month+"-"+day
+        break
+    data["birthdate"] = input_birthdate
     data["description"] = input("Give custom description (optional): ")
 
-    return requests.put(BASE_URL + "/api/persons/{}/".format(input_id), data=json.dumps(data))
+    return requests.put(BASE_URL + "/api/persons/{}/".format(input_id), data=json.dumps(data),
+                        headers={"Content-type": "application/json"})
 
 
 def delete_person():
@@ -364,7 +387,32 @@ def post_match(game_id):
     input_place = input("Give the place the match happened(optional): ")
     data["place"] = input_place
 
-    input_time = input("Give the time and date the match(optional): ")
+    input_time = "1900-1-1"
+    while True:
+        print("The time of the match: just press enter when year is prompt if")
+        print("you don't want to give the time")
+
+        year = input("Enter year: ")
+        if year == "":
+            break
+        month = input("Enter month: ")
+        day = input("Enter day: ")
+        hour = input("Enter hour: ")
+        minute = input("Enter minute: ")
+        try:
+            datetime.datetime(
+                year=int(year),
+                month=int(month),
+                day=int(day),
+                hour=int(hour),
+                minute=int(minute)
+            )
+        except Exception:
+            print("Date was not legit, try again")
+            continue
+        input_time = year+"-"+month+"-"+day
+        break
+
     data["time"] = input_time
 
     input_player1_id = input("Give person 1 id: ")
@@ -407,17 +455,31 @@ def put_match(game_id):
     input_place = input("Give the place the match happened(optional): ")
     data["place"] = input_place
 
+    input_time = "1900-1-1"
     while True:
+        print("The time of the match: just press enter when year is prompt if")
+        print("you don't want to give the time")
+
         year = input("Enter year: ")
+        if year == "":
+            break
         month = input("Enter month: ")
         day = input("Enter day: ")
         hour = input("Enter hour: ")
         minute = input("Enter minute: ")
         try:
-            datetime.datetime(year=year, month=month, day=day, hour=hour,minute=minute)
+            datetime.datetime(
+                year=int(year),
+                month=int(month),
+                day=int(day),
+                hour=int(hour),
+                minute=int(minute)
+            )
         except Exception:
+            print("Date was not legit, try again")
             continue
-        input_time = year+"-"+month+"-"+day+"-"+hour+"-"+minute
+        input_time = year+"-"+month+"-"+day
+        break
     data["time"] = input_time
 
     input_player1_id = input("Give person 1 id: ")
@@ -543,6 +605,6 @@ def delete_game():
 
     return requests.delete(BASE_URL + "/api/games/{}/".format(input_id))
 
-
+clear = lambda: os.system('cls')
 main()
 
