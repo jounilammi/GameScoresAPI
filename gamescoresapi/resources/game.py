@@ -139,6 +139,7 @@ class GameItem(Resource):
 
         try:
             dic = request.json
+            _ = dic["name"]
         except TypeError:
             return create_error_response(
                 status_code=415,

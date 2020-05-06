@@ -390,17 +390,19 @@ class TestGameItem(object):
         assert resp.status_code == 404
 
         # test with another game's name
-        valid["name"] = "tennis"
+        valid["name"] = "golf"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 409
 
         # test with valid (only change model)
-        valid["score_type"] = "test-game-1"
+        valid = _get_game_json()
+        valid.pop("id")
+        valid["score_type"] = 2
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 204
 
         # remove field for 400
-        valid.pop("model")
+        valid.pop("score_type")
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
