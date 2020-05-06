@@ -15,6 +15,7 @@ Mika said that the plan was okay. Only thing that we needed to do was change the
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
+
 ## Meeting 2.
 * **DATE: February 24th, 2020**
 * **ASSISTANTS: Mika Oja**
@@ -30,6 +31,7 @@ In the database we had to change birthdate and time to date from string. We had 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
+
 ## Meeting 3.
 * **DATE: March 18, 2020**
 * **ASSISTANTS: Mika Oja**
@@ -38,7 +40,7 @@ In the database we had to change birthdate and time to date from string. We had 
 In this meeting we discussed about RESTful API design. The focus was on the design and on our own questions about the design and implementation.
 
 ### Action points
-Meeting 3 muistiinpanot ja kysymykset
+Meeting 3 notes and questions
 
 In this meeting we discussed with Mika a lot about questions we had about design and implementation. Questions such as how game and games should be implemented.
 In the meeting we reached to a following solution:
@@ -50,85 +52,33 @@ we had a sort by issue but this was a thing that was not required to fix.
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
+
 ## Meeting 4.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:17.4.2020**
+* **ASSISTANTS:Ivan Sanchez**
 
-Arrow between matches and game to diagram               Maybe?
-
-Comment code/document gamescorebuilder                  Maybe?
-
-where we took code                                                Done
-
-we have extra work from def init_db_command()               Lisää APPENDID.EXtra workkiin maininta yms
-
-ADD DOCUMENTATION! README!
-
-Returns, exceptions, etc comment these                          Done for resources
-
-test_get, test_post -> comment these resource_test.py            Done
-
-show coverage when testing
-
-player db table called maybe twice?
-
-imports to resource init_py (imports we do multiple times)
-
-check changes done
-
-email if we cant get it working
-
-meeting before final meeting, where test and implementation is done
-
-Total meeting length 40 min
-
-we try to create model table multiple times, test error might be caused.
-
-implement one client,cmd interface is OK for client
-
-
--Diagrammi updated?
--Don't need blueprint, can use flask_restful
--not same as exercise 3
--commenting the code!
--sources
--error -> create all in init, problem is that we are trying to create a table that has already been created
--@click.command("init-db") add to documentation as extra work
--error e-mail to mika or ivan
--one option is to remove physical database somethingsomething?
--documentation (again)
--testing looks correct
--documentation (again, but for tests)
--coverage super important
--json.dupms(valid) why, stange? in tests -> not correct content type
-
-Jouni shows
--problem is * import, creating table again when it's already there
--put all imports from ? to init, so when you call resourses it should be ok, from game.py match.py
--then its matter of stack trace, accessing models.py and from where
--check from previous commits when test was working before
--called models.py multiple times
-
-try to have tests running
-
-implement 1 client that calls 2(or 4) resourses, call, modify and remove resource
-
-### Minutes
-*Summary of what was discussed during the meeting*
+### 40 Minutes
+In this meeting we talked about what was still needed to finish the project, main points were tests, commenting the code and what kind of client we could do.
 
 ### Action points
-*List here the actions points discussed with assistants*
+Things that we still needed to do on this project were to fix a diagram in the wiki page, get the testing for the api done.
+A big thing that we were still missing was documenting the code with comments.
+Another thing we wanted to know was that what kind of client we were supposed to do and wanted to know if a command line client was good enough, and it was.
+We also had some mistakes in our code, we tried to create model table multiple times at tests, did imports to resource init_py multiple times.
 
+We asked to move on to the final deadline version, instead of the 6 deliverables, Ivan told us to try to get the tests done and we could have a meeting
+the next week so we wouldn't have to move on to the final deliverable version. In the end we did move to the final deliverable version.
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
-## Midterm meeting
-* **DATE:**
-* **ASSISTANTS:**
 
-### Minutes
-*Summary of what was discussed during the meeting*
+## Midterm meeting
+* **DATE:-**
+* **ASSISTANTS:-**
+
+### 0 Minutes
+We didn't participate in a midterm meeting
 
 ### Action points
 *List here the actions points discussed with assistants*
