@@ -10,7 +10,7 @@ from ..constants import *
 from ..utils import GamescoresBuilder, create_error_response
 
 """
-Source and help received to game.py from
+Source and help received to match.py from
 https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/

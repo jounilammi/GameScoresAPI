@@ -3,7 +3,7 @@ from flask.cli import with_appcontext
 from . import db
 
 """
-Source and help received to game.py from
+Source and help received to models.py from
 https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
