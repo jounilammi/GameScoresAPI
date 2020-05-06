@@ -51,7 +51,6 @@ class PersonCollection(Resource):
             mimetype=MASON
         )
 
-
     def post(self):
         if not request.json:
             '''

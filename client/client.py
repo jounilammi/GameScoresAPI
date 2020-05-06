@@ -2,7 +2,6 @@ import requests
 import sys
 import json
 import datetime
-import os
 
 BASE_URL = "http://127.0.0.1:5000"
 
@@ -38,7 +37,6 @@ def main_menu():
         if menu_sel == "":
             print("Wrong input")
             continue
-        clear()
         return menu_sel
 
 
@@ -83,7 +81,7 @@ def menu_page_2(menu_sel):
 
     else:
         print("Wrong input")
-    clear()
+
     return sel
 
 
@@ -215,7 +213,7 @@ def post_person():
         if not input_last_name:
             print("Last name can't be null")
             continue
-        data["Last_name"] = input_last_name
+        data["last_name"] = input_last_name
         break
 
     input_birthdate = "1900-1-1"
@@ -274,7 +272,7 @@ def put_person():
         if not input_last_name:
             print("Last name can't be null")
             continue
-        data["Last_name"] = input_last_name
+        data["last_name"] = input_last_name
         break
 
     input_birthdate = "1900-1-1"
@@ -344,7 +342,7 @@ def get_match(game_id):
         data["id"] = input_id
         break
 
-    url = BASE_URL + "/api/games/{}/maches/{}/".format(game_id, input_id)
+    url = BASE_URL + "/api/games/{}/matches/{}/".format(game_id, input_id)
     resp = requests.get(url)
     body = resp.json()
     print("Id: "+str(body["id"]))
@@ -359,21 +357,14 @@ def get_match(game_id):
 
 
 def post_match(game_id):
-    data = {}
-    while True:
-        input_id = input("Give match id: ")
-        if not input_id:
-            print("Id can't be null")
-            continue
-        data["id"] = input_id
-        break
 
+    data = {}
     while True:
         input_player1_score = input("Give player 1 score: ")
         if not input_player1_score:
             print("Player 1 score can't be null")
             continue
-        data["player1_score"] = input_player1_score
+        data["player1_score"] = float(input_player1_score)
         break
 
     while True:
@@ -381,7 +372,7 @@ def post_match(game_id):
         if not input_player2_score:
             print("player 2 score can't be null")
             continue
-        data["player2_score"] = input_player2_score
+        data["player2_score"] = float(input_player2_score)
         break
 
     input_place = input("Give the place the match happened(optional): ")
@@ -416,15 +407,16 @@ def post_match(game_id):
     data["time"] = input_time
 
     input_player1_id = input("Give person 1 id: ")
-    data["player1_id"] = input_player1_id
+    data["player1_id"] = int(input_player1_id)
 
     input_player2_id = input("Give person 2 id: ")
-    data["player2_id"] = input_player2_id
+    data["player2_id"] = int(input_player2_id)
 
     input_comment = input("Comment(optional): ")
     data["comment"] = input_comment
 
-    return requests.post(BASE_URL + "/api/games/{}/matches".format(game_id), data=json.dumps(data))
+    return requests.post(BASE_URL + "/api/games/{}/matches/".format(game_id), data=json.dumps(data),
+                         headers={"Content-type": "application/json"})
 
 
 def put_match(game_id):
@@ -491,7 +483,8 @@ def put_match(game_id):
     input_comment = input("Comment(optional): ")
     data["comment"] = input_comment
 
-    return requests.put(BASE_URL + "/api/games/{}/matches/{}/".format(game_id,input_id), data=json.dumps(data))
+    return requests.put(BASE_URL + "/api/games/{}/matches/{}/".format(game_id,input_id), data=json.dumps(data),
+                         headers={"Content-type": "application/json"})
 
 
 def delete_match(game_id):
@@ -522,7 +515,7 @@ def get_games():
 def get_game():
     data = {}
     while True:
-        input_id = input("Give person id: ")
+        input_id = input("Give game id: ")
         if not input_id:
             print("Id can't be null")
             continue
@@ -534,21 +527,13 @@ def get_game():
     resp = requests.get(url)
     body = resp.json()
     print("Id: "+str(body["id"]))
-    print("Name: "+str(body["Name"]))
+    print("Name: "+str(body["name"]))
     print("Score type: "+str(body["score_type"]))
     return
 
 
 def post_game():
     data = {}
-    while True:
-        input_id = input("Give game id: ")
-        if not input_id:
-            print("Id can't be null")
-            continue
-        data["id"] = input_id
-        break
-
     while True:
         input_name = input("Give name of the game: ")
         if not input_name:
@@ -562,10 +547,10 @@ def post_game():
         if not input_score_type:
             print("Score type can't be null")
             continue
-        data["score_type"] = input_score_type
+        data["score_type"] = int(input_score_type)
         break
 
-    return requests.post(BASE_URL + "/api/games/", data=json.dumps(data))
+    return requests.post(BASE_URL + "/api/games/", data=json.dumps(data), headers={"Content-type": "application/json"})
 
 
 def put_game():
@@ -590,9 +575,9 @@ def put_game():
         if not input_score_type:
             print("Score type can't be null")
             continue
-        data["score_type"] = input_score_type
+        data["score_type"] = int(input_score_type)
         break
-    return requests.put(BASE_URL + "/api/games/{}/".format(input_id))
+    return requests.put(BASE_URL + "/api/games/{}/".format(input_id), data=json.dumps(data), headers={"Content-type": "application/json"})
 
 
 def delete_game():
@@ -605,6 +590,6 @@ def delete_game():
 
     return requests.delete(BASE_URL + "/api/games/{}/".format(input_id))
 
-clear = lambda: os.system('cls')
+
 main()
 
