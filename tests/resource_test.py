@@ -190,6 +190,20 @@ def _get_game_json(number=1):
 
     return {"name": "Tennis", "score_type": 1}
 
+def _get_match_json(number=1):
+    """
+    Creates a valid game JSON object to be used for PUT and POST tests.
+    """
+
+    return {"user_name": "Jone", "first_name": "Jouni", "last_name": "Suolakasa"}
+
+def _get_person_json(number=1):
+    """
+    Creates a valid game JSON object to be used for PUT and POST tests.
+    """
+
+    return {"user_name": "Jone", "first_name": "Jouni", "last_name": "Suolakasa"}
+
 
 class TestGameCollection(object):
 
@@ -327,7 +341,7 @@ class TestMatchCollection(object):
         assert resp.status_code == 200
         body = json.loads(resp.data)
         _check_namespace(client, body)
-        _check_control_post_method("gamsco:add-game", client, body)
+        _check_control_post_method("gamsco:add-match", client, body)
         assert len(body["items"]) == 2
         for item in body["items"]:
             _check_control_get_method("self", client, item)
