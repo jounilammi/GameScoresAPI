@@ -44,8 +44,8 @@ After a successful install you now have a working virtualenv to run this API. Yo
 ```deactivate``` into your prompt.
 
 ## Running the api
-Navigate to .../GameScoresAPI/ and give the following commands
-Windows:
+Navigate to .../GameScoresAPI/ and give the following commands  
+Windows:  
 ```
 set FLASK_APP=sensorhub
 set FLASK_ENV=development
@@ -53,13 +53,12 @@ flask init-db # if you do not have a database instance and need to create one
 flask testgen # if you want to fill the database with example data
 flask run
 ```
-Linux/Mac:
+Linux/Mac:  
 ```
 export FLASK_APP=sensorhub
 export FLASK_ENV=development
 flask init-db # if you do not have a database instance and need to create one
 flask testgen # if you want to fill the database with example data
-flask init-db
 flask run
 ```
 ## Database
