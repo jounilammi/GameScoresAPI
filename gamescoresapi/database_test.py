@@ -4,8 +4,8 @@ import tempfile
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
-from gamescoresapi.models import Person, Match, Game
-from gamescoresapi import db, create_app
+from .models import Person, Match, Game
+from . import db, create_app
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):

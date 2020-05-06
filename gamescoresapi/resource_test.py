@@ -9,12 +9,12 @@ from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError, StatementError
 
-from gamescoresapi import db, create_app
-from gamescoresapi.api import api
-from gamescoresapi.resources.game import GameCollection, GameItem
-from gamescoresapi.resources.match import MatchCollection, MatchItem
-from gamescoresapi.resources.person import PersonCollection, PersonItem
-from gamescoresapi.models import Game, Match, Person
+from . import db, create_app
+from .api import api
+from .resources.game import GameCollection, GameItem
+from .resources.match import MatchCollection, MatchItem
+from .resources.person import PersonCollection, PersonItem
+from .models import Game, Match, Person
 
 from datetime import datetime
 
@@ -136,7 +136,55 @@ def _check_control_delete_method(ctrl, client, obj):
     assert resp.status_code == 204
 
 
-def _check_control_put_method(ctrl, client, obj):
+def _check_control_put_method_for_person(ctrl, client, obj):
+    """
+    Checks a PUT type control from a JSON object be it root document or an item
+    in a collection. In addition to checking the "href" attribute, also checks
+    that method, encoding and schema can be found from the control. Also
+    validates a valid game against the schema of the control to ensure that
+    they match. Finally checks that using the control results in the correct
+    status code of 204.
+    """
+
+    ctrl_obj = obj["@controls"][ctrl]
+    href = ctrl_obj["href"]
+    method = ctrl_obj["method"].lower()
+    encoding = ctrl_obj["encoding"].lower()
+    schema = ctrl_obj["schema"]
+    assert method == "put"
+    assert encoding == "json"
+    body = _get_person_json()
+    body["name"] = obj["name"]
+    validate(body, schema)
+    resp = client.put(href, json=body)
+    assert resp.status_code == 204
+
+
+def _check_control_put_method_for_match(ctrl, client, obj):
+    """
+    Checks a PUT type control from a JSON object be it root document or an item
+    in a collection. In addition to checking the "href" attribute, also checks
+    that method, encoding and schema can be found from the control. Also
+    validates a valid game against the schema of the control to ensure that
+    they match. Finally checks that using the control results in the correct
+    status code of 204.
+    """
+
+    ctrl_obj = obj["@controls"][ctrl]
+    href = ctrl_obj["href"]
+    method = ctrl_obj["method"].lower()
+    encoding = ctrl_obj["encoding"].lower()
+    schema = ctrl_obj["schema"]
+    assert method == "put"
+    assert encoding == "json"
+    body = _get_match_json()
+    body["name"] = obj["name"]
+    validate(body, schema)
+    resp = client.put(href, json=body)
+    assert resp.status_code == 204
+
+
+def _check_control_put_method_for_game(ctrl, client, obj):
     """
     Checks a PUT type control from a JSON object be it root document or an item
     in a collection. In addition to checking the "href" attribute, also checks
@@ -160,7 +208,7 @@ def _check_control_put_method(ctrl, client, obj):
     assert resp.status_code == 204
 
 
-def _check_control_post_method(ctrl, client, obj):
+def _check_control_post_method_for_person(ctrl, client, obj):
     """
     Checks a POST type control from a JSON object be it root document or an item
     in a collection. In addition to checking the "href" attribute, also checks
@@ -182,27 +230,72 @@ def _check_control_post_method(ctrl, client, obj):
     resp = client.post(href, json=body)
     assert resp.status_code == 201
 
+def _check_control_post_method_for_match(ctrl, client, obj):
+    """
+    Checks a POST type control from a JSON object be it root document or an item
+    in a collection. In addition to checking the "href" attribute, also checks
+    that method, encoding and schema can be found from the control. Also
+    validates a valid game against the schema of the control to ensure that
+    they match. Finally checks that using the control results in the correct
+    status code of 201.
+    """
+
+    ctrl_obj = obj["@controls"][ctrl]
+    href = ctrl_obj["href"]
+    method = ctrl_obj["method"].lower()
+    encoding = ctrl_obj["encoding"].lower()
+    schema = ctrl_obj["schema"]
+    assert method == "post"
+    assert encoding == "json"
+    body = _get_game_json()
+    validate(body, schema)
+    resp = client.post(href, json=body)
+    assert resp.status_code == 201
+
+def _check_control_post_method_for_game(ctrl, client, obj):
+    """
+    Checks a POST type control from a JSON object be it root document or an item
+    in a collection. In addition to checking the "href" attribute, also checks
+    that method, encoding and schema can be found from the control. Also
+    validates a valid game against the schema of the control to ensure that
+    they match. Finally checks that using the control results in the correct
+    status code of 201.
+    """
+
+    ctrl_obj = obj["@controls"][ctrl]
+    href = ctrl_obj["href"]
+    method = ctrl_obj["method"].lower()
+    encoding = ctrl_obj["encoding"].lower()
+    schema = ctrl_obj["schema"]
+    assert method == "post"
+    assert encoding == "json"
+    body = _get_game_json()
+    validate(body, schema)
+    resp = client.post(href, json=body)
+    assert resp.status_code == 201
 
 def _get_game_json(number=1):
     """
     Creates a valid game JSON object to be used for PUT and POST tests.
     """
 
-    return {"name": "Tennis", "score_type": 1}
+    return {"id": 1, "name": "Tennis", "score_type": 1}
+
 
 def _get_match_json(number=1):
     """
     Creates a valid game JSON object to be used for PUT and POST tests.
     """
 
-    return {"user_name": "Jone", "first_name": "Jouni", "last_name": "Suolakasa"}
+    return {"id": 1, "game": 1, "player1_id": 1,"player2_id": 2, "player1_score": 13, "player2_score": 16}
+
 
 def _get_person_json(number=1):
     """
     Creates a valid game JSON object to be used for PUT and POST tests.
     """
 
-    return {"user_name": "Jone", "first_name": "Jouni", "last_name": "Suolakasa"}
+    return {"id": 1, "user_name": "mattdamon", "first_name": "Matt", "last_name": "Damon"}
 
 
 class TestGameCollection(object):
@@ -242,7 +335,7 @@ class TestGameCollection(object):
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith(self.RESOURCE_URL + valid["name"] + "/")
+        assert resp.headers["Location"].endswith(self.RESOURCE_URL + valid["id"] + "/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
 
@@ -274,7 +367,7 @@ class TestGameItem(object):
         _check_control_get_method("profile", client, body)
         _check_control_get_method("collection", client, body)
         _check_control_put_method("edit", client, body)
-        _check_control_delete_method("senhub:delete", client, body)
+        _check_control_delete_method("gamsco:delete", client, body)
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
 
@@ -329,7 +422,7 @@ class TestGameItem(object):
 
 class TestMatchCollection(object):
 
-    RESOURCE_URL = "/api/games/match/"
+    RESOURCE_URL = "/api/games/1/matches/"
 
     def test_get(self, client):
         """
@@ -355,7 +448,7 @@ class TestMatchCollection(object):
         """
 
 
-        valid = _get_game_json()
+        valid = _get_match_json()
 
         # test with wrong content type
         resp = client.post(self.RESOURCE_URL, data=json.dumps(valid))
@@ -364,7 +457,8 @@ class TestMatchCollection(object):
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith(self.RESOURCE_URL + valid["name"] + "/")
+        assert resp.headers["Location"].endswith(
+            self.RESOURCE_URL + str(valid["id"]) + "/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
 
@@ -373,15 +467,15 @@ class TestMatchCollection(object):
         assert resp.status_code == 409
 
         # remove model field for 400
-        valid.pop("model")
+        valid.pop("game")
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
 
 class TestMatchItem(object):
 
-    RESOURCE_URL = "/api/games/1/"
-    INVALID_URL = "/api/games/23341/"
+    RESOURCE_URL = "/api/games/matches/"
+    INVALID_URL = "/api/games/matches/aa/"
 
     def test_get(self, client):
         """
@@ -396,7 +490,7 @@ class TestMatchItem(object):
         _check_control_get_method("profile", client, body)
         _check_control_get_method("collection", client, body)
         _check_control_put_method("edit", client, body)
-        _check_control_delete_method("senhub:delete", client, body)
+        _check_control_delete_method("gamsco:delete", client, body)
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
 
@@ -410,7 +504,7 @@ class TestMatchItem(object):
         status code of 204.
         """
 
-        valid = _get_game_json()
+        valid = _get_match_json()
 
         # test with wrong content type
         resp = client.put(self.RESOURCE_URL, data=json.dumps(valid))
@@ -419,13 +513,13 @@ class TestMatchItem(object):
         resp = client.put(self.INVALID_URL, json=valid)
         assert resp.status_code == 404
 
-        # test with another game's name
-        valid["name"] = "test-game-2"
+        # test with another matche's name
+        valid["game"] = 5
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 409
 
         # test with valid (only change model)
-        valid["name"] = "test-game-1"
+        valid["game"] = 1
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 204
 
@@ -451,7 +545,7 @@ class TestMatchItem(object):
 
 class TestPersonCollection(object):
 
-    RESOURCE_URL = "/api/games/"
+    RESOURCE_URL = "/api/persons/"
 
     def test_get(self, client):
         """
@@ -463,7 +557,7 @@ class TestPersonCollection(object):
         assert resp.status_code == 200
         body = json.loads(resp.data)
         _check_namespace(client, body)
-        _check_control_post_method("gamsco:add-game", client, body)
+        _check_control_post_method("gamsco:add-person", client, body)
         assert len(body["items"]) == 2
         for item in body["items"]:
             _check_control_get_method("self", client, item)
@@ -477,7 +571,7 @@ class TestPersonCollection(object):
         """
 
 
-        valid = _get_game_json()
+        valid = _get_person_json()
 
         # test with wrong content type
         resp = client.post(self.RESOURCE_URL, data=json.dumps(valid))
@@ -486,7 +580,7 @@ class TestPersonCollection(object):
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith(self.RESOURCE_URL + valid["name"] + "/")
+        assert resp.headers["Location"].endswith(self.RESOURCE_URL + valid["username"] + "/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
 
@@ -502,8 +596,8 @@ class TestPersonCollection(object):
 
 class TestPersonItem(object):
 
-    RESOURCE_URL = "/api/games/1/"
-    INVALID_URL = "/api/games/23341/"
+    RESOURCE_URL = "/api/persons/1/"
+    INVALID_URL = "/api/persons/23341/"
 
     def test_get(self, client):
         """
@@ -532,7 +626,7 @@ class TestPersonItem(object):
         status code of 204.
         """
 
-        valid = _get_game_json()
+        valid = _get_person_json()
 
         # test with wrong content type
         resp = client.put(self.RESOURCE_URL, data=json.dumps(valid))
@@ -542,12 +636,12 @@ class TestPersonItem(object):
         assert resp.status_code == 404
 
         # test with another game's name
-        valid["name"] = "test-game-2"
+        valid["username"] = "test-person-2"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 409
 
         # test with valid (only change model)
-        valid["name"] = "test-game-1"
+        valid["username"] = "test-person-1"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 204
 
