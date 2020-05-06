@@ -62,7 +62,6 @@ def menu_page_2(menu_sel):
         sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
         print()
 
-
     elif menu_sel == 3:
         print("You want to?\n")
         print("1. List all games")
@@ -74,7 +73,6 @@ def menu_page_2(menu_sel):
         sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
         print()
 
-
     elif menu_sel == 4:
         print("Bye!")
         sys.exit(0)
@@ -83,6 +81,7 @@ def menu_page_2(menu_sel):
         print("Wrong input")
 
     return sel
+
 
 def request(menu_sel, func_sel):
 
@@ -166,6 +165,7 @@ def get_persons():
         print("--------------\n")
     return
 
+
 def get_person():
     data = {}
     while True:
@@ -180,13 +180,14 @@ def get_person():
 
     resp = requests.get(url)
     body = resp.json()
-    print("Id: "+str(body["items"]["id"]))
-    print("username: "+str(body["items"]["username"]))
-    print("first name: "+str(body["items"]["first_name"]))
-    print("last name: "+str(body["items"]["last_name"]))
-    print("birthdate: "+str(body["items"]["birthdate"]))
-    print("description: "+str(body["items"]["description"]))
+    print("Id: "+str(body["id"]))
+    print("username: "+str(body["username"]))
+    print("first name: "+str(body["first_name"]))
+    print("last name: "+str(body["last_name"]))
+    print("birthdate: "+str(body["birthdate"]))
+    print("description: "+str(body["description"]))
     return
+
 
 def post_person():
     data = {}
@@ -237,6 +238,7 @@ def post_person():
 
     return requests.post(BASE_URL + "/api/persons/", data=json.dumps(data))
 
+
 def put_person():
     data = {}
     while True:
@@ -262,7 +264,6 @@ def put_person():
         data["first_name"] = input_first_name
         break
 
-
     while True:
         input_last_name = input("Give person last name: ")
         if not input_last_name:
@@ -276,6 +277,7 @@ def put_person():
 
     return requests.put(BASE_URL + "/api/persons/{}/".format(input_id), data=json.dumps(data))
 
+
 def delete_person():
     while True:
         input_id = input("Give person id: ")
@@ -287,9 +289,8 @@ def delete_person():
     return requests.delete(BASE_URL + "/api/persons/{}/".format(input_id))
 
 
-
 ################
-#MATCH REQUESTS#
+# MATCH REQUESTS#
 ################
 
 def get_matches(game_id):
@@ -308,6 +309,7 @@ def get_matches(game_id):
         print("--------------\n")
     return
 
+
 def get_match(game_id):
 
     data = {}
@@ -322,14 +324,14 @@ def get_match(game_id):
     url = BASE_URL + "/api/games/{}/maches/{}/".format(game_id, input_id)
     resp = requests.get(url)
     body = resp.json()
-    print("Id: "+str(body["items"]["id"]))
-    print("place: "+str(body["items"]["place"]))
-    print("time: "+str(body["items"]["time"]))
-    print("player 1 id: "+str(body["items"]["player1_id"]))
-    print("player 2 id: "+str(body["items"]["player2_id"]))
-    print("player 1 score: "+str(body["items"]["player1_score"]))
-    print("player 2 score: "+str(body["items"]["player2_score"]))
-    print("comment: "+str(body["items"]["comment"]))
+    print("Id: "+str(body["id"]))
+    print("place: "+str(body["place"]))
+    print("time: "+str(body["time"]))
+    print("player 1 id: "+str(body["player1_id"]))
+    print("player 2 id: "+str(body["player2_id"]))
+    print("player 1 score: "+str(body["player1_score"]))
+    print("player 2 score: "+str(body["player2_score"]))
+    print("comment: "+str(body["comment"]))
     return
 
 
@@ -429,6 +431,7 @@ def put_match(game_id):
 
     return requests.put(BASE_URL + "/api/games/{}/matches/{}/".format(game_id,input_id), data=json.dumps(data))
 
+
 def delete_match(game_id):
     while True:
         input_id = ("Give match id: ")
@@ -439,8 +442,9 @@ def delete_match(game_id):
     return requests.delete(BASE_URL + "/api/games/{}/matches/{}/".format(game_id,input_id))
 
 ###############
-#GAME REQUESTS#
+# GAME REQUESTS#
 ###############
+
 
 def get_games():
     resp = requests.get(BASE_URL + "/api/games/")
@@ -451,6 +455,7 @@ def get_games():
         print("score type: "+str(item["score_type"]))
         print("--------------\n")
     return
+
 
 def get_game():
     data = {}
@@ -466,9 +471,9 @@ def get_game():
 
     resp = requests.get(url)
     body = resp.json()
-    print("Id: "+str(body["items"]["id"]))
-    print("Name: "+str(body["items"]["Name"]))
-    print("Score type: "+str(body["items"]["score_type"]))
+    print("Id: "+str(body["id"]))
+    print("Name: "+str(body["Name"]))
+    print("Score type: "+str(body["score_type"]))
     return
 
 
@@ -500,6 +505,7 @@ def post_game():
 
     return requests.post(BASE_URL + "/api/games/", data=json.dumps(data))
 
+
 def put_game():
     data = {}
     while True:
@@ -526,6 +532,7 @@ def put_game():
         break
     return requests.put(BASE_URL + "/api/games/{}/".format(input_id))
 
+
 def delete_game():
     while True:
         input_id = input("Give game id: ")
@@ -536,4 +543,6 @@ def delete_game():
 
     return requests.delete(BASE_URL + "/api/games/{}/".format(input_id))
 
+
 main()
+
