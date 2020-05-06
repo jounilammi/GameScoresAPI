@@ -312,7 +312,7 @@ class TestGameCollection(object):
         assert resp.status_code == 200
         body = json.loads(resp.data)
         _check_namespace(client, body)
-        _check_control_post_method("gamsco:add-game", client, body)
+        _check_control_post_method_for_game("gamsco:add-game", client, body)
         assert len(body["items"]) == 2
         for item in body["items"]:
             _check_control_get_method("self", client, item)
@@ -366,7 +366,7 @@ class TestGameItem(object):
         _check_namespace(client, body)
         _check_control_get_method("profile", client, body)
         _check_control_get_method("collection", client, body)
-        _check_control_put_method("edit", client, body)
+        _check_control_put_method_for_game("edit", client, body)
         _check_control_delete_method("gamsco:delete", client, body)
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
@@ -434,7 +434,7 @@ class TestMatchCollection(object):
         assert resp.status_code == 200
         body = json.loads(resp.data)
         _check_namespace(client, body)
-        _check_control_post_method("gamsco:add-match", client, body)
+        _check_control_post_method_for_match("gamsco:add-match", client, body)
         assert len(body["items"]) == 2
         for item in body["items"]:
             _check_control_get_method("self", client, item)
@@ -467,7 +467,7 @@ class TestMatchCollection(object):
         assert resp.status_code == 409
 
         # remove model field for 400
-        valid.pop("game")
+        valid.pop("match")
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
@@ -489,7 +489,7 @@ class TestMatchItem(object):
         _check_namespace(client, body)
         _check_control_get_method("profile", client, body)
         _check_control_get_method("collection", client, body)
-        _check_control_put_method("edit", client, body)
+        _check_control_put_method_for_match("edit", client, body)
         _check_control_delete_method("gamsco:delete", client, body)
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
@@ -557,7 +557,7 @@ class TestPersonCollection(object):
         assert resp.status_code == 200
         body = json.loads(resp.data)
         _check_namespace(client, body)
-        _check_control_post_method("gamsco:add-person", client, body)
+        _check_control_post_method_for_person("gamsco:add-person", client, body)
         assert len(body["items"]) == 2
         for item in body["items"]:
             _check_control_get_method("self", client, item)
@@ -569,7 +569,6 @@ class TestPersonCollection(object):
         in a collection. Checks that using the control results in the correct
         status code of 201. Tests the content type and validates that it exist.
         """
-
 
         valid = _get_person_json()
 
@@ -611,8 +610,8 @@ class TestPersonItem(object):
         _check_namespace(client, body)
         _check_control_get_method("profile", client, body)
         _check_control_get_method("collection", client, body)
-        _check_control_put_method("edit", client, body)
-        _check_control_delete_method("senhub:delete", client, body)
+        _check_control_put_method_for_person("edit", client, body)
+        _check_control_delete_method("gamsco:delete", client, body)
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
 
