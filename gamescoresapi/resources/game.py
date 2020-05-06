@@ -135,6 +135,15 @@ class GameItem(Resource):
         # The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
 
         try:
+            dic = request.json
+        except TypeError:
+            return create_error_response(
+                status_code=415,
+                title="Wrong content type",
+                message="Content type should be JSON"
+            )
+
+        try:
             validate(request.json, Game.get_schema())
         except ValidationError as e:
             return create_error_response(
@@ -152,19 +161,13 @@ class GameItem(Resource):
                 title="Unexisting",
                 message="The game_instance does not exist"
             )
-        try:
-            dic = request.json
-            game_instance.name = dic["name"]
-            game_instance.score_type = dic["score_type"]
+
+        game_instance.name = dic["name"]
+        game_instance.score_type = dic["score_type"]
 
         # The client sent a request with the wrong content type or the request body was not valid JSON.
 
-        except TypeError:
-            return create_error_response(
-                status_code=415,
-                title="Wrong content type",
-                message="Content type should be JSON"
-            )
+
 
         try:
             db.session.commit()

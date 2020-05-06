@@ -1,5 +1,6 @@
 import os
-from flask import Flask
+import json
+from flask import Flask, Response
 from flask_sqlalchemy import SQLAlchemy
 from .constants import (
     MASON,
@@ -59,5 +60,31 @@ def create_app(test_config=None):
     @app.route("/admin/")
     def admin_site():
         return app.send_static_file("html/admin.html")
+
+    @app.route("/api/")
+    def index():
+        body = {
+            "@namespaces": {
+                "gamsco": {
+                    "name": "/gamescores/link-relations/#"
+                }
+            },
+            "@controls": {
+                "gamsco:persons-all": {
+                    "href": "/api/persons/"
+                },
+                "gamsco:matches-all": {
+                    "href": "/api/games/{game}/matches/"
+                },
+                "gamsco:games-all": {
+                    "href": "/api/games/"
+                }
+            }
+        }
+        return Response(
+            status=200,
+            response=json.dumps(body),
+            mimetype=MASON
+        )
 
     return app

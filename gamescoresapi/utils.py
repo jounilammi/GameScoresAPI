@@ -128,7 +128,7 @@ class GamescoresBuilder(MasonBuilder):
 
     def add_control_delete_game(self, game_id):
         self.add_control(
-            "gamsco:delete-game",
+            "gamsco:delete",
             url_for("api.gameitem", game_id=game_id),
             method="DELETE",
             title="Delete this game"
@@ -136,7 +136,7 @@ class GamescoresBuilder(MasonBuilder):
 
     def add_control_delete_match(self, game_id, match_id):
         self.add_control(
-            "gamsco:delete-match",
+            "gamsco:delete",
             url_for("api.matchitem", game_id=game_id, match_id=match_id),
             method="DELETE",
             title="Delete this match"
@@ -144,7 +144,7 @@ class GamescoresBuilder(MasonBuilder):
 
     def add_control_delete_person(self, person_id):
         self.add_control(
-            "gamsco:delete-person",
+            "gamsco:delete",
             url_for("api.personitem", person_id=id),
             method="DELETE",
             title="Delete this person"
