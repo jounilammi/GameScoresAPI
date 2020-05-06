@@ -24,6 +24,7 @@ class PersonCollection(Resource):
         body = GamescoresBuilder(items=[])
         for person_instance in Person.query.all():
             item = GamescoresBuilder(
+                id=person_instance.id,
                 username=person_instance.username,
                 first_name=person_instance.first_name,
                 last_name=person_instance.last_name,
@@ -142,6 +143,7 @@ class PersonItem(Resource):
             )
 
         body = GamescoresBuilder(
+            id=person_instance.id,
             username=person_instance.username,
             first_name=person_instance.first_name,
             last_name=person_instance.last_name,

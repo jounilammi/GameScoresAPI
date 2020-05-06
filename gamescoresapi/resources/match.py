@@ -22,6 +22,7 @@ class MatchCollection(Resource):
         body = GamescoresBuilder(items=[])
         for match_instance in Match.query.filter_by(game=game_id):
             item = GamescoresBuilder(
+                id=match_instance.id,
                 game=match_instance.game,
                 player1_id=match_instance.player1_id,
                 player2_id=match_instance.player2_id,
@@ -138,6 +139,7 @@ class MatchItem(Resource):
             )
 
         body = GamescoresBuilder(
+            id=match_instance.id,
             game=match_instance.game,
             player1_id=match_instance.player1_id,
             player2_id=match_instance.player2_id,

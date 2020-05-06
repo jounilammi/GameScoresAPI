@@ -21,6 +21,7 @@ class GameCollection(Resource):
         body = GamescoresBuilder(items=[])
         for game_instance in Game.query.all():
             item = GamescoresBuilder(
+                id=game_instance.id,
                 name=game_instance.name,
                 score_type=game_instance.score_type,
             )
@@ -113,6 +114,7 @@ class GameItem(Resource):
             )
 
         body = GamescoresBuilder(
+            id=game_instance.id,
             name=game_instance.name,
             score_type=game_instance.score_type,
         )

@@ -157,11 +157,19 @@ class Game (db.Model):
 @click.command("init-db")
 @with_appcontext
 def init_db_command():
+    """
+    Makes 'flask init-db' possible from command line. Initializes DB by
+    creating the tables. Example from https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/sensorhub/models.py
+    """
     db.create_all()
 
 @click.command("testgen")
 @with_appcontext
 def generate_test_data():
+    """
+    Makes 'flask testgen' possible from command line. Fills the DB with
+    sample rows. Example from https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/sensorhub/models.py
+    """
     p1 = Person(
         username="user-1",
         first_name="Test",
