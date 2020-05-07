@@ -236,7 +236,6 @@ def post_person():
 
     data["birthdate"] = input_birthdate
     data["description"] = input("Give custom description (optional): ")
-    print(data)
     return requests.post(BASE_URL + "/api/persons/", data=json.dumps(data),
                          headers={"Content-type": "application/json"}
     )
