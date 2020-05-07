@@ -74,7 +74,7 @@ def create_app(test_config=None):
                     "href": "/api/persons/"
                 },
                 "gamsco:matches-all": {
-                    "href": "/api/games/{game}/matches/"
+                    "href": "/api/games/{game_id}/matches/"
                 },
                 "gamsco:games-all": {
                     "href": "/api/games/"
