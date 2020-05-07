@@ -61,6 +61,9 @@ flask init-db # if you do not have a database instance and need to create one
 flask testgen # if you want to fill the database with example data
 flask run
 ```
+
+## The entry point of the API  
+The entry point of the API is `/api/`.
 ## Running the client
 Navigate to .../GameScoresAPI/client/ and give the following commands
 
