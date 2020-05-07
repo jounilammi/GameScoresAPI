@@ -48,7 +48,7 @@ Navigate to .../GameScoresAPI/ and give the following commands
 Windows:
 ```
 set FLASK_APP=gamescoresapi
-set FLASK_ENV=development
+set FLASK_ENV=production
 flask init-db # if you do not have a database instance and need to create one
 flask testgen # if you want to fill the database with example data
 flask run
@@ -56,7 +56,7 @@ flask run
 Linux/Mac:
 ```
 export FLASK_APP=gamescoresapi
-export FLASK_ENV=development
+export FLASK_ENV=production
 flask init-db # if you do not have a database instance and need to create one
 flask testgen # if you want to fill the database with example data
 flask run
