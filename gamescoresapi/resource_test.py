@@ -509,18 +509,13 @@ class TestMatchItem(object):
         resp = client.put(self.INVALID_URL, json=valid)
         assert resp.status_code == 404
 
-        # test with another matche's name
-        valid["game"] = 5
-        resp = client.put(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 409
-
         # test with valid (only change model)
-        valid["game"] = 1
+        valid["place"] = "Home stadion"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 204
 
         # remove field for 400
-        valid.pop("model")
+        valid.pop("game")
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 

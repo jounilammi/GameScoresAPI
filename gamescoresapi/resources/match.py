@@ -171,6 +171,16 @@ class MatchItem(Resource):
         '''
         The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
         '''
+        if not request.json:
+            '''
+            Content did not use the proper content type, or the request body was not valid JSON.
+            '''
+            return create_error_response(
+                    status_code=415,
+                    title="Wrong content type",
+                    message="Request content type must be JSON"
+                )
+
         try:
             validate(request.json, Match.get_schema())
         except ValidationError as e:

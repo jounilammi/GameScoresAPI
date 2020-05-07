@@ -167,12 +167,27 @@ class PersonItem(Resource):
     def put(self, person_id):
         person_instance = Person.query.filter_by(id=person_id).first()
 
+
+
         '''
-        The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+        The client sent a request with the wrong content type or the request body was not valid JSON.
         '''
+        if not request.json:
+            '''
+            Content did not use the proper content type, or the request body was not valid JSON.
+            '''
+            return create_error_response(
+                    status_code=415,
+                    title="Wrong content type",
+                    message="Request content type must be JSON"
+                )
         try:
+
             validate(request.json, Person.get_schema())
         except ValidationError as e:
+            '''
+            The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+            '''
             return create_error_response(
                 status_code=400,
                 title="Invalid JSON document",
@@ -188,33 +203,26 @@ class PersonItem(Resource):
                 title="Unexisting",
                 message="The person_instance does not exist"
             )
-        try:
-            dic = request.json
-            person_instance.username = dic["username"]
-            person_instance.first_name = dic["first_name"]
-            person_instance.last_name = dic["last_name"]
-            person_instance.description = dic.get("description", "")
-            time_parts = dic.get("birthdate", "")
-            if time_parts:
-                time_parts = time_parts.split("-")
-                try:
-                    person_instance.birthdate = datetime.datetime(
-                        year=int(time_parts[0]),
-                        month=int(time_parts[1]),
-                        day=int(time_parts[2]),
-                    )
-                except Exception:
-                    pass
 
-            '''
-            The client sent a request with the wrong content type or the request body was not valid JSON.
-            '''
-        except TypeError:
-            return create_error_response(
-                status_code=415,
-                title="Wrong content type",
-                message="Content type should be JSON"
-            )
+        dic = request.json
+        person_instance.username = dic["username"]
+        person_instance.first_name = dic["first_name"]
+        person_instance.last_name = dic["last_name"]
+        person_instance.description = dic.get("description", "")
+        time_parts = dic.get("birthdate", "")
+        if time_parts:
+            time_parts = time_parts.split("-")
+            try:
+                person_instance.birthdate = datetime.datetime(
+                    year=int(time_parts[0]),
+                    month=int(time_parts[1]),
+                    day=int(time_parts[2]),
+                )
+            except Exception:
+                pass
+
+
+
 
         try:
             db.session.commit()
