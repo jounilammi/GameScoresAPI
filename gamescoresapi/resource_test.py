@@ -154,7 +154,7 @@ def _check_control_put_method_for_person(ctrl, client, obj):
     assert method == "put"
     assert encoding == "json"
     body = _get_person_json()
-    body["name"] = obj["name"]
+    body["username"] = obj["username"]
     validate(body, schema)
     resp = client.put(href, json=body)
     assert resp.status_code == 204
@@ -178,7 +178,7 @@ def _check_control_put_method_for_match(ctrl, client, obj):
     assert method == "put"
     assert encoding == "json"
     body = _get_match_json()
-    body["name"] = obj["name"]
+    body["player1_id"] = obj["player1_id"]
     validate(body, schema)
     resp = client.put(href, json=body)
     assert resp.status_code == 204
@@ -287,7 +287,7 @@ def _get_match_json(number=1):
     Creates a valid game JSON object to be used for PUT and POST tests.
     """
 
-    return {"id": 1, "game": 1, "player1_id": 1,"player2_id": 2, "player1_score": 13, "player2_score": 16}
+    return {"id": 1, "game": 1, "player1_id": 1, "player2_id": 2, "player1_score": 13, "player2_score": 16}
 
 
 def _get_person_json(number=1):
@@ -475,8 +475,8 @@ class TestMatchCollection(object):
 
 class TestMatchItem(object):
 
-    RESOURCE_URL = "/api/games/matches/"
-    INVALID_URL = "/api/games/matches/aa/"
+    RESOURCE_URL = "/api/games/1/matches/1/"
+    INVALID_URL = "/api/games/1/matches/aa/"
 
     def test_get(self, client):
         """
@@ -489,9 +489,9 @@ class TestMatchItem(object):
         body = json.loads(resp.data)
         _check_namespace(client, body)
         _check_control_get_method("profile", client, body)
-        _check_control_get_method("collection", client, body)
+        _check_control_get_method("gamsco:matches-all", client, body)
         _check_control_put_method_for_match("edit", client, body)
-        _check_control_delete_method("gamsco:delete-game", client, body)
+        _check_control_delete_method("gamsco:delete", client, body)
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
 
