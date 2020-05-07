@@ -70,7 +70,7 @@ Navigate to .../GameScoresAPI/client/ and give the following commands
 python client.py
 
 ## Database
-The API uses a SQLite database that it runs with Flask-SQLAlchemy==2.3.2. You
+The API uses a SQLite database that it runs with Flask-SQLAlchemy 2.3.2.
 ### How to populate the database
 Open a Python3 prompt. Enter the following commands:
 
