@@ -17,7 +17,7 @@ pip3 install virtualenv
 After you have installed virtualenv, go to your desired folder in command prompt and type in
 
 ```
-virtualenv <insert here the virtualenv name>
+virtualenv pwp
 ```
 
 After a successful install, type the following (Linux and MacOS):
