@@ -1,3 +1,6 @@
+# at this point the project is not installable. Please run the project with the instructions given in the README.md
+
+
 # from setuptools import find_packages, setup
 
 # # from course example https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/setup.py  # noqa: E501
