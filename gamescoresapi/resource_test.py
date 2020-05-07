@@ -448,7 +448,6 @@ class TestMatchCollection(object):
         status code of 201. Tests the content type and validates that it exist.
         """
 
-
         valid = _get_match_json()
 
         # test with wrong content type
@@ -463,12 +462,8 @@ class TestMatchCollection(object):
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
 
-        # send same data again for 409
-        resp = client.post(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 409
-
         # remove model field for 400
-        valid.pop("match")
+        valid.pop("player1_id")
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
@@ -615,7 +610,7 @@ class TestPersonItem(object):
         _check_control_get_method("profile", client, body)
         _check_control_get_method("gamsco:persons-all", client, body)
         _check_control_put_method_for_person("edit", client, body)
-        _check_control_delete_method("delete", client, body)
+        _check_control_delete_method("gamsco:delete", client, body)
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
 
