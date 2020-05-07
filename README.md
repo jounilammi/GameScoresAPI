@@ -104,8 +104,9 @@ You have now a populated database with one match.
 
 ## Testing
 
-GameScoresAPI is tested with Python3's ```pytest``` library. When you have the ```virtualenv``` activated, navigate into the main folder of the GameScoresAPI and give the command ```pytest```. The tests run automatically.
-
-__Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client__
+GameScoresAPI is tested with Python3's ```pytest``` library. When you have the ```virtualenv``` activated, navigate into the main folder of the GameScoresAPI ( /GameScoresAPI/) and give the command  
+```pytest```  
+The tests run automatically. If you want a coverage report to be added to the end of the test results, give the command  
+```pytest --cov=gamescoresapi```  
 
 
