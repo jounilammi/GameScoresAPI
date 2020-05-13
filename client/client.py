@@ -37,6 +37,15 @@ def main_menu():
         if menu_sel == "":
             print("Wrong input")
             continue
+        elif menu_sel == 1:
+            return "PERSON"
+        elif menu_sel == 2:
+            return "MATCH"
+        elif menu_sel == 3:
+            return "GAME"
+        elif menu_sel == 4:
+            print("Bye!")
+            sys.exit(0)
         return menu_sel
 
 
@@ -53,6 +62,25 @@ def menu_page_2(menu_sel):
         sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
         print()
 
+        if sel == "":
+            print("Wrong input")
+            continue
+        elif sel == 1:
+            return "GET_PERSONS"
+        elif sel == 2:
+            return "GET_PERSON"
+        elif sel == 3:
+            return "ADD_PERSON"
+        elif sel == 4:
+            return "EDIT_PERSON" 
+        elif sel == 5:
+            return "DELETE_PERSON"
+        elif sel == 6:
+            return "MAIN_MENU"
+        else:
+            print("Wrong input, try again")
+            continue
+
     elif menu_sel == 2:
         print("\nYou want to?\n")
         print("1. List all matches")
@@ -63,6 +91,25 @@ def menu_page_2(menu_sel):
         print("6. Previous\n")
         sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
         print()
+
+        if sel == "":
+            print("Wrong input")
+            continue
+        elif sel == 1:
+            return "GET_MATCHES"
+        elif sel == 2:
+            return "GET_MATCH"
+        elif sel == 3:
+            return "ADD_MATCH"
+        elif sel == 4:
+            return "EDIT_MATCH" 
+        elif sel == 5:
+            return "DELETE_MATCH"
+        elif sel == 6:
+            return "MAIN_MENU"
+        else:
+            print("Wrong input, try again")
+            continue
 
     elif menu_sel == 3:
         print("\nYou want to?\n")
@@ -75,9 +122,24 @@ def menu_page_2(menu_sel):
         sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
         print()
 
-    elif menu_sel == 4:
-        print("Bye!")
-        sys.exit(0)
+        if sel == "":
+            print("Wrong input")
+            continue
+        elif sel == 1:
+            return "GET_GAMES"
+        elif sel == 2:
+            return "GET_GAME"
+        elif sel == 3:
+            return "ADD_GAME"
+        elif sel == 4:
+            return "EDIT_GAME" 
+        elif sel == 5:
+            return "DELETE_GAME"
+        elif sel == 6:
+            return "MAIN_MENU"
+        else:
+            print("Wrong input, try again")
+            continue
 
     else:
         print("Wrong input")
@@ -88,65 +150,65 @@ def menu_page_2(menu_sel):
 def request(menu_sel, func_sel):
 
     # Person
-    if menu_sel == 1 and func_sel == 1:
+    if menu_sel == "PERSON" and func_sel == "GET_PERSONS":
         get_persons()
         main()
-    elif menu_sel == 1 and func_sel == 2:
+    elif menu_sel == "PERSON" and func_sel == "GET_PERSON":
         get_person()
         main()
-    elif menu_sel == 1 and func_sel == 3:
+    elif menu_sel == "PERSON" and func_sel == "ADD_PERSON":
         post_person()
         main()
-    elif menu_sel == 1 and func_sel == 4:
+    elif menu_sel == "PERSON" and func_sel == "EDIT_PERSON":
         put_person()
         main()
-    elif menu_sel == 1 and func_sel == 5:
+    elif menu_sel == "PERSON" and func_sel == "DELETE_PERSON":
         delete_person()
         main()
-    elif menu_sel == 1 and func_sel == 6:
+    elif menu_sel == "PERSON" and func_sel == "MAIN_MENU":
         main()
 
     # Match
-    if menu_sel == 2 and func_sel == 1:
+    if menu_sel == "MATCH" and func_sel == "GET_MATCHES":
         game_id = input("Give id of the game, which matches you want to see: ")
         get_matches(game_id)
         main()
-    elif menu_sel == 2 and func_sel == 2:
+    elif menu_sel == "MATCH" and func_sel == "GET_MATCH":
         game_id = input("Give id of the game, which matches you want to see: ")
         get_match(game_id)
         main()
-    elif menu_sel == 2 and func_sel == 3:
+    elif menu_sel == "MATCH" and func_sel == "ADD_MATCH":
         game_id = input("Give id of the game, which match you want to post: ")
         post_match(game_id)
         main()
-    elif menu_sel == 2 and func_sel == 4:
+    elif menu_sel == "MATCH" and func_sel == "EDIT_MATCH":
         game_id = input("Give id of the game, which match you want to put: ")
         put_match(game_id)
         main()
-    elif menu_sel == 2 and func_sel == 5:
+    elif menu_sel == "MATCH" and func_sel == "DELETE_MATCH":
         game_id = input("Give id of the game, which match you want to delete: ")
         delete_match(game_id)
         main()
-    elif menu_sel == 2 and func_sel == 6:
+    elif menu_sel == "MATCH" and func_sel == "MAIN_MENU":
         main()
 
     # Game
-    if menu_sel == 3 and func_sel == 1:
+    if menu_sel == "GAME" and func_sel == "GET_GAMES":
         get_games()
         main()
-    elif menu_sel == 3 and func_sel == 2:
+    elif menu_sel == "GAME" and func_sel == "GET_GAME":
         get_game()
         main()
-    elif menu_sel == 3 and func_sel == 3:
+    elif menu_sel == "GAME" and func_sel == "ADD_GAME":
         post_game()
         main()
-    elif menu_sel == 3 and func_sel == 4:
+    elif menu_sel == "GAME" and func_sel == "EDIT_GAME":
         put_game()
         main()
-    elif menu_sel == 3 and func_sel == 5:
+    elif menu_sel == "GAME" and func_sel == "DELETE_GAME":
         delete_game()
         main()
-    elif menu_sel == 3 and func_sel == 6:
+    elif menu_sel == "GAME" and func_sel == "MAIN_MENU":
         main()
 
 
