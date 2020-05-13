@@ -33,19 +33,20 @@ def main_menu():
         print("3. Game")
         print("4. Quit\n")
 
-        menu_sel = int(input("Type 1, 2, 3 or 4: "))
-        if menu_sel == "":
-            print("Wrong input")
-            continue
-        elif menu_sel == 1:
+        menu_sel = input("Type 1, 2, 3 or 4: ")
+
+        if menu_sel == "1":
             return "PERSON"
-        elif menu_sel == 2:
+        elif menu_sel == "2":
             return "MATCH"
-        elif menu_sel == 3:
+        elif menu_sel == "3":
             return "GAME"
-        elif menu_sel == 4:
+        elif menu_sel == "4":
             print("Bye!")
             sys.exit(0)
+        else:
+            print("Wrong input")
+            continue
         return menu_sel
 
 
@@ -60,23 +61,23 @@ def menu_page_2(menu_sel):
             print("4. Edit a person")
             print("5. Delete a person")
             print("6. Previous\n")
-            sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
+            sel = input("Type 1, 2, 3, 4, 5 or 6: ")
             print()
 
             if sel == "":
                 print("Wrong input")
                 continue
-            elif sel == 1:
+            elif sel == "1":
                 return "GET_PERSONS"
-            elif sel == 2:
+            elif sel == "2":
                 return "GET_PERSON"
-            elif sel == 3:
+            elif sel == "3":
                 return "ADD_PERSON"
-            elif sel == 4:
+            elif sel == "4":
                 return "EDIT_PERSON"
-            elif sel == 5:
+            elif sel == "5":
                 return "DELETE_PERSON"
-            elif sel == 6:
+            elif sel == "6":
                 return "MAIN_MENU"
             else:
                 print("Wrong input, try again")
@@ -90,23 +91,23 @@ def menu_page_2(menu_sel):
             print("4. Edit a match")
             print("5. Delete a match")
             print("6. Previous\n")
-            sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
+            sel = input("Type 1, 2, 3, 4, 5 or 6: ")
             print()
 
             if sel == "":
                 print("Wrong input")
                 continue
-            elif sel == 1:
+            elif sel == "1":
                 return "GET_MATCHES"
-            elif sel == 2:
+            elif sel == "2":
                 return "GET_MATCH"
-            elif sel == 3:
+            elif sel == "3":
                 return "ADD_MATCH"
-            elif sel == 4:
+            elif sel == "4":
                 return "EDIT_MATCH"
-            elif sel == 5:
+            elif sel == "5":
                 return "DELETE_MATCH"
-            elif sel == 6:
+            elif sel == "6":
                 return "MAIN_MENU"
             else:
                 print("Wrong input, try again")
@@ -120,23 +121,23 @@ def menu_page_2(menu_sel):
             print("4. Edit a game")
             print("5. Delete a game")
             print("6. Previous\n")
-            sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
+            sel = input("Type 1, 2, 3, 4, 5 or 6: ")
             print()
 
             if sel == "":
                 print("Wrong input")
                 continue
-            elif sel == 1:
+            elif sel == "1":
                 return "GET_GAMES"
-            elif sel == 2:
+            elif sel == "2":
                 return "GET_GAME"
-            elif sel == 3:
+            elif sel == "3":
                 return "ADD_GAME"
-            elif sel == 4:
+            elif sel == "4":
                 return "EDIT_GAME"
-            elif sel == 5:
+            elif sel == "5":
                 return "DELETE_GAME"
-            elif sel == 6:
+            elif sel == "6":
                 return "MAIN_MENU"
             else:
                 print("Wrong input, try again")
