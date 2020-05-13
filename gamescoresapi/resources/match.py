@@ -11,16 +11,21 @@ from ..utils import GamescoresBuilder, create_error_response
 
 """
 Source and help received to match.py from
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 """
 
 class MatchCollection(Resource):
-
-
-    # https://gamescoresapi1.docs.apiary.io/#reference/match/matches/list-all-matches
+    """
+    MatchCollection resource
+    https://gamescoresapi1.docs.apiary.io/#reference/match/matches/list-all-matches
+    """
     def get(self, game_id):
+        """
+        GET method for MatchCollection resource
+        https://gamescoresapi1.docs.apiary.io/#reference/match/matches/list-all-matches
+        """
         body = GamescoresBuilder(items=[])
         for match_instance in Match.query.filter_by(game=game_id):
             item = GamescoresBuilder(
@@ -58,8 +63,11 @@ class MatchCollection(Resource):
             mimetype=MASON
         )
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/match/matches/add-match
     def post(self, game_id):
+        """
+        POST method for MatchCollection resource
+        https://gamescoresapi1.docs.apiary.io/#reference/match/matches/add-match
+        """
         if not request.json:
             '''
             Content did not use the proper content type, or the request body was not valid JSON.
@@ -127,9 +135,15 @@ class MatchCollection(Resource):
         )
 
 class MatchItem(Resource):
-
-    #https://gamescoresapi1.docs.apiary.io/#reference/match/match/match-information
+    """
+    MatchItem resource
+    https://gamescoresapi1.docs.apiary.io/#reference/match/match/match-information
+    """
     def get(self, game_id, match_id):
+        """
+        GET method for MatchItem
+        https://gamescoresapi1.docs.apiary.io/#reference/match/match/match-information
+        """
         match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
         if match_instance is None:
 
@@ -155,7 +169,7 @@ class MatchItem(Resource):
         )
         body.add_control("self", url_for("api.matchitem", game_id=game_id, match_id=match_id))
         body.add_control("profile", MATCH_PROFILE)
-        body.add_control("gamsco:matches-all", url_for("api.matchcollection", game_id=game_id))
+        body.add_control_all_matches(game_id=game_id)
         body.add_control_edit_match(game_id=game_id, match_id=match_id)
         body.add_control_delete_match(game_id=game_id, match_id=match_id)
         body.add_namespace("gamsco", LINK_RELATIONS_URL)
@@ -164,8 +178,11 @@ class MatchItem(Resource):
         '''
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/match/match/edit-match
     def put(self, game_id, match_id):
+        """
+        PUT method for MatchItem
+        https://gamescoresapi1.docs.apiary.io/#reference/match/match/edit-match
+        """
         match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
 
         '''
@@ -222,9 +239,6 @@ class MatchItem(Resource):
                 except Exception:
                     pass
 
-
-
-
             # The client sent a request with the wrong content type or the request body was not valid JSON.
 
         except TypeError:
@@ -245,8 +259,11 @@ class MatchItem(Resource):
             mimetype=MASON
         )
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/match/match/delete-match
     def delete(self, game_id, match_id):
+        """
+        DELETE method for MatchItem
+        https://gamescoresapi1.docs.apiary.io/#reference/match/match/delete-match
+        """
         match_instance = Match.query.filter_by(game=game_id).filter_by(id=match_id).first()
         if match_instance is None:
             '''

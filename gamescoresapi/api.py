@@ -1,3 +1,10 @@
+# Contains routing for resources
+"""
+Source and help received to api.py from
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
+and
+https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
+"""
 from flask import Blueprint
 from flask_restful import Api
 

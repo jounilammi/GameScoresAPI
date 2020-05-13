@@ -1,4 +1,4 @@
-# at this point the project is not installable. Please run the project with the instructions given in the README.md
+# At this point the project is not installable. Please run the project with the instructions given in the README.md
 
 
 # from setuptools import find_packages, setup

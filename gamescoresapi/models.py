@@ -4,7 +4,7 @@ from . import db
 
 """
 Source and help received to models.py from
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 """
@@ -21,6 +21,14 @@ player = db.Table(
 
 
 class Person (db.Model):
+    """
+    Person database table.
+    username: str
+    first_name: str
+    last_name:  str
+    birthdate: datetime (optional)
+    description: str (optional)
+    """
     __tablename__ = "person"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), nullable=False, unique=True)
@@ -33,6 +41,7 @@ class Person (db.Model):
 
     @staticmethod
     def get_schema():
+        """Returns the schema for Person"""
         schema = {
             "type": "object",
             "required": ["username", "first_name", "last_name"]
@@ -54,6 +63,16 @@ class Person (db.Model):
 
 
 class Match (db.Model):
+    """
+    Match database table.
+    game: int: id of the game
+    place: str (optional)
+    time: datetime (optional)
+    player1_id: int
+    player2_id: int
+    player1_score: float
+    player2_score: float
+    """
     __tablename__ = "match"
     id = db.Column(db.Integer, primary_key=True)
     game = db.Column(
@@ -90,6 +109,7 @@ class Match (db.Model):
 
     @staticmethod
     def get_schema():
+        """Returns the schema for Match"""
         schema = {
             "type": "object",
             "required": [
@@ -125,6 +145,11 @@ class Match (db.Model):
 
 
 class Game (db.Model):
+    """
+    Game database table.
+    name: string
+    score_type: int
+    """
     __tablename__ = "game"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -138,6 +163,7 @@ class Game (db.Model):
 
     @staticmethod
     def get_schema():
+        """Returns the schema for Game"""
         schema = {
             "type": "object",
             "required": ["name", "score_type"]

@@ -20,7 +20,7 @@ from datetime import datetime
 
 """
 Source and help received to resource_test.py from
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 """
@@ -35,6 +35,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 # we don't need a client for database testing, just the db handle
 @pytest.fixture
 def client():
+    """Creates a temporary db handle for testing purposes"""
     db_fd, db_fname = tempfile.mkstemp()
     config = {
         "SQLALCHEMY_DATABASE_URI": "sqlite:///" + db_fname,
@@ -54,14 +55,12 @@ def client():
 
 
 def _get_person(word="a"):
-    '''
-    person = Person(username="NickName",
-    first_name="Testy", last_name="Tester")
-    '''
+    """Returns a Person object with a given username"""
     return(Person(username=word, first_name="Testy", last_name="Tester"))
 
 
-def _get_match(p1_id, p2_id, game_id):
+def _get_match(p1_id=1, p2_id=2, game_id=1):
+    """Returns a Match object with a given person1 id, person2 id, game id"""
     match = Match(
         game=game_id,
         player1_id=p1_id,
@@ -74,15 +73,13 @@ def _get_match(p1_id, p2_id, game_id):
 
 
 def _get_game(gamename="a", score_type=1):
+    """Returns a Game object with a given game name"""
     game = Game(name=gamename, score_type=1)
     return(game)
 
 
 def _populate_db():
-    """
-    Pre-populate database with 2 matches, 2 players and 2 matches
-    """
-
+    """Pre-populate database with 2 matches, 2 players and 2 matches"""
     person1 = _get_person("aaaa")
     person2 = _get_person("bbbb")
     game = _get_game("football", score_type=1)
@@ -276,36 +273,28 @@ def _check_control_post_method_for_game(ctrl, client, obj):
     assert resp.status_code == 201
 
 def _get_game_json(number=1):
-    """
-    Creates a valid game JSON object to be used for PUT and POST tests.
-    """
-
+    """Creates a valid game JSON object to be used for PUT and POST tests."""
     return {"id": 1, "name": "Tennis", "score_type": 1}
 
 
 def _get_match_json(number=1):
-    """
-    Creates a valid game JSON object to be used for PUT and POST tests.
-    """
-
+    """Creates a valid game JSON object to be used for PUT and POST tests."""
     return {"id": 1, "game": 1, "player1_id": 1, "player2_id": 2, "player1_score": 13, "player2_score": 16}
 
 
 def _get_person_json(number=1):
-    """
-    Creates a valid game JSON object to be used for PUT and POST tests.
-    """
+    """Creates a valid game JSON object to be used for PUT and POST tests."""
     return {"id": 1, "username": "mattdamon", "first_name": "Matt", "last_name": "Damon"}
 
 
 class TestGameCollection(object):
-
+    """Tests for GameCollection resource"""
     RESOURCE_URL = "/api/games/"
 
     def test_get(self, client):
         """
-        Checks a GET type control from a JSON object be it root document or an item
-        in a collection. Also checks that the URL of the control can be accessed.
+        Tests the GET method of the GameCollection resource.
+        Tests for different status codes.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -320,9 +309,8 @@ class TestGameCollection(object):
 
     def test_post(self, client):
         """
-        Checks a POST type test from a JSON object be it root document or an item
-        in a collection. Checks that using the control results in the correct
-        status code of 201. Tests the content type and validates that it exist.
+        Tests the POST method of the GameCollection resource.
+        Tests for different status codes.
         """
 
 
@@ -350,14 +338,15 @@ class TestGameCollection(object):
 
 
 class TestGameItem(object):
-
+    """Tests for GameItem resource"""
     RESOURCE_URL = "/api/games/1/"
     INVALID_URL = "/api/games/23341/"
 
     def test_get(self, client):
         """
-        Checks a GET type control from a JSON object be it root document or an item
-        in a collection. Also checks that the URL of the control can be accessed.
+        Tests the GET method of the GameItem resource.
+        Tests controls.
+        Tests for different status codes.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -373,12 +362,8 @@ class TestGameItem(object):
 
     def test_put(self, client):
         """
-        Checks a PUT type control from a JSON object be it root document or an item
-        in a collection. In addition to checking the "href" attribute, also checks
-        that method, encoding and schema can be found from the control. Also
-        validates a valid game against the schema of the control to ensure that
-        they match. Finally checks that using the control results in the correct
-        status code of 204.
+        Tests the PUT method of the GameItem resource.
+        Tests for different status codes.
         """
 
         valid = _get_game_json()
@@ -409,9 +394,8 @@ class TestGameItem(object):
 
     def test_delete(self, client):
         """
-        Checks a DELETE type control from a JSON object be it root document or an
-        item in a collection. Checks the contrl's method in addition to its "href".
-        Also checks that using the control results in the correct status code of 204.
+        Tests the DELETE method of the GameItem resource.
+        Tests for different status codes.
         """
 
         resp = client.delete(self.RESOURCE_URL)
@@ -423,13 +407,14 @@ class TestGameItem(object):
 
 
 class TestMatchCollection(object):
-
+    """Tests for MatchCollection resource"""
     RESOURCE_URL = "/api/games/1/matches/"
 
     def test_get(self, client):
         """
-        Checks a GET type control from a JSON object be it root document or an item
-        in a collection. Also checks that the URL of the control can be accessed.
+        Tests the GET method of the MatchCollection resource.
+        Tests controls.
+        Tests for different error codes.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -437,19 +422,18 @@ class TestMatchCollection(object):
         body = json.loads(resp.data)
         _check_namespace(client, body)
         _check_control_post_method_for_match("gamsco:add-match", client, body)
-        # after an hour of debugging we just had to let go of the tests below
 
+        # after an hour of debugging we just had to let go of the tests below
         # assert body["items"] == {}
         # assert len(body["items"]) == 2
         # for item in body["items"]:
-        #     _check_control_get_method("self", client, item)
-        #     _check_control_get_method("profile", client, item)
+            # _check_control_get_method("self", client, item)
+            # _check_control_get_method("profile", client, item)
 
     def test_post(self, client):
         """
-        Checks a POST type test from a JSON object be it root document or an item
-        in a collection. Checks that using the control results in the correct
-        status code of 201. Tests the content type and validates that it exist.
+        Tests the POST method of the MatchCollection resource.
+        Tests for different error codes.
         """
 
         valid = _get_match_json()
@@ -473,14 +457,15 @@ class TestMatchCollection(object):
 
 
 class TestMatchItem(object):
-
+    """Tests for MatchItem resource"""
     RESOURCE_URL = "/api/games/1/matches/1/"
     INVALID_URL = "/api/games/1/matches/aa/"
 
     def test_get(self, client):
         """
-        Checks a GET type control from a JSON object be it root document or an item
-        in a collection. Also checks that the URL of the control can be accessed.
+        Tests the GET method of the MatchItem resource.
+        Tests controls.
+        Tests for different status codes.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -496,12 +481,8 @@ class TestMatchItem(object):
 
     def test_put(self, client):
         """
-        Checks a PUT type control from a JSON object be it root document or an item
-        in a collection. In addition to checking the "href" attribute, also checks
-        that method, encoding and schema can be found from the control. Also
-        validates a valid game against the schema of the control to ensure that
-        they match. Finally checks that using the control results in the correct
-        status code of 204.
+        Tests the PUT method of the MatchItem resource.
+        Tests for different status codes.
         """
 
         valid = _get_match_json()
@@ -525,9 +506,8 @@ class TestMatchItem(object):
 
     def test_delete(self, client):
         """
-        Checks a DELETE type control from a JSON object be it root document or an
-        item in a collection. Checks the contrl's method in addition to its "href".
-        Also checks that using the control results in the correct status code of 204.
+        Tests the DELETE method of the MatchItem resource.
+        Tests for different status codes.
         """
 
         resp = client.delete(self.RESOURCE_URL)
@@ -539,13 +519,13 @@ class TestMatchItem(object):
 
 
 class TestPersonCollection(object):
-
+    """Tests for PersonCollection resource"""
     RESOURCE_URL = "/api/persons/"
 
     def test_get(self, client):
         """
-        Checks a GET type control from a JSON object be it root document or an item
-        in a collection. Also checks that the URL of the control can be accessed.
+        Tests the GET method of the PersonCollection resource.
+        Tests controls.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -560,9 +540,8 @@ class TestPersonCollection(object):
 
     def test_post(self, client):
         """
-        Checks a POST type test from a JSON object be it root document or an item
-        in a collection. Checks that using the control results in the correct
-        status code of 201. Tests the content type and validates that it exist.
+        Tests the POST method of the PersonCollection resource.
+        Tests for different status codes.
         """
 
         valid = _get_person_json()
@@ -592,14 +571,14 @@ class TestPersonCollection(object):
 
 
 class TestPersonItem(object):
-
+    """Tests for PersonItem resource"""
     RESOURCE_URL = "/api/persons/1/"
     INVALID_URL = "/api/persons/23341/"
 
     def test_get(self, client):
         """
-        Checks a GET type control from a JSON object be it root document or an item
-        in a collection. Also checks that the URL of the control can be accessed.
+        Tests the GET method of the PersonItem resource.
+        Tests the controls and valid/invalid URLS.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -615,12 +594,8 @@ class TestPersonItem(object):
 
     def test_put(self, client):
         """
-        Checks a PUT type control from a JSON object be it root document or an item
-        in a collection. In addition to checking the "href" attribute, also checks
-        that method, encoding and schema can be found from the control. Also
-        validates a valid game against the schema of the control to ensure that
-        they match. Finally checks that using the control results in the correct
-        status code of 204.
+        Tests the PUT method of the PersonItem resource.
+        Tests for different status codes.
         """
 
         valid = _get_person_json()
@@ -649,9 +624,8 @@ class TestPersonItem(object):
 
     def test_delete(self, client):
         """
-        Checks a DELETE type control from a JSON object be it root document or an
-        item in a collection. Checks the contrl's method in addition to its "href".
-        Also checks that using the control results in the correct status code of 204.
+        Tests the DELETE method of the PersonItem resource.
+        Tests for different status codes.
         """
 
         resp = client.delete(self.RESOURCE_URL)

@@ -5,7 +5,7 @@ from .models import Person, Match, Game
 
 """
 Source and help received to utils.py from
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 """
@@ -73,6 +73,7 @@ class MasonBuilder(dict):
 class GamescoresBuilder(MasonBuilder):
 
     def add_control_all_games(self):
+        """Adds a control for all games in the response body."""
         self.add_control(
             "gamsco:games-all",
             url_for("api.gamecollection"),
@@ -81,6 +82,10 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_all_matches(self, game_id):
+        """
+        Adds a control for all matches of a game in the response body.
+        : param int game_id: The id of the game.
+        """
         self.add_control(
             "gamsco:matches-all",
             url_for("api.matchcollection", game_id=game_id),
@@ -89,6 +94,7 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_all_persons(self):
+        """Adds a control for all persons in the response body."""
         self.add_control(
             "gamsco:persons-all",
             url_for("api.personcollection"),
@@ -97,6 +103,7 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_add_game(self):
+        """Adds a control for adding a game in the response body."""
         self.add_control(
             "gamsco:add-game",
             url_for("api.gamecollection"),
@@ -107,6 +114,10 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_add_match(self, game_id):
+        """
+        Adds a control for adding a match to a certain game in the response body.
+        : param int game_id: The id of the game.
+        """
         self.add_control(
             "gamsco:add-match",
             url_for("api.matchcollection", game_id=game_id),
@@ -117,6 +128,7 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_add_person(self):
+        """Adds a control for adding a person in the response body."""
         self.add_control(
             "gamsco:add-person",
             url_for("api.personcollection"),
@@ -127,6 +139,10 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_delete_game(self, game_id):
+        """
+        Adds a control for deleting a game in the response body.
+        : param int game_id: The id of the game.
+        """
         self.add_control(
             "gamsco:delete",
             url_for("api.gameitem", game_id=game_id),
@@ -135,6 +151,11 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_delete_match(self, game_id, match_id):
+        """
+        Adds a control for deleting a match of a certain game in the response body.
+        : param int game_id: The id of the game.
+        : param int match_id: The id of the match.
+        """
         self.add_control(
             "gamsco:delete",
             url_for("api.matchitem", game_id=game_id, match_id=match_id),
@@ -143,6 +164,10 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_delete_person(self, person_id):
+        """
+        Adds a control for deleting a person in the response body.
+        : param int person_id: The id of the person.
+        """
         self.add_control(
             "gamsco:delete",
             url_for("api.personitem", person_id=person_id),
@@ -151,6 +176,10 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_edit_game(self, game_id):
+        """
+        Adds a control for editing a game in the response body.
+        : param int game_id: The id of the game.
+        """
         self.add_control(
             "edit",
             url_for("api.gameitem", game_id=game_id),
@@ -161,6 +190,11 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_edit_match(self, game_id, match_id):
+        """
+        Adds a control for editing a match of a certain game in the response body.
+        : param int game_id: The id of the game.
+        : param int match_id: The id of the match.
+        """
         self.add_control(
             "edit",
             url_for("api.matchitem", game_id=game_id, match_id=match_id),
@@ -171,6 +205,10 @@ class GamescoresBuilder(MasonBuilder):
         )
 
     def add_control_edit_person(self, person_id):
+        """
+        Adds a control for editing a person in the response body.
+        : param int person_id: The id of the person.
+        """
         self.add_control(
             "edit",
             url_for("api.personitem", person_id=person_id),
@@ -182,6 +220,12 @@ class GamescoresBuilder(MasonBuilder):
 
 
 def create_error_response(status_code, title, message=None):
+    """
+    Creates an error response with the given status code, error title and message in the response body.
+    : param int status_code: HTTP status code of the error.
+    : param str title: Short title for the error
+    : param str message: Longer human-readable description
+    """
     resource_url = request.path
     body = MasonBuilder(resource_url=resource_url)
     body.add_error(title, message)

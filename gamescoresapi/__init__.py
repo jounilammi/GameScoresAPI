@@ -14,7 +14,7 @@ from .constants import (
 
 """
 Source and help received to _init_.py from
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 """
@@ -24,6 +24,7 @@ db = SQLAlchemy()
 # Based on http://flask.pocoo.org/docs/1.0/tutorial/factory/#the-application-factory
 # Modified to use Flask SQLAlchemy
 def create_app(test_config=None):
+    """Initializes the API, registers command line commands for database, routes non-resource urls."""
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY="dev",
@@ -51,18 +52,17 @@ def create_app(test_config=None):
 
     @app.route(LINK_RELATIONS_URL)
     def send_link_relations():
+        """Returns link relations"""
         return "link relations"
 
     @app.route("/profiles/<profile>/")
     def send_profile(profile):
-        return "you requests {} profile".format(profile)
-
-    @app.route("/admin/")
-    def admin_site():
-        return app.send_static_file("html/admin.html")
+        """Returns the contents for requested profile"""
+        return "you requested {} profile".format(profile)
 
     @app.route("/api/")
     def index():
+        """Returns the contents of the API entry point"""
         body = {
             "@namespaces": {
                 "gamsco": {

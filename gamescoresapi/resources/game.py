@@ -9,16 +9,22 @@ from ..constants import *
 from ..utils import GamescoresBuilder, create_error_response
 
 """
-Source and help received to game.py from
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+Source and help received from
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 """
 
 class GameCollection(Resource):
-
-    # https://gamescoresapi1.docs.apiary.io/#reference/game/games/list-all-games
+    """
+    GameCollection resource
+    https://gamescoresapi1.docs.apiary.io/#reference/game/games/game-information
+    """
     def get(self):
+        """
+        GET method for GameCollection resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/game/games/list-all-games
+        """
         body = GamescoresBuilder(items=[])
         for game_instance in Game.query.all():
             item = GamescoresBuilder(
@@ -45,12 +51,14 @@ class GameCollection(Resource):
             response=json.dumps(body),
             mimetype=MASON
         )
-    # https://gamescoresapi1.docs.apiary.io/#reference/game/games/add-game
+
     def post(self):
+        """
+        POST method for GameCollection resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/game/games/add-game
+        """
         if not request.json:
-
             # Content did not use the proper content type, or the request body was not valid JSON.
-
             return create_error_response(
                     415,
                     "Wrong content type",
@@ -58,7 +66,6 @@ class GameCollection(Resource):
                 )
 
         # The client is trying to send a JSON document that doesn't validate against the schema, or has invalid data.
-
         try:
             validate(request.json, Game.get_schema())
         except ValidationError as e:
@@ -88,7 +95,6 @@ class GameCollection(Resource):
             )
         game_instance = Game.query.filter_by(name=name).first()
 
-
         # Returns response of game instance (POST)
 
         return Response(
@@ -101,9 +107,15 @@ class GameCollection(Resource):
 
 
 class GameItem(Resource):
-
-    # https://gamescoresapi1.docs.apiary.io/#reference/game/game/game-information
+    """
+    GameItem resource
+    https://gamescoresapi1.docs.apiary.io/#reference/game/game/game-information
+    """
     def get(self, game_id):
+        """
+        GET method for the GameItem resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/game/game/game-information
+        """
         game_instance = Game.query.filter_by(id=game_id).first()
         if game_instance is None:
 
@@ -122,7 +134,7 @@ class GameItem(Resource):
         )
         body.add_control("self", url_for("api.gameitem", game_id=game_id))
         body.add_control("profile", GAME_PROFILE)
-        body.add_control("gamsco:games-all", url_for("api.gamecollection"))
+        body.add_control_all_games()
         body.add_control_edit_game(game_id=game_id)
         body.add_control_delete_game(game_id=game_id)
         body.add_namespace("gamsco", LINK_RELATIONS_URL)
@@ -131,8 +143,12 @@ class GameItem(Resource):
 
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/game/game/edit-game
     def put(self, game_id):
+        """
+        PUT method for the GameItem resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/game/game/edit-game
+        """
+
         game_instance = Game.query.filter_by(id=game_id).first()
 
         # The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
@@ -171,8 +187,6 @@ class GameItem(Resource):
 
         # The client sent a request with the wrong content type or the request body was not valid JSON.
 
-
-
         try:
             db.session.commit()
         except IntegrityError:
@@ -186,7 +200,6 @@ class GameItem(Resource):
                 message="PUT failed due to the  game_instance name being already taken"
             )
 
-
         # Replace the game's representation with a new one. Missing optional fields will be set to null.
 
         return Response(
@@ -194,8 +207,11 @@ class GameItem(Resource):
             mimetype=MASON
         )
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/game/game/delete-game
     def delete(self, game_id):
+        """
+        DELETE method for the GameItem resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/game/game/delete-game
+        """
         game_instance = Game.query.filter_by(id=game_id).first()
         if game_instance is None:
 

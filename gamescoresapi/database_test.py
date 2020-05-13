@@ -15,6 +15,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 @pytest.fixture
 def app():
+    """Creates a temporary API instance for testing purposes"""
     db_fd, db_fname = tempfile.mkstemp()
     config = {
         "SQLALCHEMY_DATABASE_URI": "sqlite:///" + db_fname,
@@ -34,14 +35,12 @@ def app():
 
 
 def _get_person(word="a"):
-    '''
-    person = Person(username="NickName",
-    first_name="Testy", last_name="Tester")
-    '''
+    """Returns a Person object with a given username"""
     return(Person(username=word, first_name="Testy", last_name="Tester"))
 
 
-def _get_match(p1_id, p2_id, game_id):
+def _get_match(p1_id=1, p2_id=2, game_id=1):
+    """Returns a Match object with a given person1 id, person2 id, game id"""
     match = Match(
         game=game_id,
         player1_id=p1_id,
@@ -54,12 +53,13 @@ def _get_match(p1_id, p2_id, game_id):
 
 
 def _get_game(gamename="a"):
+    """Returns a Game object with a given game name"""
     game = Game(name=gamename, score_type=1)
     return(game)
 
 
 def test_create_everything(app):
-    '''create everything and test correctness'''
+    '''Creates objects, fills database and tests that filling was successful'''
     with app.app_context():
         # create everything
         person1 = _get_person("aaaa")
@@ -84,7 +84,7 @@ def test_create_everything(app):
 
 
 def test_check_relationships(app):
-    ''' test foreign keys '''
+    '''tests foreign keys'''
     with app.app_context():
         person1 = _get_person("aaaa")
         person2 = _get_person("bbbb")
@@ -114,14 +114,14 @@ def test_unique(app):
     with app.app_context():
         person_1 = _get_person()
         person_2 = _get_person()
-        # match_1 = _get_match()
-        # match_2 = _get_match()
+        match_1 = _get_match()
+        match_2 = _get_match()
         game_1 = _get_game()
         game_2 = _get_game()
         db.session.add(person_1)
         db.session.add(person_2)
-        # db.session.add(match_1)
-        # db.session.add(match_2)
+        db.session.add(match_1)
+        db.session.add(match_2)
         db.session.add(game_1)
         db.session.add(game_2)
         with pytest.raises(IntegrityError):
@@ -188,9 +188,7 @@ def test_set_null_on_delete(app):
 
 
 def test_foreign_key_relationship_match_to_game(app):
-    """
-    Tests that we can't assign match in a game that doesn't exist.
-    """
+    """Tests that we can't assign match in a game that doesn't exist."""
     with app.app_context():
         person1 = _get_person()
         person2 = Person(
@@ -214,9 +212,7 @@ def test_foreign_key_relationship_match_to_game(app):
 
 
 def test_foreign_key_relationship_player1_to_game(app):
-    """
-    Tests that we can't assign match in a game if player 2 is missing.
-    """
+    """Tests that we can't assign match in a game if player 2 is missing."""
     with app.app_context():
         game = _get_game()
         person1 = _get_person()

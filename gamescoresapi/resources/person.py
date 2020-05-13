@@ -12,16 +12,21 @@ from jsonschema import validate, ValidationError
 
 """
 Source and help received to person.py from
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/tests/resource_test.py
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/
 and
 https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/
 """
 
-
 class PersonCollection(Resource):
-
-    # https://gamescoresapi1.docs.apiary.io/#reference/person/persons/list-all-persons
+    """
+    PersonCollection resource
+    https://gamescoresapi1.docs.apiary.io/#reference/person/persons
+    """
     def get(self):
+        """
+        GET method for PersonCollection resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/person/persons/list-all-persons
+        """
         body = GamescoresBuilder(items=[])
         for person_instance in Person.query.all():
             item = GamescoresBuilder(
@@ -52,8 +57,11 @@ class PersonCollection(Resource):
             mimetype=MASON
         )
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/person/persons/add-person-information
     def post(self):
+        """
+        POST method for PersonCollection resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/person/persons/add-person-information
+        """
         if not request.json:
             '''
             Content did not use the proper content type, or the request body was not valid JSON.
@@ -87,7 +95,6 @@ class PersonCollection(Resource):
                 first_name=first_name,
                 last_name=last_name,
                 description=description
-
             )
 
             time_parts = request.json.get("birthdate", "")
@@ -128,12 +135,17 @@ class PersonCollection(Resource):
 
 
 class PersonItem(Resource):
-
-    # https://gamescoresapi1.docs.apiary.io/#reference/person/person/person-information
+    """
+    PersonItem resource
+    https://gamescoresapi1.docs.apiary.io/#reference/person/person/person-information
+    """
     def get(self, person_id):
+        """
+        GET method for PersonCollection resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/person/person/person-information
+        """
         person_instance = Person.query.filter_by(id=person_id).first()
         if person_instance is None:
-
 
             '''
             The client is trying to send a JSON document that doesn't validate against the schema.
@@ -154,7 +166,7 @@ class PersonItem(Resource):
         )
         body.add_control("self", url_for("api.personitem", person_id=person_id))
         body.add_control("profile", PERSON_PROFILE)
-        body.add_control("gamsco:persons-all", url_for("api.personcollection"))
+        body.add_control_all_persons()
         body.add_control_edit_person(person_id=person_id)
         body.add_control_delete_person(person_id=person_id)
         body.add_namespace("gamsco", LINK_RELATIONS_URL)
@@ -163,11 +175,12 @@ class PersonItem(Resource):
         '''
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/person/person/edit-person
     def put(self, person_id):
+        """
+        PUT method for PersonCollection resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/person/person/edit-person
+        """
         person_instance = Person.query.filter_by(id=person_id).first()
-
-
 
         '''
         The client sent a request with the wrong content type or the request body was not valid JSON.
@@ -221,9 +234,6 @@ class PersonItem(Resource):
             except Exception:
                 pass
 
-
-
-
         try:
             db.session.commit()
         except IntegrityError:
@@ -236,21 +246,24 @@ class PersonItem(Resource):
                 title="Handle taken",
                 message="PUT failed due to the  person_instance name being already taken"
             )
-        '''
-        Replace the person's representation with a new one. Missing optional fields will be set to null.
-        '''
+
+        # Replace the person's representation with a new one. Missing optional fields will be set to null.
+
         return Response(
             status=204,
             mimetype=MASON
         )
 
-    # https://gamescoresapi1.docs.apiary.io/#reference/person/person/delete-person
     def delete(self, person_id):
+        """
+        DELETE method for PersonCollection resource.
+        https://gamescoresapi1.docs.apiary.io/#reference/person/person/delete-person
+        """
         person_instance = Person.query.filter_by(id=person_id).first()
         if person_instance is None:
-            '''
-            The client is trying to send a JSON document that doesn't validate against the schema.
-            '''
+
+            # The client is trying to send a JSON document that doesn't validate against the schema.
+
             return create_error_response(
                 status_code=404,
                 title="Not found",
@@ -258,7 +271,7 @@ class PersonItem(Resource):
             )
         db.session.delete(person_instance)
         db.session.commit()
-        '''
-        Delete peson
-        '''
+
+        # Delete person
+
         return Response(status=204, mimetype=MASON)

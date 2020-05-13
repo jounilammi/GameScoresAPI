@@ -88,14 +88,15 @@ We didn't participate in a midterm meeting
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Final meeting
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE: 14.5.2020**
+* **ASSISTANTS: Mika Oja**
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+The project demo was given to Mika and the project was graded. The grade was so close to 5 that we agreed on doing a bit of extra work to gain the needed points.
 
 ### Action points
-*List here the actions points discussed with assistants*
+- Documentation amount in the API code should be increased
+- In client code the numbers should be changed to descriptive strings for easier reading
 
 
 ### Comments from staff
