@@ -7,11 +7,11 @@ BASE_URL = "http://127.0.0.1:5000"
 
 
 def main():
-
+    """Main loop of the client program"""
     while True:
 
-        menu_sel = int(main_menu())
-        if menu_sel not in [1, 2, 3, 4]:
+        menu_sel = main_menu()
+        if menu_sel not in ["PERSON", "MATCH", "GAME"]:
             print("Wrong input")
             continue
         func_sel = menu_page_2(menu_sel)
@@ -23,7 +23,7 @@ def main():
 
 # MENU FUNCTIONS#
 def main_menu():
-
+    """Prints the main menu of the client and returns a textual representation of the choice"""
     while True:
         print("\n----------------------------------------------------------------------\n")
         print("Welcome to GameScoresAPI client\n\n")
@@ -50,173 +50,157 @@ def main_menu():
 
 
 def menu_page_2(menu_sel):
+    """Prints the submenus and returns a textual representation of the choice"""
+    while True:
+        if menu_sel == "PERSON":
+            print("\nYou want to?\n")
+            print("1. List all persons")
+            print("2. Specific person information")
+            print("3. Add a person")
+            print("4. Edit a person")
+            print("5. Delete a person")
+            print("6. Previous\n")
+            sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
+            print()
 
-    if menu_sel == 1:
-        print("\nYou want to?\n")
-        print("1. List all persons")
-        print("2. Specific person information")
-        print("3. Add a person")
-        print("4. Edit a person")
-        print("5. Delete a person")
-        print("6. Previous\n")
-        sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
-        print()
+            if sel == "":
+                print("Wrong input")
+                continue
+            elif sel == 1:
+                return "GET_PERSONS"
+            elif sel == 2:
+                return "GET_PERSON"
+            elif sel == 3:
+                return "ADD_PERSON"
+            elif sel == 4:
+                return "EDIT_PERSON"
+            elif sel == 5:
+                return "DELETE_PERSON"
+            elif sel == 6:
+                return "MAIN_MENU"
+            else:
+                print("Wrong input, try again")
+                continue
 
-        if sel == "":
+        elif menu_sel == "MATCH":
+            print("\nYou want to?\n")
+            print("1. List all matches")
+            print("2. Specific match information")
+            print("3. Add a match")
+            print("4. Edit a match")
+            print("5. Delete a match")
+            print("6. Previous\n")
+            sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
+            print()
+
+            if sel == "":
+                print("Wrong input")
+                continue
+            elif sel == 1:
+                return "GET_MATCHES"
+            elif sel == 2:
+                return "GET_MATCH"
+            elif sel == 3:
+                return "ADD_MATCH"
+            elif sel == 4:
+                return "EDIT_MATCH"
+            elif sel == 5:
+                return "DELETE_MATCH"
+            elif sel == 6:
+                return "MAIN_MENU"
+            else:
+                print("Wrong input, try again")
+                continue
+
+        elif menu_sel == "GAME":
+            print("\nYou want to?\n")
+            print("1. List all games")
+            print("2. Specific game information")
+            print("3. Add a game")
+            print("4. Edit a game")
+            print("5. Delete a game")
+            print("6. Previous\n")
+            sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
+            print()
+
+            if sel == "":
+                print("Wrong input")
+                continue
+            elif sel == 1:
+                return "GET_GAMES"
+            elif sel == 2:
+                return "GET_GAME"
+            elif sel == 3:
+                return "ADD_GAME"
+            elif sel == 4:
+                return "EDIT_GAME"
+            elif sel == 5:
+                return "DELETE_GAME"
+            elif sel == 6:
+                return "MAIN_MENU"
+            else:
+                print("Wrong input, try again")
+                continue
+
+        else:
             print("Wrong input")
             continue
-        elif sel == 1:
-            return "GET_PERSONS"
-        elif sel == 2:
-            return "GET_PERSON"
-        elif sel == 3:
-            return "ADD_PERSON"
-        elif sel == 4:
-            return "EDIT_PERSON" 
-        elif sel == 5:
-            return "DELETE_PERSON"
-        elif sel == 6:
-            return "MAIN_MENU"
-        else:
-            print("Wrong input, try again")
-            continue
 
-    elif menu_sel == 2:
-        print("\nYou want to?\n")
-        print("1. List all matches")
-        print("2. Specific match information")
-        print("3. Add a match")
-        print("4. Edit a match")
-        print("5. Delete a match")
-        print("6. Previous\n")
-        sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
-        print()
-
-        if sel == "":
-            print("Wrong input")
-            continue
-        elif sel == 1:
-            return "GET_MATCHES"
-        elif sel == 2:
-            return "GET_MATCH"
-        elif sel == 3:
-            return "ADD_MATCH"
-        elif sel == 4:
-            return "EDIT_MATCH" 
-        elif sel == 5:
-            return "DELETE_MATCH"
-        elif sel == 6:
-            return "MAIN_MENU"
-        else:
-            print("Wrong input, try again")
-            continue
-
-    elif menu_sel == 3:
-        print("\nYou want to?\n")
-        print("1. List all games")
-        print("2. Specific game information")
-        print("3. Add a game")
-        print("4. Edit a game")
-        print("5. Delete a game")
-        print("6. Previous\n")
-        sel = int(input("Type 1, 2, 3, 4, 5 or 6: "))
-        print()
-
-        if sel == "":
-            print("Wrong input")
-            continue
-        elif sel == 1:
-            return "GET_GAMES"
-        elif sel == 2:
-            return "GET_GAME"
-        elif sel == 3:
-            return "ADD_GAME"
-        elif sel == 4:
-            return "EDIT_GAME" 
-        elif sel == 5:
-            return "DELETE_GAME"
-        elif sel == 6:
-            return "MAIN_MENU"
-        else:
-            print("Wrong input, try again")
-            continue
-
-    else:
-        print("Wrong input")
-
-    return sel
+        return sel
 
 
 def request(menu_sel, func_sel):
-
+    """Calls the right function based on the user's choices"""
     # Person
     if menu_sel == "PERSON" and func_sel == "GET_PERSONS":
         get_persons()
-        main()
     elif menu_sel == "PERSON" and func_sel == "GET_PERSON":
         get_person()
-        main()
     elif menu_sel == "PERSON" and func_sel == "ADD_PERSON":
         post_person()
-        main()
     elif menu_sel == "PERSON" and func_sel == "EDIT_PERSON":
         put_person()
-        main()
     elif menu_sel == "PERSON" and func_sel == "DELETE_PERSON":
         delete_person()
-        main()
-    elif menu_sel == "PERSON" and func_sel == "MAIN_MENU":
-        main()
+
 
     # Match
     if menu_sel == "MATCH" and func_sel == "GET_MATCHES":
         game_id = input("Give id of the game, which matches you want to see: ")
         get_matches(game_id)
-        main()
     elif menu_sel == "MATCH" and func_sel == "GET_MATCH":
         game_id = input("Give id of the game, which matches you want to see: ")
         get_match(game_id)
-        main()
     elif menu_sel == "MATCH" and func_sel == "ADD_MATCH":
         game_id = input("Give id of the game, which match you want to post: ")
         post_match(game_id)
-        main()
     elif menu_sel == "MATCH" and func_sel == "EDIT_MATCH":
         game_id = input("Give id of the game, which match you want to put: ")
         put_match(game_id)
-        main()
     elif menu_sel == "MATCH" and func_sel == "DELETE_MATCH":
         game_id = input("Give id of the game, which match you want to delete: ")
         delete_match(game_id)
-        main()
-    elif menu_sel == "MATCH" and func_sel == "MAIN_MENU":
-        main()
 
     # Game
     if menu_sel == "GAME" and func_sel == "GET_GAMES":
         get_games()
-        main()
     elif menu_sel == "GAME" and func_sel == "GET_GAME":
         get_game()
-        main()
     elif menu_sel == "GAME" and func_sel == "ADD_GAME":
         post_game()
-        main()
     elif menu_sel == "GAME" and func_sel == "EDIT_GAME":
         put_game()
-        main()
     elif menu_sel == "GAME" and func_sel == "DELETE_GAME":
         delete_game()
-        main()
-    elif menu_sel == "GAME" and func_sel == "MAIN_MENU":
-        main()
 
+    main()
 
 #################
 # PERSON REQUESTS#
 #################
 
 def get_persons():
+    """Requests and prints a list of all persons from the API"""
     resp = requests.get(BASE_URL + "/api/persons/")
     body = resp.json()
     for item in body["items"]:
@@ -231,6 +215,7 @@ def get_persons():
 
 
 def get_person():
+    """Requests and prints the details of a single person from the API"""
     while True:
         input_id = input("Give person id: ")
         if not input_id:
@@ -252,6 +237,7 @@ def get_person():
 
 
 def post_person():
+    """Asks for the details and adds a new person via the API"""
     data = {}
 
     while True:
@@ -304,6 +290,7 @@ def post_person():
 
 
 def put_person():
+    """Edits the information of a person via the API"""
     data = {}
     while True:
         input_id = input("Give person id: ")
@@ -361,6 +348,7 @@ def put_person():
 
 
 def delete_person():
+    """Deletes a person via the API"""
     while True:
         input_id = input("Give person id: ")
         if not input_id:
@@ -370,12 +358,12 @@ def delete_person():
 
     return requests.delete(BASE_URL + "/api/persons/{}/".format(input_id))
 
-
 ################
 # MATCH REQUESTS#
 ################
 
 def get_matches(game_id):
+    """Requests and prints a list of all matches of a given game from the API"""
     resp = requests.get(BASE_URL + "/api/games/{}/matches/".format(game_id))
     body = resp.json()
     for item in body["items"]:
@@ -393,7 +381,7 @@ def get_matches(game_id):
 
 
 def get_match(game_id):
-
+    """Requests and prints the details of a single match from the API"""
     data = {}
     while True:
         input_id = input("Give match id: ")
@@ -418,7 +406,7 @@ def get_match(game_id):
 
 
 def post_match(game_id):
-
+    """Asks for the details and adds a new match via the API"""
     data = {}
     data["game"] = int(game_id)
     while True:
@@ -482,6 +470,7 @@ def post_match(game_id):
 
 
 def put_match(game_id):
+    """Edits the information of a match via the API"""
     data = {}
     data["game"] = int(game_id)
     while True:
@@ -551,7 +540,7 @@ def put_match(game_id):
 
 
 def delete_match(game_id):
-
+    """Deletes a match via the API"""
     while True:
         input_id = input("Give match id: ")
         if not input_id:
@@ -567,6 +556,7 @@ def delete_match(game_id):
 
 
 def get_games():
+    """Requests and prints a list of all games from the API"""
     resp = requests.get(BASE_URL + "/api/games/")
     body = resp.json()
     for item in body["items"]:
@@ -578,6 +568,7 @@ def get_games():
 
 
 def get_game():
+    """Requests and prints the details of a single game from the API"""
     data = {}
     while True:
         input_id = input("Give game id: ")
@@ -598,6 +589,7 @@ def get_game():
 
 
 def post_game():
+    """Asks for the details and adds a new game via the API"""
     data = {}
     while True:
         input_name = input("Give name of the game: ")
@@ -619,6 +611,7 @@ def post_game():
 
 
 def put_game():
+    """Edits the information of a game via the API"""
     data = {}
     while True:
         input_id = input("Give game id: ")
@@ -646,6 +639,7 @@ def put_game():
 
 
 def delete_game():
+    """Deletes a game via the API"""
     while True:
         input_id = input("Give game id: ")
         if not input_id:
